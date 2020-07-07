@@ -1,3 +1,13 @@
+/**
+ * Author: Shem
+ *
+ * Based on the Dungeons & Dragons 5th Edition game system for Foundry Virtual Tabletop
+ * (Author: Atropos)
+ * Software License: GNU GPLv3
+ * Content License: https://media.wizards.com/2016/downloads/DND/SRD-OGL_V5.1.pdf
+ * Repository: https://gitlab.com/foundrynet/dnd5e
+ */
+
 // Import Modules
 import {KRYX_RPG} from "./module/config.js";
 import {registerSystemSettings} from "./module/settings.js";
@@ -90,13 +100,7 @@ Hooks.once("init", function () {
 Hooks.once("setup", function () {
 
   // Localize CONFIG objects once up-front
-  const toLocalize = [
-    "abilities", "alignments", "conditionTypes", "consumableTypes", "currencies", "damageTypes", "distanceUnits",
-    "equipmentTypes", "healingTypes", "itemActionTypes", "limitedUsePeriods", "senses", "skills", "spellComponents",
-    "spellLevels", "spellPreparationModes", "spellSchools", "spellScalingModes", "targetTypes", "timePeriods",
-    "weaponProperties", "weaponTypes", "languages", "armorProficiencies", "weaponProficiencies",
-    "toolProficiencies", "abilityActivationTypes", "abilityConsumptionTypes", "actorSizes", "proficiencyLevels"
-  ];
+  const toLocalize = Object.keys(KRYX_RPG);
 
   // Exclude some from sorting where the default order matters
   const noSort = [
@@ -106,10 +110,14 @@ Hooks.once("setup", function () {
 
   // Localize and sort CONFIG objects
   for (let o of toLocalize) {
+    if (typeof CONFIG.KRYX_RPG[o] !== "object") continue
+    if (Array.isArray(CONFIG.KRYX_RPG[o])) continue
     const localized = Object.entries(CONFIG.KRYX_RPG[o]).map(e => {
+      if (typeof e[1] !== "string") return e
       return [e[0], game.i18n.localize(e[1])];
     });
-    if (!noSort.includes(o)) localized.sort((a, b) => a[1].localeCompare(b[1]));
+    if (!noSort.includes(o) && typeof localized[0][1] === "string")
+      localized.sort((a, b) => a[1].localeCompare(b[1]));
     CONFIG.KRYX_RPG[o] = localized.reduce((obj, e) => {
       obj[e[0]] = e[1];
       return obj;
@@ -174,4 +182,3 @@ Hooks.on("renderChatMessage", (app, html, data) => {
 });
 Hooks.on("getChatLogEntryContext", chat.addChatMessageContextOptions);
 Hooks.on("renderChatLog", (app, html, data) => ItemKryx.chatListeners(html));
-Hooks.on('getActorDirectoryEntryContext', ActorKryx.addDirectoryContextOptions);
