@@ -3,30 +3,49 @@
     "types": ["character", "npc"],
     "templates": {
       "common": {
+        "class": {
+          "description": {
+            "value": "",
+            "chat": "",
+            "unidentified": ""
+          },
+          "name": "Acolyte",
+          "archetype": "Paladin",
+          "subclass": "Tempest Domain",
+          "progression": "gishHalfHalf",
+          "level": 1,
+          "hitDice": "d6",
+          "hitDiceUsed": 0
+        },
         "abilities": {
           "str": {
-            "value": 10,
-            "proficient": 0
+            "value": 0
           },
           "dex": {
-            "value": 10,
-            "proficient": 0
+            "value": 0
           },
           "con": {
-            "value": 10,
-            "proficient": 0
+            "value": 0
           },
           "int": {
-            "value": 10,
-            "proficient": 0
+            "value": 0
           },
           "wis": {
-            "value": 10,
-            "proficient": 0
+            "value": 0
           },
           "cha": {
-            "value": 10,
-            "proficient": 0
+            "value": 0
+          }
+        },
+        "saves": {
+          "fortitude": {
+            "proficiency": 0
+          },
+          "reflex": {
+            "proficiency": 0
+          },
+          "will": {
+            "proficiency": 0
           }
         },
         "attributes": {
@@ -40,104 +59,88 @@
             "temp": 0,
             "tempmax": 0
           },
-          "init": {
-            "value": 0,
-            "bonus": 0
-          },
           "speed": {
             "value": "30 ft",
             "special": ""
           },
-          "spellcasting": "int"
+          "spellcastingAbility": "int",
+          "maneuversAbility": "str",
+          "exhausted": 0,
+          "wounded": 0,
+          "dying": 0
         },
         "details": {
-          "alignment": "",
+          "species": "",
           "biography": {
             "value": "",
             "public": ""
-          },
-          "race": ""
+          }
         },
         "skills": {
-          "acr": {
-            "value": 0,
-            "ability": "dex"
+          "acrobatics": {
+            "proficiency": 0
           },
-          "ani": {
-            "value": 0,
-            "ability": "wis"
+          "alchemy": {
+            "proficiency": 0
           },
-          "arc": {
-            "value": 0,
-            "ability": "int"
+          "arcana": {
+            "proficiency": 0
           },
-          "ath": {
-            "value": 0,
-            "ability": "str"
+          "athletics": {
+            "proficiency": 0
           },
-          "dec": {
-            "value": 0,
-            "ability": "cha"
+          "deception": {
+            "proficiency": 0
           },
-          "his": {
-            "value": 0,
-            "ability": "int"
+          "engineering": {
+            "proficiency": 0
           },
-          "ins": {
-            "value": 0,
-            "ability": "wis"
+          "insight": {
+            "proficiency": 0
           },
-          "itm": {
-            "value": 0,
-            "ability": "cha"
+          "intimidation": {
+            "proficiency": 0
           },
-          "inv": {
-            "value": 0,
-            "ability": "int"
+          "medicine": {
+            "proficiency": 0
           },
-          "med": {
-            "value": 0,
-            "ability": "wis"
+          "nature": {
+            "proficiency": 0
           },
-          "nat": {
-            "value": 0,
-            "ability": "int"
+          "occult": {
+            "proficiency": 0
           },
-          "prc": {
-            "value": 0,
-            "ability": "wis"
+          "perception": {
+            "proficiency": 0
           },
-          "prf": {
-            "value": 0,
-            "ability": "cha"
+          "performance": {
+            "proficiency": 0
           },
-          "per": {
-            "value": 0,
-            "ability": "cha"
+          "persuasion": {
+            "proficiency": 0
           },
-          "rel": {
-            "value": 0,
-            "ability": "int"
+          "psionics": {
+            "proficiency": 0
           },
-          "slt": {
-            "value": 0,
-            "ability": "dex"
+          "religion": {
+            "proficiency": 0
           },
-          "ste": {
-            "value": 0,
-            "ability": "dex"
+          "society": {
+            "proficiency": 0
           },
-          "sur": {
-            "value": 0,
-            "ability": "wis"
+          "stealth": {
+            "proficiency": 0
           }
         },
         "traits": {
-          "size": "med",
+          "size": "medium",
           "senses": "",
           "languages": {
             "value": [],
             "custom": ""
+          },
+          "themes": {
+            "value": []
           },
           "di": {
             "value": [],
@@ -159,63 +162,21 @@
         "currency": {
           "pp": 0,
           "gp": 0,
-          "ep": 0,
           "sp": 0,
           "cp": 0
         },
-        "spells": {
-          "spell1": {
-            "value": 0,
-            "max": 0,
-            "override": null
+        "mainResources": {
+          "mana": {
+            "remaining": 0,
+            "name": "mana",
+            "nameOfEffect": "spell"
           },
-          "spell2": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "spell3": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "spell4": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "spell5": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "spell6": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "spell7": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "spell8": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "spell9": {
-            "value": 0,
-            "max": 0,
-            "override": null
-          },
-          "pact": {
-            "value": 0,
-            "max": 0,
-            "override": null
+          "stamina": {
+            "remaining": 0
           }
         },
         "bonuses": {
+          "_comment": "TODO - some more can be added/removed?",
           "mwak": {
             "attack": "",
             "damage": ""
@@ -232,38 +193,28 @@
             "attack": "",
             "damage": ""
           },
-          "abilities": {
-            "check": "",
-            "save": "",
-            "skill": ""
-          },
-          "spell":  {
-            "dc": ""
-          }
+          "initiative": "",
+          "check": "",
+          "save": "",
+          "damage": "",
+          "spell_dc": "",
+          "maneuver_dc": ""
         }
       }
     },
     "character": {
       "templates": ["common"],
       "attributes": {
-        "death": {
-          "success": 0,
-          "failure": 0
-        },
-        "exhaustion": 0,
-        "inspiration": 0
+        "inspiration": false,
+        "secondWindAvailable": true
       },
       "details": {
         "background": "",
-        "xp": {
+        "exp": {
+          "max": 0,
           "value": 0,
-          "min": 0,
-          "max": 300
-        },
-        "trait": "",
-        "ideal": "",
-        "bond": "",
-        "flaw": ""
+          "pct": 0
+        }
       },
       "resources": {
         "primary": {
@@ -293,43 +244,25 @@
         "armorProf": {
           "value": [],
           "custom": ""
-        },
-        "toolProf": {
-          "value": [],
-          "custom": ""
         }
       }
     },
     "npc": {
       "templates": ["common"],
-      "details": {
-        "type": "",
-        "environment": "",
-        "cr": 1,
-        "spellLevel": 0,
-        "xp": {
-          "value": 10
+      "mainResources": {
+        "mana": {
+          "max": 0,
+          "limit": 0
         },
-        "source": ""
-      },
-      "resources": {
-        "legact": {
-          "value": 0,
-          "max": 0
-        },
-        "legres": {
-          "value": 0,
-          "max": 0
-        },
-        "lair": {
-          "value": 0,
-          "initiative": 0
+        "stamina": {
+          "max": 0,
+          "limit": 0
         }
       }
     }
   },
   "Item": {
-    "types": ["weapon", "equipment", "consumable", "tool", "loot", "class", "spell", "feat", "backpack"],
+    "types": ["superpower", "feat", "feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"],
     "templates": {
       "itemDescription": {
         "description": {
@@ -347,6 +280,9 @@
         "equipped": false,
         "rarity": "",
         "identified": true
+      },
+      "themed": {
+        "themes": []
       },
       "activatedEffect": {
         "activation": {
@@ -391,10 +327,26 @@
         },
         "formula": "",
         "save": {
-          "ability": "",
+          "type": "",
           "dc": null,
-          "scaling": "spell"
+          "scaling": null
         }
+      }
+    },
+    "superpower": {
+      "_comment": "superpower = Spell, Maneuver, or Concoction",
+      "templates": ["itemDescription", "activatedEffect", "action", "themed"],
+      "cost": 1,
+      "type": "spell",
+      "availability": "known",
+      "duration": null,
+      "components": {
+        "ritual": false,
+        "concentration": false
+      },
+      "scaling": {
+        "mode": null,
+        "formula": null
       }
     },
     "backpack": {
@@ -407,23 +359,9 @@
       "currency": {
         "cp": 0,
         "sp": 0,
-        "ep": 0,
         "gp": 0,
         "pp": 0
       }
-    },
-    "class": {
-      "templates": ["itemDescription"],
-      "levels": 1,
-      "subclass": "",
-      "hitDice": "d6",
-      "hitDiceUsed": 0,
-      "skills": {
-        "number": 2,
-        "choices": [],
-        "value": []
-      },
-      "spellcasting": "none"
     },
     "consumable": {
       "templates": ["itemDescription", "physicalItem", "activatedEffect", "action"],
@@ -444,8 +382,15 @@
       "proficient": true
     },
     "feat": {
-      "templates": ["itemDescription", "activatedEffect", "action"],
+      "templates": ["itemDescription", "activatedEffect", "action", "themed"],
       "requirements": "",
+      "recharge": {
+        "value": null,
+        "charged": false
+      }
+    },
+    "feature": {
+      "templates": ["itemDescription", "activatedEffect", "action"],
       "recharge": {
         "value": null,
         "charged": false
@@ -457,35 +402,7 @@
     "tool": {
       "templates": ["itemDescription", "physicalItem"],
       "ability": "int",
-      "chatFlavor": "",
-      "proficient": 0
-    },
-    "spell": {
-      "templates": ["itemDescription", "activatedEffect", "action"],
-      "level": 1,
-      "school": "",
-      "components": {
-        "value": "",
-        "vocal": false,
-        "somatic": false,
-        "material": false,
-        "ritual": false,
-        "concentration": false
-      },
-      "materials": {
-        "value": "",
-        "consumed": false,
-        "cost": 0,
-        "supply": 0
-      },
-      "preparation": {
-        "mode": null,
-        "prepared": false
-      },
-      "scaling": {
-        "mode": null,
-        "formula": null
-      }
+      "chatFlavor": ""
     },
     "weapon": {
       "templates": ["itemDescription", "physicalItem" ,"activatedEffect", "action"],
