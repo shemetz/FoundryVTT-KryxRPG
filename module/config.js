@@ -101,20 +101,20 @@ KRYX_RPG.abilityConsumptionTypes = {
 // Creature Sizes
 KRYX_RPG.actorSizes = {
   "tiny": "KRYX_RPG.SizeTiny",
-  "sm": "KRYX_RPG.SizeSmall",
-  "med": "KRYX_RPG.SizeMedium",
-  "lg": "KRYX_RPG.SizeLarge",
+  "small": "KRYX_RPG.SizeSmall",
+  "medium": "KRYX_RPG.SizeMedium",
+  "large": "KRYX_RPG.SizeLarge",
   "huge": "KRYX_RPG.SizeHuge",
-  "grg": "KRYX_RPG.SizeGargantuan"
+  "gargantuan": "KRYX_RPG.SizeGargantuan"
 };
 
 KRYX_RPG.tokenSizes = {
   "tiny": 1,
-  "sm": 1,
-  "med": 1,
-  "lg": 2,
+  "small": 1,
+  "medium": 1,
+  "large": 2,
   "huge": 3,
-  "grg": 4
+  "gargantuan": 4
 };
 
 /* -------------------------------------------- */
