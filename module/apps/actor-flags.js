@@ -7,7 +7,7 @@ export default class ActorSheetFlags extends BaseEntitySheet {
     const options = super.defaultOptions;
     return mergeObject(options, {
       id: "actor-flags",
-	    classes: ["kryx_rpg"],
+      classes: ["kryx_rpg"],
       template: "systems/kryx_rpg/templates/apps/actor-flags.html",
       width: 500,
       closeOnSubmit: true
@@ -47,8 +47,8 @@ export default class ActorSheetFlags extends BaseEntitySheet {
    */
   _getFlags() {
     const flags = {};
-    for ( let [k, v] of Object.entries(CONFIG.KRYX_RPG.characterFlags) ) {
-      if ( !flags.hasOwnProperty(v.section) ) flags[v.section] = {};
+    for (let [k, v] of Object.entries(CONFIG.KRYX_RPG.characterFlags)) {
+      if (!flags.hasOwnProperty(v.section)) flags[v.section] = {};
       let flag = duplicate(v);
       flag.type = v.type.name;
       flag.isCheckbox = v.type === Boolean;
@@ -81,7 +81,7 @@ export default class ActorSheetFlags extends BaseEntitySheet {
       {name: "data.bonuses.abilities.skill", label: "KRYX_RPG.BonusAbilitySkill"},
       {name: "data.bonuses.spell.dc", label: "KRYX_RPG.BonusSpellDC"}
     ];
-    for ( let b of bonuses ) {
+    for (let b of bonuses) {
       b.value = getProperty(this.object.data, b.name) || "";
     }
     return bonuses;
@@ -100,10 +100,10 @@ export default class ActorSheetFlags extends BaseEntitySheet {
     // Unset any flags which are "false"
     let unset = false;
     const flags = updateData.flags.kryx_rpg;
-    for ( let [k, v] of Object.entries(flags) ) {
-      if ( [undefined, null, "", false, 0].includes(v) ) {
+    for (let [k, v] of Object.entries(flags)) {
+      if ([undefined, null, "", false, 0].includes(v)) {
         delete flags[k];
-        if ( hasProperty(actor.data.flags, `kryx_rpg.${k}`) ) {
+        if (hasProperty(actor.data.flags, `kryx_rpg.${k}`)) {
           unset = true;
           flags[`-=${k}`] = null;
         }

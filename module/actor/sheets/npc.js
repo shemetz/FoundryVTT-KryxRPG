@@ -11,8 +11,8 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
    * Define default rendering options for the NPC sheet
    * @return {Object}
    */
-	static get defaultOptions() {
-	  return mergeObject(super.defaultOptions, {
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
       classes: ["kryx_rpg", "sheet", "actor", "npc"],
       width: 600,
       height: 680
@@ -21,6 +21,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
   /* -------------------------------------------- */
   /*  Rendering                                   */
+
   /* -------------------------------------------- */
 
   /**
@@ -28,7 +29,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
    * @type {String}
    */
   get template() {
-    if ( !game.user.isGM && this.actor.limited ) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
+    if (!game.user.isGM && this.actor.limited) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
     return "systems/kryx_rpg/templates/actors/npc-sheet.html";
   }
 
@@ -42,10 +43,20 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
     // Categorize Items as Features and Spells
     const features = {
-      weapons: { label: game.i18n.localize("KRYX_RPG.AttackPl"), items: [] , hasActions: true, dataset: {type: "weapon", "weapon-type": "natural"} },
-      actions: { label: game.i18n.localize("KRYX_RPG.ActionPl"), items: [] , hasActions: true, dataset: {type: "feat", "activation.type": "action"} },
-      passive: { label: game.i18n.localize("KRYX_RPG.Features"), items: [], dataset: {type: "feat"} },
-      equipment: { label: game.i18n.localize("KRYX_RPG.Inventory"), items: [], dataset: {type: "loot"}}
+      weapons: {
+        label: game.i18n.localize("KRYX_RPG.AttackPl"),
+        items: [],
+        hasActions: true,
+        dataset: {type: "weapon", "weapon-type": "natural"}
+      },
+      actions: {
+        label: game.i18n.localize("KRYX_RPG.ActionPl"),
+        items: [],
+        hasActions: true,
+        dataset: {type: "feat", "activation.type": "action"}
+      },
+      passive: {label: game.i18n.localize("KRYX_RPG.Features"), items: [], dataset: {type: "feat"}},
+      equipment: {label: game.i18n.localize("KRYX_RPG.Inventory"), items: [], dataset: {type: "loot"}}
     };
 
     // Start by classifying items into groups for rendering
@@ -55,8 +66,8 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
       item.hasUses = item.data.uses && (item.data.uses.max > 0);
       item.isOnCooldown = item.data.recharge && !!item.data.recharge.value && (item.data.recharge.charged === false);
       item.isDepleted = item.isOnCooldown && (item.data.uses.per && (item.data.uses.value > 0));
-      item.hasTarget = !!item.data.target && !(["none",""].includes(item.data.target.type));
-      if ( item.type === "spell" ) arr[0].push(item);
+      item.hasTarget = !!item.data.target && !(["none", ""].includes(item.data.target.type));
+      if (item.type === "spell") arr[0].push(item);
       else arr[1].push(item);
       return arr;
     }, [[], []]);
@@ -69,13 +80,12 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     const spellbook = this._prepareSpellbook(data, spells);
 
     // Organize Features
-    for ( let item of other ) {
-      if ( item.type === "weapon" ) features.weapons.items.push(item);
-      else if ( item.type === "feat" ) {
-        if ( item.data.activation.type ) features.actions.items.push(item);
+    for (let item of other) {
+      if (item.type === "weapon") features.weapons.items.push(item);
+      else if (item.type === "feat") {
+        if (item.data.activation.type) features.actions.items.push(item);
         else features.passive.items.push(item);
-      }
-      else features.equipment.items.push(item);
+      } else features.equipment.items.push(item);
     }
 
     // Assign and return
@@ -101,6 +111,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
   /* -------------------------------------------- */
   /*  Object Updates                              */
+
   /* -------------------------------------------- */
 
   /**
@@ -116,7 +127,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     let crv = "data.details.cr";
     let cr = formData[crv];
     cr = crs[cr] || parseFloat(cr);
-    if ( cr ) formData[crv] = cr < 1 ? cr : parseInt(cr);
+    if (cr) formData[crv] = cr < 1 ? cr : parseInt(cr);
 
     // Parent ActorSheet update steps
     super._updateObject(event, formData);
@@ -124,13 +135,14 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
+
   /* -------------------------------------------- */
 
   /**
    * Activate event listeners using the prepared sheet HTML
    * @param html {HTML}   The prepared HTML object ready to be rendered into the DOM
    */
-	activateListeners(html) {
+  activateListeners(html) {
     super.activateListeners(html);
 
     // Rollable Health Formula
@@ -147,7 +159,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
   _onRollHealthFormula(event) {
     event.preventDefault();
     const formula = this.actor.data.data.attributes.hp.formula;
-    if ( !formula ) return;
+    if (!formula) return;
     const hp = new Roll(formula).roll().total;
     AudioHelper.play({src: CONFIG.sounds.dice});
     this.actor.update({"data.attributes.hp.value": hp, "data.attributes.hp.max": hp});

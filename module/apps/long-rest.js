@@ -37,7 +37,7 @@ export default class LongRestDialog extends Dialog {
    * @param {ActorKryx} actor
    * @return {Promise}
    */
-  static async longRestDialog({ actor } = {}) {
+  static async longRestDialog({actor} = {}) {
     return new Promise((resolve, reject) => {
       const dlg = new this(actor, {
         title: "Long Rest",
@@ -49,7 +49,7 @@ export default class LongRestDialog extends Dialog {
               let newDay = false;
               if (game.settings.get("kryx_rpg", "restVariant") === "normal")
                 newDay = html.find('input[name="newDay"]')[0].checked;
-              else if(game.settings.get("kryx_rpg", "restVariant") === "gritty")
+              else if (game.settings.get("kryx_rpg", "restVariant") === "gritty")
                 newDay = true;
               resolve(newDay);
             }

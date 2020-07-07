@@ -6,14 +6,17 @@ const less = require('gulp-less');
 /* ----------------------------------------- */
 
 const KRYX_RPG_LESS = ["less/*.less"];
+
 function compileLESS() {
   return gulp.src("less/kryx_rpg.less")
     .pipe(less())
     .pipe(gulp.dest("./"))
 }
+
 const css = gulp.series(compileLESS);
 
 /* ----------------------------------------- */
+
 /*  Watch Updates
 /* ----------------------------------------- */
 

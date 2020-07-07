@@ -1,10 +1,9 @@
-
 // Import Modules
-import { KRYX_RPG } from "./module/config.js";
-import { registerSystemSettings } from "./module/settings.js";
-import { preloadHandlebarsTemplates } from "./module/templates.js";
-import { _getInitiativeFormula } from "./module/combat.js";
-import { measureDistances, getBarAttribute } from "./module/canvas.js";
+import {KRYX_RPG} from "./module/config.js";
+import {registerSystemSettings} from "./module/settings.js";
+import {preloadHandlebarsTemplates} from "./module/templates.js";
+import {_getInitiativeFormula} from "./module/combat.js";
+import {measureDistances, getBarAttribute} from "./module/canvas.js";
 
 // Import Entities
 import ActorKryx from "./module/actor/entity.js";
@@ -30,7 +29,7 @@ import * as migrations from "./module/migration.js";
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
-Hooks.once("init", function() {
+Hooks.once("init", function () {
   console.log(`Kryx RPG | Initializing Kryx RPG System\n${KRYX_RPG.ASCII}`);
 
   // Create a Kryx RPG namespace within the game global
@@ -71,8 +70,8 @@ Hooks.once("init", function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("kryx_rpg", ActorSheetKryxCharacter, { types: ["character"], makeDefault: true });
-  Actors.registerSheet("kryx_rpg", ActorSheetKryxNPC, { types: ["npc"], makeDefault: true });
+  Actors.registerSheet("kryx_rpg", ActorSheetKryxCharacter, {types: ["character"], makeDefault: true});
+  Actors.registerSheet("kryx_rpg", ActorSheetKryxNPC, {types: ["npc"], makeDefault: true});
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("kryx_rpg", ItemSheetKryx, {makeDefault: true});
 
@@ -88,7 +87,7 @@ Hooks.once("init", function() {
 /**
  * This function runs after game data has been requested and loaded from the servers, so entities exist
  */
-Hooks.once("setup", function() {
+Hooks.once("setup", function () {
 
   // Localize CONFIG objects once up-front
   const toLocalize = [
@@ -106,11 +105,11 @@ Hooks.once("setup", function() {
   ];
 
   // Localize and sort CONFIG objects
-  for ( let o of toLocalize ) {
+  for (let o of toLocalize) {
     const localized = Object.entries(CONFIG.KRYX_RPG[o]).map(e => {
       return [e[0], game.i18n.localize(e[1])];
     });
-    if ( !noSort.includes(o) ) localized.sort((a, b) => a[1].localeCompare(b[1]));
+    if (!noSort.includes(o)) localized.sort((a, b) => a[1].localeCompare(b[1]));
     CONFIG.KRYX_RPG[o] = localized.reduce((obj, e) => {
       obj[e[0]] = e[1];
       return obj;
@@ -123,7 +122,7 @@ Hooks.once("setup", function() {
 /**
  * Once the entire VTT framework is initialized, check to see if we should perform a data migration
  */
-Hooks.once("ready", function() {
+Hooks.once("ready", function () {
 
   // Determine whether a system migration is required and feasible
   const currentVersion = game.settings.get("kryx_rpg", "systemMigrationVersion");
@@ -132,8 +131,8 @@ Hooks.once("ready", function() {
   let needMigration = (currentVersion < NEEDS_MIGRATION_VERSION) || (currentVersion === null);
 
   // Perform the migration
-  if ( needMigration && game.user.isGM ) {
-    if ( currentVersion && (currentVersion < COMPATIBLE_MIGRATION_VERSION) ) {
+  if (needMigration && game.user.isGM) {
+    if (currentVersion && (currentVersion < COMPATIBLE_MIGRATION_VERSION)) {
       ui.notifications.error(`Your Kryx RPG system data is from too old a Foundry version and cannot be reliably migrated to the latest version. The process will be attempted, but errors may occur.`, {permanent: true});
     }
     migrations.migrateWorld();
@@ -147,7 +146,7 @@ Hooks.once("ready", function() {
 /*  Canvas Initialization                       */
 /* -------------------------------------------- */
 
-Hooks.on("canvasInit", function() {
+Hooks.on("canvasInit", function () {
 
   // Extend Diagonal Measurement
   canvas.grid.diagonalRule = game.settings.get("kryx_rpg", "diagonalMovement");

@@ -1,4 +1,4 @@
-import { KRYX_RPG } from "../config.js";
+import {KRYX_RPG} from "../config.js";
 
 /**
  * A helper class for building MeasuredTemplates for Kryx RPG spells and abilities
@@ -14,7 +14,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
   static fromItem(item) {
     const target = getProperty(item.data, "data.target") || {};
     const templateShape = KRYX_RPG.areaTargetTypes[target.type];
-    if ( !templateShape ) return null;
+    if (!templateShape) return null;
 
     // Prepare template data
     const templateData = {
@@ -28,7 +28,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
     };
 
     // Additional type-specific data
-    switch ( templateShape ) {
+    switch (templateShape) {
       case "cone": // Kryx RPG cone RAW should be 53.13 degrees
         templateData.angle = 53.13;
         break;
@@ -76,7 +76,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
     handlers.mm = event => {
       event.stopPropagation();
       let now = Date.now(); // Apply a 20ms throttle
-      if ( now - moveTime <= 20 ) return;
+      if (now - moveTime <= 20) return;
       const center = event.data.getLocalPosition(this.layer);
       const snapped = canvas.grid.getSnappedPosition(center.x, center.y, 2);
       this.data.x = snapped.x;
@@ -110,7 +110,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
 
     // Rotate the template by 3 degree increments (mouse-wheel)
     handlers.mw = event => {
-      if ( event.ctrlKey ) event.preventDefault(); // Avoid zooming the browser window
+      if (event.ctrlKey) event.preventDefault(); // Avoid zooming the browser window
       event.stopPropagation();
       let delta = canvas.grid.type > CONST.GRID_TYPES.SQUARE ? 30 : 15;
       let snap = event.shiftKey ? delta : 5;

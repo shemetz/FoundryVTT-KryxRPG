@@ -1,4 +1,4 @@
-export const registerSystemSettings = function() {
+export const registerSystemSettings = function () {
 
   /**
    * Track the system version upon which point a migration was last applied
@@ -52,8 +52,9 @@ export const registerSystemSettings = function() {
   function _setKryxInitiative(tiebreaker) {
     CONFIG.Combat.initiative.tiebreaker = tiebreaker;
     CONFIG.Combat.initiative.decimals = tiebreaker ? 2 : 0;
-    if ( ui.combat && ui.combat._rendered ) ui.combat.render();
+    if (ui.combat && ui.combat._rendered) ui.combat.render();
   }
+
   game.settings.register("kryx_rpg", "initiativeDexTiebreaker", {
     name: "SETTINGS.KryxRpgInitTBN",
     hint: "SETTINGS.KryxRpgInitTBL",

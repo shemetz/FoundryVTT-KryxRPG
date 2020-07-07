@@ -3,7 +3,7 @@
  * @type {Dialog}
  */
 export default class AbilityUseDialog extends Dialog {
-  constructor(item, dialogData={}, options={}) {
+  constructor(item, dialogData = {}, options = {}) {
     super(dialogData, options);
     this.options.classes = ["kryx_rpg", "dialog"];
 
@@ -16,6 +16,7 @@ export default class AbilityUseDialog extends Dialog {
 
   /* -------------------------------------------- */
   /*  Rendering                                   */
+
   /* -------------------------------------------- */
 
   /**
@@ -67,24 +68,24 @@ export default class AbilityUseDialog extends Dialog {
 
     // Zero quantity
     const quantity = item.data.quantity;
-    if ( quantity <= 0 ) return game.i18n.localize("KRYX_RPG.AbilityUseUnavailableHint");
+    if (quantity <= 0) return game.i18n.localize("KRYX_RPG.AbilityUseUnavailableHint");
 
     // Abilities which use Recharge
-    if ( !!recharge.value ) {
+    if (!!recharge.value) {
       return game.i18n.format(recharge.charged ? "KRYX_RPG.AbilityUseChargedHint" : "KRYX_RPG.AbilityUseRechargeHint", {
         type: item.type,
       })
     }
 
     // Does not use any resource
-    if ( !uses.per || !uses.max ) return "";
+    if (!uses.per || !uses.max) return "";
 
     // Consumables
-    if ( item.type === "consumable" ) {
+    if (item.type === "consumable") {
       let str = "KRYX_RPG.AbilityUseNormalHint";
-      if ( uses.value > 1 ) str = "KRYX_RPG.AbilityUseConsumableChargeHint";
-      else if ( item.data.quantity === 1 && uses.autoDestroy ) str = "KRYX_RPG.AbilityUseConsumableDestroyHint";
-      else if ( item.data.quantity > 1 ) str = "KRYX_RPG.AbilityUseConsumableQuantityHint";
+      if (uses.value > 1) str = "KRYX_RPG.AbilityUseConsumableChargeHint";
+      else if (item.data.quantity === 1 && uses.autoDestroy) str = "KRYX_RPG.AbilityUseConsumableDestroyHint";
+      else if (item.data.quantity > 1) str = "KRYX_RPG.AbilityUseConsumableQuantityHint";
       return game.i18n.format(str, {
         type: item.data.consumableType,
         value: uses.value,

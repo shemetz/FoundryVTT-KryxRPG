@@ -26,10 +26,12 @@
  *
  * @return {Promise}              A Promise which resolves once the roll workflow has completed
  */
-export async function d20Roll({parts=[], data={}, event={}, rollMode=null, template=null, title=null, speaker=null,
-  flavor=null, fastForward=null, onClose, dialogOptions,
-  advantage=null, disadvantage=null, critical=20, fumble=1, targetValue=null,
-  elvenAccuracy=false, halflingLucky=false, reliableTalent=false}={}) {
+export async function d20Roll({
+                                parts = [], data = {}, event = {}, rollMode = null, template = null, title = null, speaker = null,
+                                flavor = null, fastForward = null, onClose, dialogOptions,
+                                advantage = null, disadvantage = null, critical = 20, fumble = 1, targetValue = null,
+                                elvenAccuracy = false, halflingLucky = false, reliableTalent = false
+                              } = {}) {
 
   // Handle input arguments
   flavor = flavor || title;
@@ -39,21 +41,21 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
   let rolled = false;
 
   // Define inner roll function
-  const _roll = function(parts, adv, form=null) {
+  const _roll = function (parts, adv, form = null) {
 
     // Determine the d20 roll and modifiers
     let nd = 1;
     let mods = halflingLucky ? "r=1" : "";
 
     // Handle advantage
-    if ( adv === 1 ) {
+    if (adv === 1) {
       nd = elvenAccuracy ? 3 : 2;
       flavor += ` (${game.i18n.localize("KRYX_RPG.Advantage")})`;
       mods += "kh";
     }
 
     // Handle disadvantage
-    else if ( adv === -1 ) {
+    else if (adv === -1) {
       nd = 2;
       flavor += ` (${game.i18n.localize("KRYX_RPG.Disadvantage")})`;
       mods += "kl";
@@ -65,15 +67,15 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
     parts.unshift(formula);
 
     // Optionally include a situational bonus
-    if ( form !== null ) data['bonus'] = form.bonus.value;
-    if ( !data["bonus"] ) parts.pop();
+    if (form !== null) data['bonus'] = form.bonus.value;
+    if (!data["bonus"]) parts.pop();
 
     // Optionally include an ability score selection (used for tool checks)
     const ability = form ? form.ability : null;
-    if ( ability && ability.value ) {
+    if (ability && ability.value) {
       data.ability = ability.value;
       const abl = data.abilities[data.ability];
-      if ( abl ) {
+      if (abl) {
         data.mod = abl.mod;
         flavor += ` (${CONFIG.KRYX_RPG.abilities[data.ability]})`;
       }
@@ -83,16 +85,16 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
     let roll = new Roll(parts.join(" + "), data).roll();
 
     // Flag d20 options for any 20-sided dice in the roll
-    for ( let d of roll.dice ) {
-      if (d.faces === 20 ) {
+    for (let d of roll.dice) {
+      if (d.faces === 20) {
         d.options.critical = critical;
         d.options.fumble = fumble;
-        if ( targetValue ) d.options.target = targetValue;
+        if (targetValue) d.options.target = targetValue;
       }
     }
 
     // If reliable talent was applied, add it to the flavor text
-    if ( reliableTalent && roll.dice[0].total < 10 ) {
+    if (reliableTalent && roll.dice[0].total < 10) {
       flavor += ` (${game.i18n.localize("KRYX_RPG.FlagsReliableTalent")})`;
     }
 
@@ -101,20 +103,20 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
     roll.toMessage({
       speaker: speaker,
       flavor: flavor
-    }, { rollMode });
+    }, {rollMode});
     rolled = true;
     return roll;
   };
 
   // Determine whether the roll can be fast-forward
-  if ( fastForward === null ) {
+  if (fastForward === null) {
     fastForward = event && (event.shiftKey || event.altKey || event.ctrlKey || event.metaKey);
   }
 
   // Optionally allow fast-forwarding to specify advantage or disadvantage
-  if ( fastForward ) {
-    if ( advantage || event.altKey ) return _roll(parts, 1);
-    else if ( disadvantage || event.ctrlKey || event.metaKey ) return _roll(parts, -1);
+  if (fastForward) {
+    if (advantage || event.altKey) return _roll(parts, 1);
+    else if (disadvantage || event.ctrlKey || event.metaKey) return _roll(parts, -1);
     else return _roll(parts, 0);
   }
 
@@ -183,8 +185,10 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
  *
  * @return {Promise}              A Promise which resolves once the roll workflow has completed
  */
-export async function damageRoll({parts, actor, data, event={}, rollMode=null, template, title, speaker, flavor,
-  allowCritical=true, critical=false, fastForward=null, onClose, dialogOptions}) {
+export async function damageRoll({
+                                   parts, actor, data, event = {}, rollMode = null, template, title, speaker, flavor,
+                                   allowCritical = true, critical = false, fastForward = null, onClose, dialogOptions
+                                 }) {
 
   // Handle input arguments
   flavor = flavor || title;
@@ -193,12 +197,12 @@ export async function damageRoll({parts, actor, data, event={}, rollMode=null, t
   let rolled = false;
 
   // Define inner roll function
-  const _roll = function(parts, crit, form) {
+  const _roll = function (parts, crit, form) {
     data['bonus'] = form ? form.bonus.value : 0;
     let roll = new Roll(parts.join("+"), data);
 
     // Modify the damage formula for critical hits
-    if ( crit === true ) {
+    if (crit === true) {
       let add = (actor && actor.getFlag("kryx_rpg", "savageAttacks")) ? 1 : 0;
       let mult = 2;
       roll.alter(add, mult);
@@ -210,18 +214,18 @@ export async function damageRoll({parts, actor, data, event={}, rollMode=null, t
     roll.toMessage({
       speaker: speaker,
       flavor: flavor
-    }, { rollMode });
+    }, {rollMode});
     rolled = true;
     return roll;
   };
 
   // Determine whether the roll can be fast-forward
-  if ( fastForward === null ) {
+  if (fastForward === null) {
     fastForward = event && (event.shiftKey || event.altKey || event.ctrlKey || event.metaKey);
   }
 
   // Modify the roll and handle fast-forwarding
-  if ( fastForward ) return _roll(parts, critical || event.altKey);
+  if (fastForward) return _roll(parts, critical || event.altKey);
   else parts = parts.concat(["@bonus"]);
 
   // Render modal dialog

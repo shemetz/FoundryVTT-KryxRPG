@@ -1,4 +1,4 @@
-import { d20Roll, damageRoll } from "../dice.js";
+import {d20Roll, damageRoll} from "../dice.js";
 import ShortRestDialog from "../apps/short-rest.js";
 import LongRestDialog from "../apps/long-rest.js";
 import SpellCastDialog from "../apps/spell-cast-dialog.js";
@@ -33,8 +33,8 @@ export default class ActorKryx extends Actor {
     const bonuses = getProperty(data, "bonuses.abilities") || {};
 
     // Prepare Character data
-    if ( actorData.type === "character" ) this._prepareCharacterData(actorData);
-    else if ( actorData.type === "npc" ) this._prepareNPCData(actorData);
+    if (actorData.type === "character") this._prepareCharacterData(actorData);
+    else if (actorData.type === "npc") this._prepareNPCData(actorData);
 
     let originalSaves = null;
     let originalSkills = null;
@@ -78,18 +78,18 @@ export default class ActorKryx extends Actor {
     const athlete = flags.remarkableAthlete;
     const joat = flags.jackOfAllTrades;
     const observant = flags.observantFeat;
-    const skillBonus = Number.isNumeric(bonuses.skill) ? parseInt(bonuses.skill) :  0;
+    const skillBonus = Number.isNumeric(bonuses.skill) ? parseInt(bonuses.skill) : 0;
     let round = Math.floor;
     for (let [id, skl] of Object.entries(data.skills)) {
       skl.value = parseFloat(skl.value || 0);
 
       // Apply Remarkable Athlete or Jack of all Trades
       let multi = skl.value;
-      if ( athlete && (skl.value === 0) && feats.remarkableAthlete.abilities.includes(skl.ability) ) {
+      if (athlete && (skl.value === 0) && feats.remarkableAthlete.abilities.includes(skl.ability)) {
         multi = 0.5;
         round = Math.ceil;
       }
-      if ( joat && (skl.value === 0 ) ) multi = 0.5;
+      if (joat && (skl.value === 0)) multi = 0.5;
 
       // Compute modifier
       skl.bonus = checkBonus + skillBonus;
@@ -110,8 +110,8 @@ export default class ActorKryx extends Actor {
     // Determine Initiative Modifier
     const init = data.attributes.init;
     init.mod = data.abilities.dex.mod;
-    if ( joat ) init.prof = Math.floor(0.5 * data.attributes.prof);
-    else if ( athlete ) init.prof = Math.ceil(0.5 * data.attributes.prof);
+    if (joat) init.prof = Math.floor(0.5 * data.attributes.prof);
+    else if (athlete) init.prof = Math.ceil(0.5 * data.attributes.prof);
     else init.prof = 0;
     init.bonus = init.value + (flags.initiativeAlert ? 5 : 0);
     init.total = init.mod + init.prof + init.bonus;
@@ -119,7 +119,7 @@ export default class ActorKryx extends Actor {
     // Prepare spell-casting data
     data.attributes.spelldc = this.getSpellDC(data.attributes.spellcasting);
     // TODO: Only do this IF we have already processed item types (see Entity#initialize)
-    if ( this.items ) {
+    if (this.items) {
       this._computeSpellcastingProgression(actorData);
     }
   }
@@ -134,7 +134,7 @@ export default class ActorKryx extends Actor {
 
     // Determine character level and available hit dice based on owned Class items
     const [level, hd] = actorData.items.reduce((arr, item) => {
-      if ( item.type === "class" ) {
+      if (item.type === "class") {
         const classLevels = parseInt(item.data.levels) || 1;
         arr[0] += classLevels;
         arr[1] += classLevels - (parseInt(item.data.hitDiceUsed) || 0);
@@ -171,7 +171,7 @@ export default class ActorKryx extends Actor {
     data.attributes.prof = Math.floor((Math.max(data.details.cr, 1) + 7) / 4);
 
     // Spellcaster Level
-    if ( data.attributes.spellcasting && !data.details.spellLevel ) {
+    if (data.attributes.spellcasting && !data.details.spellLevel) {
       data.details.spellLevel = Math.max(data.details.cr, 1);
     }
   }
@@ -182,7 +182,7 @@ export default class ActorKryx extends Actor {
    * Prepare data related to the spell-casting capabilities of the Actor
    * @private
    */
-  _computeSpellcastingProgression (actorData) {
+  _computeSpellcastingProgression(actorData) {
     const spells = actorData.data.spells;
     const isNPC = actorData.type === 'npc';
 
@@ -198,29 +198,39 @@ export default class ActorKryx extends Actor {
 
     // Tabulate the total spell-casting progression
     const classes = this.data.items.filter(i => i.type === "class");
-    for ( let cls of classes ) {
+    for (let cls of classes) {
       const d = cls.data;
-      if ( d.spellcasting === "none" ) continue;
+      if (d.spellcasting === "none") continue;
       const levels = d.levels;
       const prog = d.spellcasting;
 
       // Accumulate levels
-      if ( prog !== "pact" ) {
+      if (prog !== "pact") {
         caster = cls;
         progression.total++;
       }
       switch (prog) {
-        case 'third': progression.slot += Math.floor(levels / 3); break;
-        case 'half': progression.slot += Math.floor(levels / 2); break;
-        case 'full': progression.slot += levels; break;
-        case 'artificer': progression.slot += Math.ceil(levels / 2); break;
-        case 'pact': progression.pact += levels; break;
+        case 'third':
+          progression.slot += Math.floor(levels / 3);
+          break;
+        case 'half':
+          progression.slot += Math.floor(levels / 2);
+          break;
+        case 'full':
+          progression.slot += levels;
+          break;
+        case 'artificer':
+          progression.slot += Math.ceil(levels / 2);
+          break;
+        case 'pact':
+          progression.pact += levels;
+          break;
       }
     }
 
     // EXCEPTION: single-classed non-full progression rounds up, rather than down
     const isSingleClass = (progression.total === 1) && (progression.slot > 0);
-    if (!isNPC && isSingleClass && ['half', 'third'].includes(caster.data.spellcasting) ) {
+    if (!isNPC && isSingleClass && ['half', 'third'].includes(caster.data.spellcasting)) {
       const denom = caster.data.spellcasting === 'third' ? 3 : 2;
       progression.slot = Math.ceil(caster.data.levels / denom);
     }
@@ -233,23 +243,23 @@ export default class ActorKryx extends Actor {
     // Look up the number of slots per level from the progression table
     const levels = Math.clamped(progression.slot, 0, 20);
     const slots = KRYX_RPG.SPELL_SLOT_TABLE[levels - 1] || [];
-    for ( let [n, lvl] of Object.entries(spells) ) {
+    for (let [n, lvl] of Object.entries(spells)) {
       let i = parseInt(n.slice(-1));
-      if ( Number.isNaN(i) ) continue;
-      if ( Number.isNumeric(lvl.override) ) lvl.max = Math.max(parseInt(lvl.override), 1);
-      else lvl.max = slots[i-1] || 0;
+      if (Number.isNaN(i)) continue;
+      if (Number.isNumeric(lvl.override)) lvl.max = Math.max(parseInt(lvl.override), 1);
+      else lvl.max = slots[i - 1] || 0;
       lvl.value = Math.min(parseInt(lvl.value), lvl.max);
     }
 
     // Determine the Actor's pact magic level (if any)
     let pl = Math.clamped(progression.pact, 0, 20);
     spells.pact = spells.pact || {};
-    if ( (pl === 0) && isNPC && Number.isNumeric(spells.pact.override) ) pl = actorData.data.details.spellLevel;
+    if ((pl === 0) && isNPC && Number.isNumeric(spells.pact.override)) pl = actorData.data.details.spellLevel;
 
     // Determine the number of Warlock pact slots per level
-    if ( pl > 0) {
+    if (pl > 0) {
       spells.pact.level = Math.ceil(Math.min(10, pl) / 2);
-      if ( Number.isNumeric(spells.pact.override) ) spells.pact.max = Math.max(parseInt(spells.pact.override), 1);
+      if (Number.isNumeric(spells.pact.override)) spells.pact.max = Math.max(parseInt(spells.pact.override), 1);
       else spells.pact.max = Math.max(1, Math.min(pl, 2), Math.min(pl - 8, 3), Math.min(pl - 13, 4));
       spells.pact.value = Math.min(spells.pact.value, spells.pact.max);
     } else {
@@ -304,7 +314,7 @@ export default class ActorKryx extends Actor {
   getRollData() {
     const data = super.getRollData();
     data.classes = this.data.items.reduce((obj, i) => {
-      if ( i.type === "class" ) {
+      if (i.type === "class") {
         obj[i.name.slugify({strict: true})] = i.data;
       }
       return obj;
@@ -314,13 +324,14 @@ export default class ActorKryx extends Actor {
   }
 
   /* -------------------------------------------- */
+
   /*  Socket Listeners and Handlers
   /* -------------------------------------------- */
 
   /** @override */
-  static async create(data, options={}) {
+  static async create(data, options = {}) {
     data.token = data.token || {};
-    if ( data.type === "character" ) {
+    if (data.type === "character") {
       mergeObject(data.token, {
         vision: true,
         dimSight: 30,
@@ -335,14 +346,14 @@ export default class ActorKryx extends Actor {
   /* -------------------------------------------- */
 
   /** @override */
-  async update(data, options={}) {
+  async update(data, options = {}) {
 
     // Apply changes in Actor size to Token width/height
     const newSize = data["data.traits.size"];
-    if ( newSize && (newSize !== getProperty(this.data, "data.traits.size")) ) {
+    if (newSize && (newSize !== getProperty(this.data, "data.traits.size"))) {
       let size = CONFIG.KRYX_RPG.tokenSizes[newSize];
-      if ( this.isToken ) this.token.update({height: size, width: size});
-      else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
+      if (this.isToken) this.token.update({height: size, width: size});
+      else if (!data["token.width"] && !hasProperty(data, "token.width")) {
         data["token.height"] = size;
         data["token.width"] = size;
       }
@@ -356,12 +367,12 @@ export default class ActorKryx extends Actor {
   async createOwnedItem(itemData, options) {
 
     // Assume NPCs are always proficient with weapons and always have spells prepared
-    if ( !this.isPC ) {
+    if (!this.isPC) {
       let t = itemData.type;
       let initial = {};
-      if ( t === "weapon" ) initial["data.proficient"] = true;
-      if ( ["weapon", "equipment"].includes(t) ) initial["data.equipped"] = true;
-      if ( t === "spell" ) initial["data.prepared"] = true;
+      if (t === "weapon") initial["data.proficient"] = true;
+      if (["weapon", "equipment"].includes(t)) initial["data.equipped"] = true;
+      if (t === "spell") initial["data.prepared"] = true;
       mergeObject(itemData, initial);
     }
     return super.createOwnedItem(itemData, options);
@@ -371,7 +382,7 @@ export default class ActorKryx extends Actor {
 
   /** @override */
   async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-    if ( attribute !== "attributes.hp" ) return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
+    if (attribute !== "attributes.hp") return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
 
     // Get current and delta HP
     const hp = getProperty(this.data.data, attribute);
@@ -381,7 +392,7 @@ export default class ActorKryx extends Actor {
     const delta = isDelta ? value : value - current;
 
     // For negative changes, deduct from temp HP
-    let dtmp = delta < 0 ? Math.max(-1*tmp, delta) : 0;
+    let dtmp = delta < 0 ? Math.max(-1 * tmp, delta) : 0;
     let dhp = delta - dtmp;
     return this.update({
       "data.attributes.hp.temp": tmp + dtmp,
@@ -391,6 +402,7 @@ export default class ActorKryx extends Actor {
 
   /* -------------------------------------------- */
   /*  Gameplay Mechanics                          */
+
   /* -------------------------------------------- */
 
   /**
@@ -399,7 +411,7 @@ export default class ActorKryx extends Actor {
    * @param {number} multiplier   A multiplier which allows for resistance, vulnerability, or healing
    * @return {Promise<Actor>}     A Promise which resolves once the damage has been applied
    */
-  async applyDamage(amount=0, multiplier=1) {
+  async applyDamage(amount = 0, multiplier = 1) {
     amount = Math.floor(parseInt(amount) * multiplier);
     const hp = this.data.data.attributes.hp;
 
@@ -425,8 +437,8 @@ export default class ActorKryx extends Actor {
    * @param {ItemKryx} item   The spell being cast by the actor
    * @param {Event} event   The originating user interaction which triggered the cast
    */
-  async useSpell(item, {configureDialog=true}={}) {
-    if ( item.data.type !== "spell" ) throw new Error("Wrong Item type");
+  async useSpell(item, {configureDialog = true} = {}) {
+    if (item.data.type !== "spell") throw new Error("Wrong Item type");
     const itemData = item.data.data;
 
     // Configure spellcasting data
@@ -437,7 +449,7 @@ export default class ActorKryx extends Actor {
     let placeTemplate = false;
 
     // Configure spell slot consumption and measured template placement from the form
-    if ( configureDialog && (usesSlots || item.hasAreaTarget || limitedUses) ) {
+    if (configureDialog && (usesSlots || item.hasAreaTarget || limitedUses)) {
       const spellFormData = await SpellCastDialog.create(this, item);
       const isPact = spellFormData.get('level') === 'pact';
       const lvl = isPact ? this.data.data.spells.pact.level : parseInt(spellFormData.get("level"));
@@ -449,30 +461,30 @@ export default class ActorKryx extends Actor {
       placeTemplate = Boolean(spellFormData.get("placeTemplate"));
 
       // Create a temporary owned item to approximate the spell at a higher level
-      if ( lvl !== item.data.data.level ) {
+      if (lvl !== item.data.data.level) {
         item = item.constructor.createOwned(mergeObject(item.data, {"data.level": lvl}, {inplace: false}), this);
       }
     }
 
     // Update Actor data
-    if ( usesSlots && consume && (lvl > 0) ) {
+    if (usesSlots && consume && (lvl > 0)) {
       await this.update({
         [`data.spells.${consume}.value`]: Math.max(parseInt(this.data.data.spells[consume].value) - 1, 0)
       });
     }
 
     // Update Item data
-    if ( limitedUses ) {
+    if (limitedUses) {
       const uses = parseInt(itemData.uses.value || 0);
-      if ( uses <= 0 ) ui.notifications.warn(game.i18n.format("KRYX_RPG.ItemNoUses", {name: item.name}));
+      if (uses <= 0) ui.notifications.warn(game.i18n.format("KRYX_RPG.ItemNoUses", {name: item.name}));
       await item.update({"data.uses.value": Math.max(parseInt(item.data.data.uses.value || 0) - 1, 0)})
     }
 
     // Initiate ability template placement workflow if selected
-    if ( placeTemplate && item.hasAreaTarget ) {
+    if (placeTemplate && item.hasAreaTarget) {
       const template = AbilityTemplate.fromItem(item);
-      if ( template ) template.drawPreview(event);
-      if ( this.sheet.rendered ) this.sheet.minimize();
+      if (template) template.drawPreview(event);
+      if (this.sheet.rendered) this.sheet.minimize();
     }
 
     // Invoke the Item roll
@@ -488,7 +500,7 @@ export default class ActorKryx extends Actor {
    * @param {Object} options      Options which configure how the skill check is rolled
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  rollSkill(skillId, options={}) {
+  rollSkill(skillId, options = {}) {
     const skl = this.data.data.skills[skillId];
     const bonuses = getProperty(this.data.data, "bonuses.abilities") || {};
 
@@ -497,13 +509,13 @@ export default class ActorKryx extends Actor {
     const data = {mod: skl.mod + skl.prof};
 
     // Ability test bonus
-    if ( bonuses.check ) {
+    if (bonuses.check) {
       data["checkBonus"] = bonuses.check;
       parts.push("@checkBonus");
     }
 
     // Skill check bonus
-    if ( bonuses.skill ) {
+    if (bonuses.skill) {
       data["skillBonus"] = bonuses.skill;
       parts.push("@skillBonus");
     }
@@ -530,7 +542,7 @@ export default class ActorKryx extends Actor {
    * @param {String}abilityId     The ability id (e.g. "str")
    * @param {Object} options      Options which configure how ability tests or saving throws are rolled
    */
-  rollAbility(abilityId, options={}) {
+  rollAbility(abilityId, options = {}) {
     const label = CONFIG.KRYX_RPG.abilities[abilityId];
     new Dialog({
       title: game.i18n.format("KRYX_RPG.AbilityPromptTitle", {ability: label}),
@@ -557,7 +569,7 @@ export default class ActorKryx extends Actor {
    * @param {Object} options      Options which configure how ability tests are rolled
    * @return {Promise<Roll>}      A Promise which resolves to the created Roll instance
    */
-  rollAbilityTest(abilityId, options={}) {
+  rollAbilityTest(abilityId, options = {}) {
     const label = CONFIG.KRYX_RPG.abilities[abilityId];
     const abl = this.data.data.abilities[abilityId];
 
@@ -567,18 +579,17 @@ export default class ActorKryx extends Actor {
 
     // Add feat-related proficiency bonuses
     const feats = this.data.flags.kryx_rpg || {};
-    if ( feats.remarkableAthlete && KRYX_RPG.characterFlags.remarkableAthlete.abilities.includes(abilityId) ) {
+    if (feats.remarkableAthlete && KRYX_RPG.characterFlags.remarkableAthlete.abilities.includes(abilityId)) {
       parts.push("@proficiency");
       data.proficiency = Math.ceil(0.5 * this.data.data.attributes.prof);
-    }
-    else if ( feats.jackOfAllTrades ) {
+    } else if (feats.jackOfAllTrades) {
       parts.push("@proficiency");
       data.proficiency = Math.floor(0.5 * this.data.data.attributes.prof);
     }
 
     // Add global actor bonus
     const bonuses = getProperty(this.data.data, "bonuses.abilities") || {};
-    if ( bonuses.check ) {
+    if (bonuses.check) {
       parts.push("@checkBonus");
       data.checkBonus = bonuses.check;
     }
@@ -602,7 +613,7 @@ export default class ActorKryx extends Actor {
    * @param {Object} options      Options which configure how ability tests are rolled
    * @return {Promise<Roll>}      A Promise which resolves to the created Roll instance
    */
-  rollAbilitySave(abilityId, options={}) {
+  rollAbilitySave(abilityId, options = {}) {
     const label = CONFIG.KRYX_RPG.abilities[abilityId];
     const abl = this.data.data.abilities[abilityId];
 
@@ -611,14 +622,14 @@ export default class ActorKryx extends Actor {
     const data = {mod: abl.mod};
 
     // Include proficiency bonus
-    if ( abl.prof > 0 ) {
+    if (abl.prof > 0) {
       parts.push("@prof");
       data.prof = abl.prof;
     }
 
     // Include a global actor ability save bonus
     const bonuses = getProperty(this.data.data, "bonuses.abilities") || {};
-    if ( bonuses.save ) {
+    if (bonuses.save) {
       parts.push("@saveBonus");
       data.saveBonus = bonuses.save;
     }
@@ -640,7 +651,7 @@ export default class ActorKryx extends Actor {
    * @param {Object} options        Additional options which modify the roll
    * @return {Promise<Roll|null>}   A Promise which resolves to the Roll instance
    */
-  async rollDeathSave(options={}) {
+  async rollDeathSave(options = {}) {
 
     // Evaluate a global saving throw bonus
     const speaker = ChatMessage.getSpeaker({actor: this});
@@ -649,7 +660,7 @@ export default class ActorKryx extends Actor {
 
     // Include a global actor ability save bonus
     const bonuses = getProperty(this.data.data, "bonuses.abilities") || {};
-    if ( bonuses.save ) {
+    if (bonuses.save) {
       parts.push("@saveBonus");
       data.saveBonus = bonuses.save;
     }
@@ -663,28 +674,31 @@ export default class ActorKryx extends Actor {
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       targetValue: 10
     }));
-    if ( !roll ) return null;
+    if (!roll) return null;
 
     // Take action depending on the result
     const success = roll.total >= 10;
     const death = this.data.data.attributes.death;
 
     // Save success
-    if ( success ) {
+    if (success) {
       let successes = (death.success || 0) + 1;
 
       // Critical Success = revive with 1hp
-      if ( roll.total === 20 ) {
+      if (roll.total === 20) {
         await this.update({
           "data.attributes.death.success": 0,
           "data.attributes.death.failure": 0,
           "data.attributes.hp.value": 1
         });
-        await ChatMessage.create({content: game.i18n.format("KRYX_RPG.DeathSaveCriticalSuccess", {name: this.name}), speaker});
+        await ChatMessage.create({
+          content: game.i18n.format("KRYX_RPG.DeathSaveCriticalSuccess", {name: this.name}),
+          speaker
+        });
       }
 
       // 3 Successes = survive and reset checks
-      else if ( successes === 3 ) {
+      else if (successes === 3) {
         await this.update({
           "data.attributes.death.success": 0,
           "data.attributes.death.failure": 0
@@ -701,7 +715,7 @@ export default class ActorKryx extends Actor {
       let failures = (death.failure || 0) + (roll.total === 1 ? 2 : 1);
 
       // 3 Failures = death
-      if ( failures >= 3 ) {
+      if (failures >= 3) {
         await this.update({
           "data.attributes.death.success": 0,
           "data.attributes.death.failure": 0
@@ -732,7 +746,7 @@ export default class ActorKryx extends Actor {
     });
 
     // If no class is available, display an error notification
-    if ( !cls ) {
+    if (!cls) {
       return ui.notifications.error(game.i18n.format("KRYX_RPG.HitDiceWarn", {name: this.name, formula: formula}));
     }
 
@@ -751,7 +765,7 @@ export default class ActorKryx extends Actor {
       allowcritical: false,
       dialogOptions: {width: 350}
     });
-    if ( !roll ) return;
+    if (!roll) return;
 
     // Adjust actor data
     await cls.update({"data.hitDiceUsed": cls.data.data.hitDiceUsed + 1});
@@ -769,7 +783,7 @@ export default class ActorKryx extends Actor {
    * @param {boolean} chat    Summarize the results of the rest workflow as a chat message
    * @return {Promise}        A Promise which resolves once the short rest workflow has completed
    */
-  async shortRest({dialog=true, chat=true}={}) {
+  async shortRest({dialog = true, chat = true} = {}) {
     const data = this.data.data;
 
     // Take note of the initial hit points and number of hit dice the Actor has
@@ -778,10 +792,10 @@ export default class ActorKryx extends Actor {
 
     // Display a Dialog for rolling hit dice
     let newDay = false;
-    if ( dialog ) {
+    if (dialog) {
       try {
         newDay = await ShortRestDialog.shortRestDialog({actor: this, canRoll: hd0 > 0});
-      } catch(err) {
+      } catch (err) {
         return;
       }
     }
@@ -792,8 +806,8 @@ export default class ActorKryx extends Actor {
 
     // Recover character resources
     const updateData = {};
-    for ( let [k, r] of Object.entries(data.resources) ) {
-      if ( r.max && r.sr ) {
+    for (let [k, r] of Object.entries(data.resources)) {
+      if (r.max && r.sr) {
         updateData[`data.resources.${k}.value`] = r.max;
       }
     }
@@ -817,12 +831,18 @@ export default class ActorKryx extends Actor {
     // Display a Chat Message summarizing the rest effects
     let restFlavor;
     switch (game.settings.get("kryx_rpg", "restVariant")) {
-      case 'normal': restFlavor = game.i18n.localize("KRYX_RPG.ShortRestNormal"); break;
-      case 'gritty': restFlavor = game.i18n.localize(newDay ? "KRYX_RPG.ShortRestOvernight" : "KRYX_RPG.ShortRestGritty"); break;
-      case 'epic':  restFlavor = game.i18n.localize("KRYX_RPG.ShortRestEpic"); break;
+      case 'normal':
+        restFlavor = game.i18n.localize("KRYX_RPG.ShortRestNormal");
+        break;
+      case 'gritty':
+        restFlavor = game.i18n.localize(newDay ? "KRYX_RPG.ShortRestOvernight" : "KRYX_RPG.ShortRestGritty");
+        break;
+      case 'epic':
+        restFlavor = game.i18n.localize("KRYX_RPG.ShortRestEpic");
+        break;
     }
 
-    if ( chat ) {
+    if (chat) {
       ChatMessage.create({
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
@@ -849,15 +869,15 @@ export default class ActorKryx extends Actor {
    * @param {boolean} chat    Summarize the results of the rest workflow as a chat message
    * @return {Promise}        A Promise which resolves once the long rest workflow has completed
    */
-  async longRest({dialog=true, chat=true}={}) {
+  async longRest({dialog = true, chat = true} = {}) {
     const data = this.data.data;
 
     // Maybe present a confirmation dialog
     let newDay = false;
-    if ( dialog ) {
+    if (dialog) {
       try {
         newDay = await LongRestDialog.longRestDialog(this);
-      } catch(err) {
+      } catch (err) {
         return;
       }
     }
@@ -871,15 +891,15 @@ export default class ActorKryx extends Actor {
     };
 
     // Recover character resources
-    for ( let [k, r] of Object.entries(data.resources) ) {
-      if ( r.max && (r.sr || r.lr) ) {
+    for (let [k, r] of Object.entries(data.resources)) {
+      if (r.max && (r.sr || r.lr)) {
         updateData[`data.resources.${k}.value`] = r.max;
       }
     }
 
     // Recover spell slots
-    for ( let [k, v] of Object.entries(data.spells) ) {
-      if ( !v.max && !v.override ) continue;
+    for (let [k, v] of Object.entries(data.spells)) {
+      if (!v.max && !v.override) continue;
       updateData[`data.spells.${k}.value`] = v.override || v.max;
     }
 
@@ -898,7 +918,7 @@ export default class ActorKryx extends Actor {
       return db - da;
     }).reduce((updates, item) => {
       const d = item.data.data;
-      if ( (recoverHD > 0) && (d.hitDiceUsed > 0) ) {
+      if ((recoverHD > 0) && (d.hitDiceUsed > 0)) {
         let delta = Math.min(d.hitDiceUsed || 0, recoverHD);
         recoverHD -= delta;
         dhd += delta;
@@ -909,29 +929,34 @@ export default class ActorKryx extends Actor {
 
     // Iterate over owned items, restoring uses per day and recovering Hit Dice
     const recovery = newDay ? ["sr", "lr", "day"] : ["sr", "lr"];
-    for ( let item of this.items ) {
+    for (let item of this.items) {
       const d = item.data.data;
-      if ( d.uses && recovery.includes(d.uses.per) ) {
+      if (d.uses && recovery.includes(d.uses.per)) {
         updateItems.push({_id: item.id, "data.uses.value": d.uses.max});
-      }
-      else if ( d.recharge && d.recharge.value ) {
+      } else if (d.recharge && d.recharge.value) {
         updateItems.push({_id: item.id, "data.recharge.charged": true});
       }
     }
 
     // Perform the updates
     await this.update(updateData);
-    if ( updateItems.length ) await this.updateEmbeddedEntity("OwnedItem", updateItems);
+    if (updateItems.length) await this.updateEmbeddedEntity("OwnedItem", updateItems);
 
     // Display a Chat Message summarizing the rest effects
     let restFlavor;
     switch (game.settings.get("kryx_rpg", "restVariant")) {
-      case 'normal': restFlavor = game.i18n.localize(newDay ? "KRYX_RPG.LongRestOvernight" : "KRYX_RPG.LongRestNormal"); break;
-      case 'gritty': restFlavor = game.i18n.localize("KRYX_RPG.LongRestGritty"); break;
-      case 'epic':  restFlavor = game.i18n.localize("KRYX_RPG.LongRestEpic"); break;
+      case 'normal':
+        restFlavor = game.i18n.localize(newDay ? "KRYX_RPG.LongRestOvernight" : "KRYX_RPG.LongRestNormal");
+        break;
+      case 'gritty':
+        restFlavor = game.i18n.localize("KRYX_RPG.LongRestGritty");
+        break;
+      case 'epic':
+        restFlavor = game.i18n.localize("KRYX_RPG.LongRestEpic");
+        break;
     }
 
-    if ( chat ) {
+    if (chat) {
       ChatMessage.create({
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
@@ -961,11 +986,11 @@ export default class ActorKryx extends Actor {
     const curr = duplicate(this.data.data.currency);
     const convert = {
       cp: {into: "sp", each: 10},
-      sp: {into: "ep", each: 5 },
-      ep: {into: "gp", each: 2 },
+      sp: {into: "ep", each: 5},
+      ep: {into: "gp", each: 2},
       gp: {into: "pp", each: 10}
     };
-    for ( let [c, t] of Object.entries(convert) ) {
+    for (let [c, t] of Object.entries(convert)) {
       let change = Math.floor(curr[c] / t.each);
       curr[c] -= (change * t.each);
       curr[t.into] += change;
@@ -993,13 +1018,15 @@ export default class ActorKryx extends Actor {
    * @param {boolean} [keepVision] Keep vision
    * @param {boolean} [transformTokens] Transform linked tokens too
    */
-  async transformInto(target, { keepPhysical=false, keepMental=false, keepSaves=false, keepSkills=false,
-    mergeSaves=false, mergeSkills=false, keepClass=false, keepFeats=false, keepSpells=false,
-    keepItems=false, keepBio=false, keepVision=false, transformTokens=true}={}) {
+  async transformInto(target, {
+    keepPhysical = false, keepMental = false, keepSaves = false, keepSkills = false,
+    mergeSaves = false, mergeSkills = false, keepClass = false, keepFeats = false, keepSpells = false,
+    keepItems = false, keepBio = false, keepVision = false, transformTokens = true
+  } = {}) {
 
     // Ensure the player is allowed to polymorph
     const allowed = game.settings.get("kryx_rpg", "allowPolymorphing");
-    if ( !allowed && !game.user.isGM ) {
+    if (!allowed && !game.user.isGM) {
       return ui.notifications.warn(game.i18n.localize("KRYX_RPG.PolymorphWarn"));
     }
 
@@ -1034,44 +1061,44 @@ export default class ActorKryx extends Actor {
     d.data.attributes.inspiration = o.data.attributes.inspiration; // Keep inspiration
 
     // Handle wildcard
-    if ( source.token.randomImg ) {
+    if (source.token.randomImg) {
       const images = await target.getTokenImages();
       d.token.img = images[0];
     }
 
     // Keep Token configurations
     const tokenConfig = ["displayName", "vision", "actorLink", "disposition", "displayBars", "bar1", "bar2"];
-    if ( keepVision ) {
+    if (keepVision) {
       tokenConfig.push(...['dimSight', 'brightSight', 'dimLight', 'brightLight', 'vision', 'sightAngle']);
     }
-    for ( let c of tokenConfig ) {
+    for (let c of tokenConfig) {
       d.token[c] = o.token[c];
     }
 
     // Transfer ability scores
     const abilities = d.data.abilities;
-    for ( let k of Object.keys(abilities) ) {
+    for (let k of Object.keys(abilities)) {
       const oa = o.data.abilities[k];
       const prof = abilities[k].proficient;
-      if ( keepPhysical && ["str", "dex", "con"].includes(k) ) abilities[k] = oa;
-      else if ( keepMental && ["int", "wis", "cha"].includes(k) ) abilities[k] = oa;
-      if ( keepSaves ) abilities[k].proficient = oa.proficient;
-      else if ( mergeSaves ) abilities[k].proficient = Math.max(prof, oa.proficient);
+      if (keepPhysical && ["str", "dex", "con"].includes(k)) abilities[k] = oa;
+      else if (keepMental && ["int", "wis", "cha"].includes(k)) abilities[k] = oa;
+      if (keepSaves) abilities[k].proficient = oa.proficient;
+      else if (mergeSaves) abilities[k].proficient = Math.max(prof, oa.proficient);
     }
 
     // Transfer skills
-    if ( keepSkills ) d.data.skills = o.data.skills;
-    else if ( mergeSkills ) {
-      for ( let [k, s] of Object.entries(d.data.skills) ) {
+    if (keepSkills) d.data.skills = o.data.skills;
+    else if (mergeSkills) {
+      for (let [k, s] of Object.entries(d.data.skills)) {
         s.value = Math.max(s.value, o.data.skills[k].value);
       }
     }
 
     // Keep specific items from the original data
     d.items = d.items.concat(o.items.filter(i => {
-      if ( i.type === "class" ) return keepClass;
-      else if ( i.type === "feat" ) return keepFeats;
-      else if ( i.type === "spell" ) return keepSpells;
+      if (i.type === "class") return keepClass;
+      else if (i.type === "feat") return keepFeats;
+      else if (i.type === "spell") return keepSpells;
       else return keepItems;
     }));
 
@@ -1079,7 +1106,7 @@ export default class ActorKryx extends Actor {
       d.items.push({
         type: 'class',
         name: game.i18n.localize('KRYX_RPG.PolymorphTmpClass'),
-        data: { levels: d.data.details.cr }
+        data: {levels: d.data.details.cr}
       });
     }
 
@@ -1090,7 +1117,7 @@ export default class ActorKryx extends Actor {
     if (keepVision) d.data.traits.senses = o.data.traits.senses;
 
     // Set new data flags
-    if ( !this.isPolymorphed || !d.flags.kryx_rpg.originalActor ) d.flags.kryx_rpg.originalActor = this.id;
+    if (!this.isPolymorphed || !d.flags.kryx_rpg.originalActor) d.flags.kryx_rpg.originalActor = this.id;
     d.flags.kryx_rpg.isPolymorphed = true;
 
     // Update unlinked Tokens in place since they can simply be re-dropped from the base actor
@@ -1110,11 +1137,11 @@ export default class ActorKryx extends Actor {
     const newActor = await this.constructor.create(d, {renderSheet: true});
 
     // Update placed Token instances
-    if ( !transformTokens ) return;
+    if (!transformTokens) return;
     const tokens = this.getActiveTokens(true);
     const updates = tokens.map(t => {
       const newTokenData = duplicate(d.token);
-      if ( !t.data.actorLink ) newTokenData.actorData = newActor.data;
+      if (!t.data.actorLink) newTokenData.actorData = newActor.data;
       newTokenData._id = t.data._id;
       newTokenData.actorId = newActor.id;
       return newTokenData;
@@ -1130,13 +1157,13 @@ export default class ActorKryx extends Actor {
    * we can safely just delete this actor.
    */
   async revertOriginalForm() {
-    if ( !this.isPolymorphed ) return;
-    if ( !this.owner ) {
+    if (!this.isPolymorphed) return;
+    if (!this.owner) {
       return ui.notifications.warn(game.i18n.localize("KRYX_RPG.PolymorphRevertWarn"));
     }
 
     // If we are reverting an unlinked token, simply replace it with the base actor prototype
-    if ( this.isToken ) {
+    if (this.isToken) {
       const baseActor = game.actors.get(this.token.data.actorId);
       const prototypeTokenData = duplicate(baseActor.token);
       prototypeTokenData.actorData = null;
@@ -1145,7 +1172,7 @@ export default class ActorKryx extends Actor {
 
     // Obtain a reference to the original actor
     const original = game.actors.get(this.getFlag('kryx_rpg', 'originalActor'));
-    if ( !original ) return;
+    if (!original) return;
 
     // Get the Tokens which represent this actor
     const tokens = this.getActiveTokens(true);
@@ -1159,7 +1186,7 @@ export default class ActorKryx extends Actor {
 
     // Delete the polymorphed Actor and maybe re-render the original sheet
     const isRendered = this.sheet.rendered;
-    if ( game.user.isGM ) await this.delete();
+    if (game.user.isGM) await this.delete();
     original.sheet.render(isRendered);
     return original;
   }
@@ -1181,7 +1208,7 @@ export default class ActorKryx extends Actor {
       },
       condition: li => {
         const allowed = game.settings.get("kryx_rpg", "allowPolymorphing");
-        if ( !allowed && !game.user.isGM ) return false;
+        if (!allowed && !game.user.isGM) return false;
         const actor = game.actors.get(li.data('entityId'));
         return actor && actor.isPolymorphed;
       }

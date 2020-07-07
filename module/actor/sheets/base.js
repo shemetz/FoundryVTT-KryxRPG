@@ -68,14 +68,14 @@ export default class ActorSheetKryx extends ActorSheet {
     data.filters = this._filters;
 
     // Ability Scores
-    for ( let [a, abl] of Object.entries(data.actor.data.abilities)) {
+    for (let [a, abl] of Object.entries(data.actor.data.abilities)) {
       abl.icon = this._getProficiencyIcon(abl.proficient);
       abl.hover = CONFIG.KRYX_RPG.proficiencyLevels[abl.proficient];
       abl.label = CONFIG.KRYX_RPG.abilities[a];
     }
 
     // Update skill labels
-    for ( let [s, skl] of Object.entries(data.actor.data.skills)) {
+    for (let [s, skl] of Object.entries(data.actor.data.skills)) {
       skl.ability = data.actor.data.abilities[skl.ability].label.substring(0, 3);
       skl.icon = this._getProficiencyIcon(skl.value);
       skl.hover = CONFIG.KRYX_RPG.proficiencyLevels[skl.value];
@@ -105,11 +105,11 @@ export default class ActorSheetKryx extends ActorSheet {
       "weaponProf": CONFIG.KRYX_RPG.weaponProficiencies,
       "toolProf": CONFIG.KRYX_RPG.toolProficiencies
     };
-    for ( let [t, choices] of Object.entries(map) ) {
+    for (let [t, choices] of Object.entries(map)) {
       const trait = traits[t];
-      if ( !trait ) continue;
+      if (!trait) continue;
       let values = [];
-      if ( trait.value ) {
+      if (trait.value) {
         values = trait.value instanceof Array ? trait.value : [trait.value];
       }
       trait.selected = values.reduce((obj, t) => {
@@ -118,8 +118,8 @@ export default class ActorSheetKryx extends ActorSheet {
       }, {});
 
       // Add custom entry
-      if ( trait.custom ) {
-        trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i+1}`] = c.trim());
+      if (trait.custom) {
+        trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
       }
       trait.cssClass = !isObjectEmpty(trait.selected) ? "" : "inactive";
     }
@@ -153,7 +153,7 @@ export default class ActorSheetKryx extends ActorSheet {
     };
 
     // Format a spellbook entry for a certain indexed level
-    const registerSection = (sl, i, label, level={}) => {
+    const registerSection = (sl, i, label, level = {}) => {
       spellbook[i] = {
         order: i,
         label: label,
@@ -171,21 +171,21 @@ export default class ActorSheetKryx extends ActorSheet {
 
     // Determine the maximum spell level which has a slot
     const maxLevel = Array.fromRange(10).reduce((max, i) => {
-      if ( i === 0 ) return max;
+      if (i === 0) return max;
       const level = levels[`spell${i}`];
-      if ( (level.max || level.override ) && ( i > max ) ) max = i;
+      if ((level.max || level.override) && (i > max)) max = i;
       return max;
     }, 0);
 
     // Structure the spellbook for every level up to the maximum which has a slot
-    if ( maxLevel > 0 ) {
+    if (maxLevel > 0) {
       registerSection("spell0", 0, CONFIG.KRYX_RPG.spellLevels[0]);
       for (let lvl = 1; lvl <= maxLevel; lvl++) {
         const sl = `spell${lvl}`;
         registerSection(sl, lvl, CONFIG.KRYX_RPG.spellLevels[lvl], levels[sl]);
       }
     }
-    if ( levels.pact && levels.pact.max ) {
+    if (levels.pact && levels.pact.max) {
       registerSection("spell0", 0, CONFIG.KRYX_RPG.spellLevels[0]);
       registerSection("pact", sections.pact, CONFIG.KRYX_RPG.spellPreparationModes.pact, levels.pact);
     }
@@ -197,15 +197,15 @@ export default class ActorSheetKryx extends ActorSheet {
       const sl = `spell${s}`;
 
       // Spellcasting mode specific headings
-      if ( mode in sections ) {
+      if (mode in sections) {
         s = sections[mode];
-        if ( !spellbook[s] ){
+        if (!spellbook[s]) {
           registerSection(mode, s, CONFIG.KRYX_RPG.spellPreparationModes[mode], levels[mode]);
         }
       }
 
       // Higher-level spell headings
-      else if ( !spellbook[s] ) {
+      else if (!spellbook[s]) {
         registerSection(sl, s, CONFIG.KRYX_RPG.spellLevels[s], levels[sl]);
       }
 
@@ -231,28 +231,28 @@ export default class ActorSheetKryx extends ActorSheet {
       const data = item.data;
 
       // Action usage
-      for ( let f of ["action", "bonus", "reaction"] ) {
-        if ( filters.has(f) ) {
+      for (let f of ["action", "bonus", "reaction"]) {
+        if (filters.has(f)) {
           if ((data.activation && (data.activation.type !== f))) return false;
         }
       }
 
       // Spell-specific filters
-      if ( filters.has("ritual") ) {
+      if (filters.has("ritual")) {
         if (data.components.ritual !== true) return false;
       }
-      if ( filters.has("concentration") ) {
+      if (filters.has("concentration")) {
         if (data.components.concentration !== true) return false;
       }
-      if ( filters.has("prepared") ) {
-        if ( data.level === 0 || ["innate", "always"].includes(data.preparation.mode) ) return true;
-        if ( this.actor.data.type === "npc" ) return true;
+      if (filters.has("prepared")) {
+        if (data.level === 0 || ["innate", "always"].includes(data.preparation.mode)) return true;
+        if (this.actor.data.type === "npc") return true;
         return data.preparation.prepared;
       }
 
       // Equipment-specific filters
-      if ( filters.has("equipped") ) {
-        if ( data.equipped !== true ) return false;
+      if (filters.has("equipped")) {
+        if (data.equipped !== true) return false;
       }
       return true;
     });
@@ -275,6 +275,7 @@ export default class ActorSheetKryx extends ActorSheet {
   }
 
   /* -------------------------------------------- */
+
   /*  Event Listeners and Handlers
   /* -------------------------------------------- */
 
@@ -293,7 +294,7 @@ export default class ActorSheetKryx extends ActorSheet {
     html.find('.item .item-name h4').click(event => this._onItemSummary(event));
 
     // Editable Only Listeners
-    if ( this.isEditable ) {
+    if (this.isEditable) {
 
       // Select data on click
       const inputs = html.find("input");
@@ -323,7 +324,7 @@ export default class ActorSheetKryx extends ActorSheet {
     }
 
     // Owner Only Listeners
-    if ( this.actor.owner ) {
+    if (this.actor.owner) {
 
       // Ability Checks
       html.find('.ability-name').click(this._onRollAbilityTest.bind(this));
@@ -355,13 +356,14 @@ export default class ActorSheetKryx extends ActorSheet {
   _initializeFilterItemList(i, ul) {
     const set = this._filters[ul.dataset.filter];
     const filters = ul.querySelectorAll(".filter-item");
-    for ( let li of filters ) {
-      if ( set.has(li.dataset.filter) ) li.classList.add("active");
+    for (let li of filters) {
+      if (set.has(li.dataset.filter)) li.classList.add("active");
     }
   }
 
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers                */
+
   /* -------------------------------------------- */
 
   /**
@@ -372,10 +374,10 @@ export default class ActorSheetKryx extends ActorSheet {
   _onChangeInputDelta(event) {
     const input = event.target;
     const value = input.value;
-    if ( ["+", "-"].includes(value[0]) ) {
+    if (["+", "-"].includes(value[0])) {
       let delta = parseFloat(value);
       input.value = getProperty(this.actor.data, input.name) + delta;
-    } else if ( value[0] === "=" ) {
+    } else if (value[0] === "=") {
       input.value = value.slice(1);
     }
   }
@@ -407,9 +409,9 @@ export default class ActorSheetKryx extends ActorSheet {
     let idx = levels.indexOf(level);
 
     // Toggle next level - forward on click, backwards on right
-    if ( event.type === "click" ) {
+    if (event.type === "click") {
       field.val(levels[(idx === levels.length - 1) ? 0 : idx + 1]);
-    } else if ( event.type === "contextmenu" ) {
+    } else if (event.type === "contextmenu") {
       field.val(levels[(idx === 0) ? levels.length - 1 : idx - 1]);
     }
 
@@ -420,7 +422,7 @@ export default class ActorSheetKryx extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  async _onDrop (event) {
+  async _onDrop(event) {
     event.preventDefault();
 
     // Get dropped data
@@ -430,15 +432,15 @@ export default class ActorSheetKryx extends ActorSheet {
     } catch (err) {
       return false;
     }
-    if ( !data ) return false;
+    if (!data) return false;
 
     // Case 1 - Dropped Item
-    if ( data.type === "Item" ) {
+    if (data.type === "Item") {
       return this._onDropItem(event, data);
     }
 
     // Case 2 - Dropped Actor
-    if ( data.type === "Actor" ) {
+    if (data.type === "Actor") {
       return this._onDropActor(event, data);
     }
   }
@@ -453,7 +455,7 @@ export default class ActorSheetKryx extends ActorSheet {
    */
   async _onDropActor(event, data) {
     const canPolymorph = game.user.isGM || (this.actor.owner && game.settings.get('kryx_rpg', 'allowPolymorphing'));
-    if ( !canPolymorph ) return false;
+    if (!canPolymorph) return false;
 
     // Get the target actor
     let sourceActor = null;
@@ -463,7 +465,7 @@ export default class ActorSheetKryx extends ActorSheet {
     } else {
       sourceActor = game.actors.get(data.id);
     }
-    if ( !sourceActor ) return;
+    if (!sourceActor) return;
 
     // Define a function to record polymorph settings for future use
     const rememberOptions = html => {
@@ -530,7 +532,7 @@ export default class ActorSheetKryx extends ActorSheet {
    * @private
    */
   async _onDropItem(event, data) {
-    if ( !this.actor.owner ) return false;
+    if (!this.actor.owner) return false;
     let itemData = await this._getItemDropData(event, data);
 
     // Handle item sorting within the same Actor
@@ -539,7 +541,7 @@ export default class ActorSheetKryx extends ActorSheet {
     if (sameActor) return this._onSortItem(event, itemData);
 
     // Create a spell scroll from a spell item
-    if ( (itemData.type === "spell") && (this._tabs[0].active === "inventory") ) {
+    if ((itemData.type === "spell") && (this._tabs[0].active === "inventory")) {
       const scroll = await ItemKryx.createScrollFromSpell(itemData);
       itemData = scroll.data;
     }
@@ -588,7 +590,7 @@ export default class ActorSheetKryx extends ActorSheet {
    * @param {MouseEvent} event    The originating click event
    * @private
    */
-  async _onSpellSlotOverride (event) {
+  async _onSpellSlotOverride(event) {
     const span = event.currentTarget.parentElement;
     const level = span.dataset.level;
     const override = this.actor.data.data.spells[level].override || span.dataset.slots;
@@ -613,12 +615,12 @@ export default class ActorSheetKryx extends ActorSheet {
    * @private
    */
   async _onUsesChange(event) {
-      event.preventDefault();
-      const itemId = event.currentTarget.closest(".item").dataset.itemId;
-      const item = this.actor.getOwnedItem(itemId);
-      const uses = Math.clamped(0, parseInt(event.target.value), item.data.data.uses.max);
-      event.target.value = uses;
-      return item.update({ 'data.uses.value': uses });
+    event.preventDefault();
+    const itemId = event.currentTarget.closest(".item").dataset.itemId;
+    const item = this.actor.getOwnedItem(itemId);
+    const uses = Math.clamped(0, parseInt(event.target.value), item.data.data.uses.max);
+    event.target.value = uses;
+    return item.update({'data.uses.value': uses});
   }
 
   /* -------------------------------------------- */
@@ -633,7 +635,7 @@ export default class ActorSheetKryx extends ActorSheet {
     const item = this.actor.getOwnedItem(itemId);
 
     // Roll spells through the actor
-    if ( item.data.type === "spell" ) {
+    if (item.data.type === "spell") {
       return this.actor.useSpell(item, {configureDialog: !event.shiftKey});
     }
 
@@ -664,11 +666,11 @@ export default class ActorSheetKryx extends ActorSheet {
   _onItemSummary(event) {
     event.preventDefault();
     let li = $(event.currentTarget).parents(".item"),
-        item = this.actor.getOwnedItem(li.data("item-id")),
-        chatData = item.getChatData({secrets: this.actor.owner});
+      item = this.actor.getOwnedItem(li.data("item-id")),
+      chatData = item.getChatData({secrets: this.actor.owner});
 
     // Toggle summary
-    if ( li.hasClass("expanded") ) {
+    if (li.hasClass("expanded")) {
       let summary = li.children(".item-summary");
       summary.slideUp(200, () => summary.remove());
     } else {
@@ -780,7 +782,7 @@ export default class ActorSheetKryx extends ActorSheet {
     const li = event.currentTarget;
     const set = this._filters[li.parentElement.dataset.filter];
     const filter = li.dataset.filter;
-    if ( set.has(filter) ) set.delete(filter);
+    if (set.has(filter)) set.delete(filter);
     else set.add(filter);
     this.render();
   }
@@ -811,7 +813,7 @@ export default class ActorSheetKryx extends ActorSheet {
     let buttons = super._getHeaderButtons();
 
     // Add button to revert polymorph
-    if ( !this.actor.isPolymorphed || this.actor.isToken ) return buttons;
+    if (!this.actor.isPolymorphed || this.actor.isToken) return buttons;
     buttons.unshift({
       label: 'KRYX_RPG.PolymorphRestoreTransformation',
       class: "restore-transformation",

@@ -7,8 +7,8 @@ import TraitSelector from "../apps/trait-selector.js";
 export default class ItemSheetKryx extends ItemSheet {
 
   /** @override */
-	static get defaultOptions() {
-	  return mergeObject(super.defaultOptions, {
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
       width: 560,
       height: 420,
       classes: ["kryx_rpg", "sheet", "item"],
@@ -62,14 +62,14 @@ export default class ItemSheetKryx extends ItemSheet {
    */
   _getItemConsumptionTargets(item) {
     const consume = item.data.consume || {};
-    if ( !consume.type ) return [];
+    if (!consume.type) return [];
     const actor = this.item.actor;
-    if ( !actor ) return {};
+    if (!actor) return {};
 
     // Ammunition
-    if ( consume.type === "ammo" ) {
-      return actor.itemTypes.consumable.reduce((ammo, i) =>  {
-        if ( i.data.data.consumableType === "ammo" ) {
+    if (consume.type === "ammo") {
+      return actor.itemTypes.consumable.reduce((ammo, i) => {
+        if (i.data.data.consumableType === "ammo") {
           ammo[i.id] = `${i.name} (${i.data.data.quantity})`;
         }
         return ammo;
@@ -77,7 +77,7 @@ export default class ItemSheetKryx extends ItemSheet {
     }
 
     // Attributes
-    else if ( consume.type === "attribute" ) {
+    else if (consume.type === "attribute") {
       const attributes = Object.values(CombatTrackerConfig.prototype.getAttributeChoices())[0]; // Bit of a hack
       return attributes.reduce((obj, a) => {
         obj[a] = a;
@@ -86,9 +86,9 @@ export default class ItemSheetKryx extends ItemSheet {
     }
 
     // Materials
-    else if ( consume.type === "material" ) {
+    else if (consume.type === "material") {
       return actor.items.reduce((obj, i) => {
-        if ( ["consumable", "loot"].includes(i.data.type) && !i.data.data.activation ) {
+        if (["consumable", "loot"].includes(i.data.type) && !i.data.data.activation) {
           obj[i.id] = `${i.name} (${i.data.data.quantity})`;
         }
         return obj;
@@ -96,17 +96,16 @@ export default class ItemSheetKryx extends ItemSheet {
     }
 
     // Charges
-    else if ( consume.type === "charges" ) {
+    else if (consume.type === "charges") {
       return actor.items.reduce((obj, i) => {
         const uses = i.data.data.uses || {};
-        if ( uses.per && uses.max ) {
+        if (uses.per && uses.max) {
           const label = uses.per === "charges" ? ` (${uses.value} Charges)` : ` (${uses.max} per ${uses.per})`;
           obj[i.id] = i.name + label;
         }
         return obj;
       }, {})
-    }
-    else return {};
+    } else return {};
   }
 
   /* -------------------------------------------- */
@@ -117,13 +116,11 @@ export default class ItemSheetKryx extends ItemSheet {
    * @private
    */
   _getItemStatus(item) {
-    if ( item.type === "spell" ) {
+    if (item.type === "spell") {
       return CONFIG.KRYX_RPG.spellPreparationModes[item.data.preparation];
-    }
-    else if ( ["weapon", "equipment"].includes(item.type) ) {
+    } else if (["weapon", "equipment"].includes(item.type)) {
       return item.data.equipped ? "Equipped" : "Unequipped";
-    }
-    else if ( item.type === "tool" ) {
+    } else if (item.type === "tool") {
       return item.data.proficient ? "Proficient" : "Not Proficient";
     }
   }
@@ -139,37 +136,31 @@ export default class ItemSheetKryx extends ItemSheet {
     const props = [];
     const labels = this.item.labels;
 
-    if ( item.type === "weapon" ) {
+    if (item.type === "weapon") {
       props.push(...Object.entries(item.data.properties)
         .filter(e => e[1] === true)
         .map(e => CONFIG.KRYX_RPG.weaponProperties[e[0]]));
-    }
-
-    else if ( item.type === "spell" ) {
+    } else if (item.type === "spell") {
       props.push(
         labels.components,
         labels.materials,
         item.data.components.concentration ? "Concentration" : null,
         item.data.components.ritual ? "Ritual" : null
       )
-    }
-
-    else if ( item.type === "equipment" ) {
+    } else if (item.type === "equipment") {
       props.push(CONFIG.KRYX_RPG.equipmentTypes[item.data.armor.type]);
       props.push(labels.armor);
-    }
-
-    else if ( item.type === "feat" ) {
+    } else if (item.type === "feat") {
       props.push(labels.featType);
     }
 
     // Action type
-    if ( item.data.actionType ) {
+    if (item.data.actionType) {
       props.push(CONFIG.KRYX_RPG.itemActionTypes[item.data.actionType]);
     }
 
     // Action usage
-    if ( (item.type !== "weapon") && item.data.activation && !isObjectEmpty(item.data.activation) ) {
+    if ((item.type !== "weapon") && item.data.activation && !isObjectEmpty(item.data.activation)) {
       props.push(
         labels.activation,
         labels.range,
@@ -183,14 +174,15 @@ export default class ItemSheetKryx extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  setPosition(position={}) {
+  setPosition(position = {}) {
     position.height = this._tabs[0].active === "details" ? "auto" : this.options.height;
     return super.setPosition(position);
   }
 
   /* -------------------------------------------- */
   /*  Form Submission                             */
-	/* -------------------------------------------- */
+
+  /* -------------------------------------------- */
 
   /** @override */
   _updateObject(event, formData) {
@@ -199,7 +191,7 @@ export default class ItemSheetKryx extends ItemSheet {
     let damage = Object.entries(formData).filter(e => e[0].startsWith("data.damage.parts"));
     formData["data.damage.parts"] = damage.reduce((arr, entry) => {
       let [i, j] = entry[0].split(".").slice(3);
-      if ( !arr[i] ) arr[i] = [];
+      if (!arr[i]) arr[i] = [];
       arr[i][j] = entry[1];
       return arr;
     }, []);
@@ -232,14 +224,14 @@ export default class ItemSheetKryx extends ItemSheet {
     const a = event.currentTarget;
 
     // Add new damage component
-    if ( a.classList.contains("add-damage") ) {
+    if (a.classList.contains("add-damage")) {
       await this._onSubmit(event);  // Submit any unsaved changes
       const damage = this.item.data.data.damage;
       return this.item.update({"data.damage.parts": damage.parts.concat([["", ""]])});
     }
 
     // Remove a damage component
-    if ( a.classList.contains("delete-damage") ) {
+    if (a.classList.contains("delete-damage")) {
       await this._onSubmit(event);  // Submit any unsaved changes
       const li = a.closest(".damage-part");
       const damage = duplicate(this.item.data.data.damage);
@@ -267,7 +259,7 @@ export default class ItemSheetKryx extends ItemSheet {
       name: a.dataset.edit,
       title: label.innerText,
       choices: Object.entries(CONFIG.KRYX_RPG.skills).reduce((obj, e) => {
-        if ( choices.includes(e[0] ) ) obj[e[0]] = e[1];
+        if (choices.includes(e[0])) obj[e[0]] = e[1];
         return obj;
       }, {}),
       minimum: skills.number,

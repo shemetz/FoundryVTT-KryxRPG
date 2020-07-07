@@ -5,7 +5,7 @@ import LongRestDialog from "./long-rest.js";
  * @extends {Dialog}
  */
 export default class ShortRestDialog extends Dialog {
-  constructor(actor, dialogData={}, options={}) {
+  constructor(actor, dialogData = {}, options = {}) {
     super(dialogData, options);
 
     /**
@@ -24,9 +24,9 @@ export default class ShortRestDialog extends Dialog {
   /* -------------------------------------------- */
 
   /** @override */
-	static get defaultOptions() {
-	  return mergeObject(super.defaultOptions, {
-	    template: "systems/kryx_rpg/templates/apps/short-rest.html",
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      template: "systems/kryx_rpg/templates/apps/short-rest.html",
       classes: ["kryx_rpg", "dialog"]
     });
   }
@@ -39,7 +39,7 @@ export default class ShortRestDialog extends Dialog {
 
     // Determine Hit Dice
     data.availableHD = this.actor.data.items.reduce((hd, item) => {
-      if ( item.type === "class" ) {
+      if (item.type === "class") {
         const d = item.data;
         const denom = d.hitDice || "d6";
         const available = parseInt(d.levels || 1) - parseInt(d.hitDiceUsed || 0);
@@ -91,7 +91,7 @@ export default class ShortRestDialog extends Dialog {
    * @param {ActorKryx} actor
    * @return {Promise}
    */
-  static async shortRestDialog({actor}={}) {
+  static async shortRestDialog({actor} = {}) {
     return new Promise((resolve, reject) => {
       const dlg = new this(actor, {
         title: "Short Rest",
@@ -127,7 +127,7 @@ export default class ShortRestDialog extends Dialog {
    * @param {ActorKryx} actor
    * @return {Promise}
    */
-  static async longRestDialog({actor}={}) {
+  static async longRestDialog({actor} = {}) {
     console.warn("WARNING! ShortRestDialog.longRestDialog has been deprecated, use LongRestDialog.longRestDialog instead.");
     return LongRestDialog.longRestDialog(...arguments);
   }

@@ -3,7 +3,7 @@
  * @extends {Dialog}
  */
 export default class SpellCastDialog extends Dialog {
-  constructor(actor, item, dialogData={}, options={}) {
+  constructor(actor, item, dialogData = {}, options = {}) {
     super(dialogData, options);
     this.options.classes = ["kryx_rpg", "dialog"];
 
@@ -22,6 +22,7 @@ export default class SpellCastDialog extends Dialog {
 
   /* -------------------------------------------- */
   /*  Rendering                                   */
+
   /* -------------------------------------------- */
 
   /**
@@ -42,11 +43,11 @@ export default class SpellCastDialog extends Dialog {
     // Determine the levels which are feasible
     let lmax = 0;
     const spellLevels = Array.fromRange(10).reduce((arr, i) => {
-      if ( i < lvl ) return arr;
-      const l = ad.spells["spell"+i] || {max: 0, override: null};
+      if (i < lvl) return arr;
+      const l = ad.spells["spell" + i] || {max: 0, override: null};
       let max = parseInt(l.override || l.max || 0);
       let slots = Math.clamped(parseInt(l.value || 0), 0, max);
-      if ( max > 0 ) lmax = i;
+      if (max > 0) lmax = i;
       arr.push({
         level: i,
         label: i > 0 ? `${CONFIG.KRYX_RPG.spellLevels[i]} (${slots} Slots)` : CONFIG.KRYX_RPG.spellLevels[i],

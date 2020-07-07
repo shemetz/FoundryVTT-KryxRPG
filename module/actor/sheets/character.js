@@ -11,8 +11,8 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
    * Define default rendering options for the NPC sheet
    * @return {Object}
    */
-	static get defaultOptions() {
-	  return mergeObject(super.defaultOptions, {
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
       classes: ["kryx_rpg", "sheet", "actor", "character"],
       width: 720,
       height: 680
@@ -21,6 +21,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
   /* -------------------------------------------- */
   /*  Rendering                                   */
+
   /* -------------------------------------------- */
 
   /**
@@ -28,7 +29,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
    * @type {String}
    */
   get template() {
-    if ( !game.user.isGM && this.actor.limited ) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
+    if (!game.user.isGM && this.actor.limited) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
     return "systems/kryx_rpg/templates/actors/character-sheet.html";
   }
 
@@ -49,7 +50,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     sheetData["resources"] = ["primary", "secondary", "tertiary"].reduce((arr, r) => {
       const res = sheetData.data.resources[r] || {};
       res.name = r;
-      res.placeholder = game.i18n.localize("KRYX_RPG.Resource"+r.titleCase());
+      res.placeholder = game.i18n.localize("KRYX_RPG.Resource" + r.titleCase());
       if (res && res.value === 0) delete res.value;
       if (res && res.max === 0) delete res.max;
       return arr.concat([res]);
@@ -73,12 +74,12 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
     // Categorize items as inventory, spellbook, features, and classes
     const inventory = {
-      weapon: { label: "KRYX_RPG.ItemTypeWeaponPl", items: [], dataset: {type: "weapon"} },
-      equipment: { label: "KRYX_RPG.ItemTypeEquipmentPl", items: [], dataset: {type: "equipment"} },
-      consumable: { label: "KRYX_RPG.ItemTypeConsumablePl", items: [], dataset: {type: "consumable"} },
-      tool: { label: "KRYX_RPG.ItemTypeToolPl", items: [], dataset: {type: "tool"} },
-      backpack: { label: "KRYX_RPG.ItemTypeContainerPl", items: [], dataset: {type: "backpack"} },
-      loot: { label: "KRYX_RPG.ItemTypeLootPl", items: [], dataset: {type: "loot"} }
+      weapon: {label: "KRYX_RPG.ItemTypeWeaponPl", items: [], dataset: {type: "weapon"}},
+      equipment: {label: "KRYX_RPG.ItemTypeEquipmentPl", items: [], dataset: {type: "equipment"}},
+      consumable: {label: "KRYX_RPG.ItemTypeConsumablePl", items: [], dataset: {type: "consumable"}},
+      tool: {label: "KRYX_RPG.ItemTypeToolPl", items: [], dataset: {type: "tool"}},
+      backpack: {label: "KRYX_RPG.ItemTypeContainerPl", items: [], dataset: {type: "backpack"}},
+      loot: {label: "KRYX_RPG.ItemTypeLootPl", items: [], dataset: {type: "loot"}}
     };
 
     // Partition items by category
@@ -92,16 +93,16 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
       item.hasUses = item.data.uses && (item.data.uses.max > 0);
       item.isOnCooldown = item.data.recharge && !!item.data.recharge.value && (item.data.recharge.charged === false);
       item.isDepleted = item.isOnCooldown && (item.data.uses.per && (item.data.uses.value > 0));
-      item.hasTarget = !!item.data.target && !(["none",""].includes(item.data.target.type));
+      item.hasTarget = !!item.data.target && !(["none", ""].includes(item.data.target.type));
 
       // Item toggle state
       this._prepareItemToggleState(item);
 
       // Classify items into types
-      if ( item.type === "spell" ) arr[1].push(item);
-      else if ( item.type === "feat" ) arr[2].push(item);
-      else if ( item.type === "class" ) arr[3].push(item);
-      else if ( Object.keys(inventory).includes(item.type ) ) arr[0].push(item);
+      if (item.type === "spell") arr[1].push(item);
+      else if (item.type === "feat") arr[2].push(item);
+      else if (item.type === "class") arr[3].push(item);
+      else if (Object.keys(inventory).includes(item.type)) arr[0].push(item);
       return arr;
     }, [[], [], [], []]);
 
@@ -118,7 +119,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
     // Organize Inventory
     let totalWeight = 0;
-    for ( let i of items ) {
+    for (let i of items) {
       i.data.quantity = i.data.quantity || 0;
       i.data.weight = i.data.weight || 0;
       i.totalWeight = Math.round(i.data.quantity * i.data.weight * 10) / 10;
@@ -129,12 +130,23 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
     // Organize Features
     const features = {
-      classes: { label: "KRYX_RPG.ItemTypeClassPl", items: [], hasActions: false, dataset: {type: "class"}, isClass: true },
-      active: { label: "KRYX_RPG.FeatureActive", items: [], hasActions: true, dataset: {type: "feat", "activation.type": "action"} },
-      passive: { label: "KRYX_RPG.FeaturePassive", items: [], hasActions: false, dataset: {type: "feat"} }
+      classes: {
+        label: "KRYX_RPG.ItemTypeClassPl",
+        items: [],
+        hasActions: false,
+        dataset: {type: "class"},
+        isClass: true
+      },
+      active: {
+        label: "KRYX_RPG.FeatureActive",
+        items: [],
+        hasActions: true,
+        dataset: {type: "feat", "activation.type": "action"}
+      },
+      passive: {label: "KRYX_RPG.FeaturePassive", items: [], hasActions: false, dataset: {type: "feat"}}
     };
-    for ( let f of feats ) {
-      if ( f.data.activation.type ) features.active.items.push(f);
+    for (let f of feats) {
+      if (f.data.activation.type) features.active.items.push(f);
       else features.passive.items.push(f);
     }
     classes.sort((a, b) => b.levels - a.levels);
@@ -157,14 +169,13 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
   _prepareItemToggleState(item) {
     if (item.type === "spell") {
       const isAlways = getProperty(item.data, "preparation.mode") === "always";
-      const isPrepared =  getProperty(item.data, "preparation.prepared");
+      const isPrepared = getProperty(item.data, "preparation.prepared");
       item.toggleClass = isPrepared ? "active" : "";
-      if ( isAlways ) item.toggleClass = "fixed";
-      if ( isAlways ) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.always;
-      else if ( isPrepared ) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.prepared;
+      if (isAlways) item.toggleClass = "fixed";
+      if (isAlways) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.always;
+      else if (isPrepared) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.prepared;
       else item.toggleTitle = game.i18n.localize("KRYX_RPG.SpellUnprepared");
-    }
-    else {
+    } else {
       const isActive = getProperty(item.data, "equipped");
       item.toggleClass = isActive ? "active" : "";
       item.toggleTitle = game.i18n.localize(isActive ? "KRYX_RPG.Equipped" : "KRYX_RPG.Unequipped");
@@ -197,10 +208,10 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     }[actorData.data.traits.size] || 1;
 
     // Apply Powerful Build feat
-    if ( this.actor.getFlag("kryx_rpg", "powerfulBuild") ) mod = Math.min(mod * 2, 8);
+    if (this.actor.getFlag("kryx_rpg", "powerfulBuild")) mod = Math.min(mod * 2, 8);
 
     // Add Currency Weight
-    if ( game.settings.get("kryx_rpg", "currencyWeight") ) {
+    if (game.settings.get("kryx_rpg", "currencyWeight")) {
       const currency = actorData.data.currency;
       const numCoins = Object.values(currency).reduce((val, denom) => val += denom, 0);
       totalWeight += numCoins / CONFIG.KRYX_RPG.encumbrance.currencyPerWeight;
@@ -212,11 +223,12 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
       value: Math.round(totalWeight * 10) / 10,
     };
     enc.pct = Math.min(enc.value * 100 / enc.max, 99);
-    enc.encumbered = enc.pct > (2/3);
+    enc.encumbered = enc.pct > (2 / 3);
     return enc;
   }
 
   /* -------------------------------------------- */
+
   /*  Event Listeners and Handlers
   /* -------------------------------------------- */
 
@@ -224,9 +236,9 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
    * Activate event listeners using the prepared sheet HTML
    * @param html {HTML}   The prepared HTML object ready to be rendered into the DOM
    */
-	activateListeners(html) {
+  activateListeners(html) {
     super.activateListeners(html);
-    if ( !this.options.editable ) return;
+    if (!this.options.editable) return;
 
     // Inventory Functions
     html.find(".currency-convert").click(this._onConvertCurrency.bind(this));

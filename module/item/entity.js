@@ -9,6 +9,7 @@ export default class ItemKryx extends Item {
 
   /* -------------------------------------------- */
   /*  Item Properties                             */
+
   /* -------------------------------------------- */
 
   /**
@@ -37,7 +38,7 @@ export default class ItemKryx extends Item {
         const wt = itemData.weaponType;
 
         // Melee weapons - Str or Dex if Finesse (PHB pg. 147)
-        if ( ["simpleM", "martialM"].includes(wt) ) {
+        if (["simpleM", "martialM"].includes(wt)) {
           if (itemData.properties.fin === true) {   // Finesse weapons
             return (actorData.abilities["dex"].mod >= actorData.abilities["str"].mod) ? "dex" : "str";
           }
@@ -45,7 +46,7 @@ export default class ItemKryx extends Item {
         }
 
         // Ranged weapons - Dex (PH p.194)
-        else if ( ["simpleR", "martialR"].includes(wt) ) return "dex";
+        else if (["simpleR", "martialR"].includes(wt)) return "dex";
       }
       return "str";
     }
@@ -112,7 +113,7 @@ export default class ItemKryx extends Item {
    */
   get hasTarget() {
     const target = this.data.data.target;
-    return target && !["none",""].includes(target.type);
+    return target && !["none", ""].includes(target.type);
   }
 
   /* -------------------------------------------- */
@@ -140,6 +141,7 @@ export default class ItemKryx extends Item {
 
   /* -------------------------------------------- */
   /*	Data Preparation														*/
+
   /* -------------------------------------------- */
 
   /**
@@ -156,41 +158,41 @@ export default class ItemKryx extends Item {
     const labels = {};
 
     // Classes
-    if ( itemData.type === "class" ) {
+    if (itemData.type === "class") {
       data.levels = Math.clamped(data.levels, 1, 20);
     }
 
     // Spell Level,  School, and Components
-    if ( itemData.type === "spell" ) {
+    if (itemData.type === "spell") {
       labels.level = C.spellLevels[data.level];
       labels.school = C.spellSchools[data.school];
       labels.components = Object.entries(data.components).reduce((arr, c) => {
-        if ( c[1] !== true ) return arr;
+        if (c[1] !== true) return arr;
         arr.push(c[0].titleCase().slice(0, 1));
         return arr;
       }, []);
     }
 
     // Feat Items
-    else if ( itemData.type === "feat" ) {
+    else if (itemData.type === "feat") {
       const act = data.activation;
-      if ( act && (act.type === C.abilityActivationTypes.legendary) ) labels.featType = "Legendary Action";
-      else if ( act && (act.type === C.abilityActivationTypes.lair) ) labels.featType = "Lair Action";
-      else if ( act && act.type ) labels.featType = data.damage.length ? "Attack" : "Action";
+      if (act && (act.type === C.abilityActivationTypes.legendary)) labels.featType = "Legendary Action";
+      else if (act && (act.type === C.abilityActivationTypes.lair)) labels.featType = "Lair Action";
+      else if (act && act.type) labels.featType = data.damage.length ? "Attack" : "Action";
       else labels.featType = "Passive";
     }
 
     // Equipment Items
-    else if ( itemData.type === "equipment" ) {
+    else if (itemData.type === "equipment") {
       labels.armor = data.armor.value ? `${data.armor.value} AC` : "";
     }
 
     // Activated Items
-    if ( data.hasOwnProperty("activation") ) {
+    if (data.hasOwnProperty("activation")) {
 
       // Ability Activation Label
       let act = data.activation || {};
-      if ( act ) labels.activation = [act.cost, C.abilityActivationTypes[act.type]].filterJoin(" ");
+      if (act) labels.activation = [act.cost, C.abilityActivationTypes[act.type]].filterJoin(" ");
 
       // Target Label
       let tgt = data.target || {};
@@ -220,22 +222,22 @@ export default class ItemKryx extends Item {
     }
 
     // Item Actions
-    if ( data.hasOwnProperty("actionType") ) {
+    if (data.hasOwnProperty("actionType")) {
 
       // Save DC
       let save = data.save || {};
-      if ( !save.ability ) save.dc = null;
-      else if ( this.isOwned ) { // Actor owned items
-        if ( save.scaling === "spell" ) save.dc = actorData.data.attributes.spelldc;
-        else if ( save.scaling !== "flat" ) save.dc = this.actor.getSpellDC(save.scaling);
+      if (!save.ability) save.dc = null;
+      else if (this.isOwned) { // Actor owned items
+        if (save.scaling === "spell") save.dc = actorData.data.attributes.spelldc;
+        else if (save.scaling !== "flat") save.dc = this.actor.getSpellDC(save.scaling);
       } else { // Un-owned items
-        if ( save.scaling !== "flat" ) save.dc = null;
+        if (save.scaling !== "flat") save.dc = null;
       }
       labels.save = save.ability ? `DC ${save.dc || ""} ${C.abilities[save.ability]}` : "";
 
       // Damage
       let dam = data.damage || {};
-      if ( dam.parts ) {
+      if (dam.parts) {
         labels.damage = dam.parts.map(d => d[0]).join(" + ").replace(/\+ -/g, "- ");
         labels.damageTypes = dam.parts.map(d => C.damageTypes[d[1]]).join(", ");
       }
@@ -251,7 +253,7 @@ export default class ItemKryx extends Item {
    * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
    * @return {Promise}
    */
-  async roll({configureDialog=true}={}) {
+  async roll({configureDialog = true} = {}) {
 
     // Basic template rendering data
     const token = this.actor.token;
@@ -273,15 +275,15 @@ export default class ItemKryx extends Item {
     // For feature items, optionally show an ability usage dialog
     if (this.data.type === "feat") {
       let configured = await this._rollFeat(configureDialog);
-      if ( configured === false ) return;
-    } else if ( this.data.type === "consumable" ) {
+      if (configured === false) return;
+    } else if (this.data.type === "consumable") {
       let configured = await this._rollConsumable(configureDialog);
-      if ( configured === false ) return;
+      if (configured === false) return;
     }
 
     // For items which consume a resource, handle that here
     const allowed = await this._handleResourceConsumption({isCard: true, isAttack: false});
-    if ( allowed === false ) return;
+    if (allowed === false) return;
 
     // Render the chat card template
     const templateType = ["tool"].includes(this.data.type) ? this.data.type : "item";
@@ -302,8 +304,8 @@ export default class ItemKryx extends Item {
 
     // Toggle default roll mode
     let rollMode = game.settings.get("core", "rollMode");
-    if ( ["gmroll", "blindroll"].includes(rollMode) ) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
-    if ( rollMode === "blindroll" ) chatData["blind"] = true;
+    if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
+    if (rollMode === "blindroll") chatData["blind"] = true;
 
     // Create the chat message
     return ChatMessage.create(chatData);
@@ -324,19 +326,19 @@ export default class ItemKryx extends Item {
    * @return {Promise<boolean>}   Can the item card or attack roll be allowed to proceed?
    * @private
    */
-  async _handleResourceConsumption({isCard=false, isAttack=false}={}) {
+  async _handleResourceConsumption({isCard = false, isAttack = false} = {}) {
     const itemData = this.data.data;
     const consume = itemData.consume || {};
-    if ( !consume.type ) return true;
+    if (!consume.type) return true;
     const actor = this.actor;
     const typeLabel = CONFIG.KRYX_RPG.abilityConsumptionTypes[consume.type];
     const amount = parseInt(consume.amount || 1);
 
     // Only handle certain types for certain actions
-    if ( ((consume.type === "ammo") && !isAttack ) || ((consume.type !== "ammo") && !isCard) ) return true;
+    if (((consume.type === "ammo") && !isAttack) || ((consume.type !== "ammo") && !isCard)) return true;
 
     // No consumed target set
-    if ( !consume.target ) {
+    if (!consume.target) {
       ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoResource", {name: this.name, type: typeLabel}));
       return false;
     }
@@ -344,7 +346,7 @@ export default class ItemKryx extends Item {
     // Identify the consumed resource and it's quantity
     let consumed = null;
     let quantity = 0;
-    switch ( consume.type ) {
+    switch (consume.type) {
       case "attribute":
         consumed = getProperty(actor.data.data, consume.target);
         quantity = consumed || 0;
@@ -361,18 +363,18 @@ export default class ItemKryx extends Item {
     }
 
     // Verify that the consumed resource is available
-    if ( [null, undefined].includes(consumed) ) {
+    if ([null, undefined].includes(consumed)) {
       ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoSource", {name: this.name, type: typeLabel}));
       return false;
     }
-    if ( !quantity || (quantity - amount < 0) ) {
+    if (!quantity || (quantity - amount < 0)) {
       ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoQuantity", {name: this.name, type: typeLabel}));
       return false;
     }
 
     // Update the consumed resource
     const remaining = Math.max(quantity - amount, 0);
-    switch ( consume.type ) {
+    switch (consume.type) {
       case "attribute":
         await this.actor.update({[`data.${consume.target}`]: remaining});
         break;
@@ -394,7 +396,7 @@ export default class ItemKryx extends Item {
    * @return {boolean} whether the roll should be prevented
    */
   async _rollFeat(configureDialog) {
-    if ( this.data.type !== "feat" ) throw new Error("Wrong Item type");
+    if (this.data.type !== "feat") throw new Error("Wrong Item type");
 
     // Configure whether to consume a limited use or to place a template
     const usesRecharge = !!this.data.data.recharge.value;
@@ -405,33 +407,33 @@ export default class ItemKryx extends Item {
 
     // Determine whether the feat uses charges
     configureDialog = configureDialog && (consume || this.hasAreaTarget);
-    if ( configureDialog ) {
+    if (configureDialog) {
       const usage = await AbilityUseDialog.create(this);
-      if ( usage === null ) return false;
+      if (usage === null) return false;
       consume = Boolean(usage.get("consume"));
       placeTemplate = Boolean(usage.get("placeTemplate"));
     }
 
     // Update Item data
     const current = getProperty(this.data, "data.uses.value") || 0;
-    if ( consume && usesRecharge ) {
+    if (consume && usesRecharge) {
       await this.update({"data.recharge.charged": false});
-    }
-    else if ( consume && usesCharges ) {
+    } else if (consume && usesCharges) {
       await this.update({"data.uses.value": Math.max(current - 1, 0)});
     }
 
     // Maybe initiate template placement workflow
-    if ( this.hasAreaTarget && placeTemplate ) {
+    if (this.hasAreaTarget && placeTemplate) {
       const template = AbilityTemplate.fromItem(this);
-      if ( template ) template.drawPreview(event);
-      if ( this.owner && this.owner.sheet ) this.owner.sheet.minimize();
+      if (template) template.drawPreview(event);
+      if (this.owner && this.owner.sheet) this.owner.sheet.minimize();
     }
     return true;
   }
 
   /* -------------------------------------------- */
   /*  Chat Cards																	*/
+
   /* -------------------------------------------- */
 
   /**
@@ -449,18 +451,18 @@ export default class ItemKryx extends Item {
     // Item type specific properties
     const props = [];
     const fn = this[`_${this.data.type}ChatData`];
-    if ( fn ) fn.bind(this)(data, labels, props);
+    if (fn) fn.bind(this)(data, labels, props);
 
     // General equipment properties
-    if ( data.hasOwnProperty("equipped") && !["loot", "tool"].includes(this.data.type) ) {
+    if (data.hasOwnProperty("equipped") && !["loot", "tool"].includes(this.data.type)) {
       props.push(
         data.equipped ? "Equipped" : "Not Equipped",
-        data.proficient ? "Proficient": "Not Proficient",
+        data.proficient ? "Proficient" : "Not Proficient",
       );
     }
 
     // Ability activation properties
-    if ( data.hasOwnProperty("activation") ) {
+    if (data.hasOwnProperty("activation")) {
       props.push(
         labels.target,
         labels.activation,
@@ -566,6 +568,7 @@ export default class ItemKryx extends Item {
 
   /* -------------------------------------------- */
   /*  Item Rolls - Attack, Damage, Saves, Checks  */
+
   /* -------------------------------------------- */
 
   /**
@@ -574,24 +577,24 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll|null>}   A Promise which resolves to the created Roll instance
    */
-  async rollAttack(options={}) {
+  async rollAttack(options = {}) {
     const itemData = this.data.data;
     const actorData = this.actor.data.data;
     const flags = this.actor.data.flags.kryx_rpg || {};
-    if ( !this.hasAttack ) {
+    if (!this.hasAttack) {
       throw new Error("You may not place an Attack Roll with this Item.");
     }
     const rollData = this.getRollData();
 
     // Define Roll bonuses
     const parts = [`@mod`];
-    if ( (this.data.type !== "weapon") || itemData.proficient ) {
+    if ((this.data.type !== "weapon") || itemData.proficient) {
       parts.push("@prof");
     }
 
     // Attack Bonus
     const actorBonus = actorData.bonuses[itemData.actionType] || {};
-    if ( itemData.attackBonus || actorBonus.attack ) {
+    if (itemData.attackBonus || actorBonus.attack) {
       parts.push("@atk");
       rollData["atk"] = [itemData.attackBonus, actorBonus.attack].filterJoin(" + ");
     }
@@ -612,28 +615,28 @@ export default class ItemKryx extends Item {
     };
 
     // Expanded weapon critical threshold
-    if (( this.data.type === "weapon" ) && flags.weaponCriticalThreshold) {
+    if ((this.data.type === "weapon") && flags.weaponCriticalThreshold) {
       rollConfig.critical = parseInt(flags.weaponCriticalThreshold);
     }
 
     // Elven Accuracy
-    if ( ["weapon", "spell"].includes(this.data.type) ) {
+    if (["weapon", "spell"].includes(this.data.type)) {
       if (flags.elvenAccuracy && ["dex", "int", "wis", "cha"].includes(this.abilityMod)) {
         rollConfig.elvenAccuracy = true;
       }
     }
 
     // Apply Halfling Lucky
-    if ( flags.halflingLucky ) rollConfig.halflingLucky = true;
+    if (flags.halflingLucky) rollConfig.halflingLucky = true;
 
 
     // Invoke the d20 roll helper
     const roll = await d20Roll(rollConfig);
-    if ( roll === false ) return null;
+    if (roll === false) return null;
 
     // Handle resource consumption if the attack roll was made
     const allowed = await this._handleResourceConsumption({isCard: false, isAttack: true});
-    if ( allowed === false ) return null;
+    if (allowed === false) return null;
     return roll;
   }
 
@@ -645,30 +648,30 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  rollDamage({event, spellLevel=null, versatile=false}={}) {
+  rollDamage({event, spellLevel = null, versatile = false} = {}) {
     const itemData = this.data.data;
     const actorData = this.actor.data.data;
-    if ( !this.hasDamage ) {
+    if (!this.hasDamage) {
       throw new Error("You may not make a Damage Roll with this Item.");
     }
     const rollData = this.getRollData();
-    if ( spellLevel ) rollData.item.level = spellLevel;
+    if (spellLevel) rollData.item.level = spellLevel;
 
     // Define Roll parts
     const parts = itemData.damage.parts.map(d => d[0]);
-    if ( versatile && itemData.damage.versatile ) parts[0] = itemData.damage.versatile;
-    if ( (this.data.type === "spell") ) {
-      if ( (itemData.scaling.mode === "cantrip") ) {
+    if (versatile && itemData.damage.versatile) parts[0] = itemData.damage.versatile;
+    if ((this.data.type === "spell")) {
+      if ((itemData.scaling.mode === "cantrip")) {
         const lvl = this.actor.data.type === "character" ? actorData.details.level : actorData.details.spellLevel;
-        this._scaleCantripDamage(parts, lvl, itemData.scaling.formula );
-      } else if ( spellLevel && (itemData.scaling.mode === "level") && itemData.scaling.formula ) {
-        this._scaleSpellDamage(parts, itemData.level, spellLevel, itemData.scaling.formula );
+        this._scaleCantripDamage(parts, lvl, itemData.scaling.formula);
+      } else if (spellLevel && (itemData.scaling.mode === "level") && itemData.scaling.formula) {
+        this._scaleSpellDamage(parts, itemData.level, spellLevel, itemData.scaling.formula);
       }
     }
 
     // Define Roll Data
     const actorBonus = actorData.bonuses[itemData.actionType] || {};
-    if ( actorBonus.damage && parseInt(actorBonus.damage) !== 0 ) {
+    if (actorBonus.damage && parseInt(actorBonus.damage) !== 0) {
       parts.push("@dmg");
       rollData["dmg"] = actorBonus.damage;
     }
@@ -700,11 +703,11 @@ export default class ItemKryx extends Item {
    */
   _scaleCantripDamage(parts, level, scale) {
     const add = Math.floor((level + 1) / 6);
-    if ( add === 0 ) return;
-    if ( scale && (scale !== parts[0]) ) {
+    if (add === 0) return;
+    if (scale && (scale !== parts[0])) {
       parts[0] = parts[0] + " + " + scale.replace(new RegExp(Roll.diceRgx, "g"), (match, nd, d) => `${add}d${d}`);
     } else {
-      parts[0] = parts[0].replace(new RegExp(Roll.diceRgx, "g"), (match, nd, d) => `${parseInt(nd)+add}d${d}`);
+      parts[0] = parts[0].replace(new RegExp(Roll.diceRgx, "g"), (match, nd, d) => `${parseInt(nd) + add}d${d}`);
     }
   }
 
@@ -720,7 +723,7 @@ export default class ItemKryx extends Item {
    */
   _scaleSpellDamage(parts, baseLevel, spellLevel, formula) {
     const upcastLevels = Math.max(spellLevel - baseLevel, 0);
-    if ( upcastLevels === 0 ) return parts;
+    if (upcastLevels === 0) return parts;
     const bonus = new Roll(formula).alter(0, upcastLevels);
     parts.push(bonus.formula);
     return parts;
@@ -734,8 +737,8 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  async rollFormula(options={}) {
-    if ( !this.data.data.formula ) {
+  async rollFormula(options = {}) {
+    if (!this.data.data.formula) {
       throw new Error("This Item does not have a formula to roll!");
     }
 
@@ -762,7 +765,7 @@ export default class ItemKryx extends Item {
    * @private
    */
   async _rollConsumable(configureDialog) {
-    if ( this.data.type !== "consumable" ) throw new Error("Wrong Item type");
+    if (this.data.type !== "consumable") throw new Error("Wrong Item type");
     const itemData = this.data.data;
 
     // Determine whether to deduct uses of the item
@@ -775,34 +778,34 @@ export default class ItemKryx extends Item {
     // Display a configuration dialog to confirm the usage
     let placeTemplate = false;
     let consume = uses.autoUse || true;
-    if ( configureDialog ) {
+    if (configureDialog) {
       const usage = await AbilityUseDialog.create(this);
-      if ( usage === null ) return false;
+      if (usage === null) return false;
       consume = Boolean(usage.get("consume"));
       placeTemplate = Boolean(usage.get("placeTemplate"));
     }
 
     // Update Item data
-    if ( consume ) {
+    if (consume) {
       const current = uses.value || 0;
       const remaining = usesCharges ? Math.max(current - 1, 0) : current;
-      if ( usesRecharge ) await this.update({"data.recharge.charged": false});
+      if (usesRecharge) await this.update({"data.recharge.charged": false});
       else {
         const q = itemData.quantity;
         // Case 1, reduce charges
-        if ( remaining ) {
+        if (remaining) {
           await this.update({"data.uses.value": remaining});
         }
         // Case 2, reduce quantity
-        else if ( q > 1 ) {
+        else if (q > 1) {
           await this.update({"data.quantity": q - 1, "data.uses.value": uses.max || 0});
         }
         // Case 3, destroy the item
-        else if ( (q <= 1) && autoDestroy ) {
+        else if ((q <= 1) && autoDestroy) {
           await this.actor.deleteOwnedItem(this.id);
         }
         // Case 4, reduce item to 0 quantity and 0 charges
-        else if ( (q === 1) ) {
+        else if ((q === 1)) {
           await this.update({"data.quantity": q - 1, "data.uses.value": 0});
         }
         // Case 5, item unusable, display warning and do nothing
@@ -813,10 +816,10 @@ export default class ItemKryx extends Item {
     }
 
     // Maybe initiate template placement workflow
-    if ( this.hasAreaTarget && placeTemplate ) {
+    if (this.hasAreaTarget && placeTemplate) {
       const template = AbilityTemplate.fromItem(this);
-      if ( template ) template.drawPreview(event);
-      if ( this.owner && this.owner.sheet ) this.owner.sheet.minimize();
+      if (template) template.drawPreview(event);
+      if (this.owner && this.owner.sheet) this.owner.sheet.minimize();
     }
     return true;
   }
@@ -829,9 +832,9 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  async rollRecharge(options={}) {
+  async rollRecharge(options = {}) {
     const data = this.data.data;
-    if ( !data.recharge.value ) return;
+    if (!data.recharge.value) return;
 
     // Roll the check
     const roll = new Roll("1d6").roll();
@@ -844,7 +847,7 @@ export default class ItemKryx extends Item {
     })];
 
     // Update the Item data
-    if ( success ) promises.push(this.update({"data.recharge.charged": true}));
+    if (success) promises.push(this.update({"data.recharge.charged": true}));
     return Promise.all(promises).then(() => roll);
   }
 
@@ -856,8 +859,8 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  rollToolCheck(options={}) {
-    if ( this.type !== "tool" ) throw "Wrong item type!";
+  rollToolCheck(options = {}) {
+    if (this.type !== "tool") throw "Wrong item type!";
 
     // Prepare roll data
     let rollData = this.getRollData();
@@ -878,7 +881,7 @@ export default class ItemKryx extends Item {
         top: options.event ? options.event.clientY - 80 : null,
         left: window.innerWidth - 710,
       },
-      halflingLucky: this.actor.getFlag("kryx_rpg", "halflingLucky" ) || false
+      halflingLucky: this.actor.getFlag("kryx_rpg", "halflingLucky") || false
     });
   }
 
@@ -889,13 +892,13 @@ export default class ItemKryx extends Item {
    * @private
    */
   getRollData() {
-    if ( !this.actor ) return null;
+    if (!this.actor) return null;
     const rollData = this.actor.getRollData();
     rollData.item = duplicate(this.data.data);
 
     // Include an ability score modifier if one exists
     const abl = this.abilityMod;
-    if ( abl ) {
+    if (abl) {
       const ability = rollData.abilities[abl];
       rollData["mod"] = ability.mod || 0;
     }
@@ -908,6 +911,7 @@ export default class ItemKryx extends Item {
 
   /* -------------------------------------------- */
   /*  Chat Message Helpers                        */
+
   /* -------------------------------------------- */
 
   static chatListeners(html) {
@@ -931,54 +935,54 @@ export default class ItemKryx extends Item {
     button.disabled = true;
     const card = button.closest(".chat-card");
     const messageId = card.closest(".message").dataset.messageId;
-    const message =  game.messages.get(messageId);
+    const message = game.messages.get(messageId);
     const action = button.dataset.action;
 
     // Validate permission to proceed with the roll
     const isTargetted = action === "save";
-    if ( !( isTargetted || game.user.isGM || message.isAuthor ) ) return;
+    if (!(isTargetted || game.user.isGM || message.isAuthor)) return;
 
     // Get the Actor from a synthetic Token
     const actor = this._getChatCardActor(card);
-    if ( !actor ) return;
+    if (!actor) return;
 
     // Get the Item
     const item = actor.getOwnedItem(card.dataset.itemId);
-    if ( !item ) {
+    if (!item) {
       return ui.notifications.error(`The requested item ${card.dataset.itemId} no longer exists on Actor ${actor.name}`)
     }
     const spellLevel = parseInt(card.dataset.spellLevel) || null;
 
     // Get card targets
     let targets = [];
-    if ( isTargetted ) {
+    if (isTargetted) {
       targets = this._getChatCardTargets(card);
-      if ( !targets.length ) {
+      if (!targets.length) {
         ui.notifications.warn(`You must have one or more controlled Tokens in order to use this option.`);
         return button.disabled = false;
       }
     }
 
     // Attack and Damage Rolls
-    if ( action === "attack" ) await item.rollAttack({event});
-    else if ( action === "damage" ) await item.rollDamage({event, spellLevel});
-    else if ( action === "versatile" ) await item.rollDamage({event, spellLevel, versatile: true});
-    else if ( action === "formula" ) await item.rollFormula({event});
+    if (action === "attack") await item.rollAttack({event});
+    else if (action === "damage") await item.rollDamage({event, spellLevel});
+    else if (action === "versatile") await item.rollDamage({event, spellLevel, versatile: true});
+    else if (action === "formula") await item.rollFormula({event});
 
     // Saving Throws for card targets
-    else if ( action === "save" ) {
-      for ( let t of targets ) {
+    else if (action === "save") {
+      for (let t of targets) {
         await t.rollAbilitySave(button.dataset.ability, {event});
       }
     }
 
     // Tool usage
-    else if ( action === "toolCheck" ) await item.rollToolCheck({event});
+    else if (action === "toolCheck") await item.rollToolCheck({event});
 
     // Spell Template Creation
-    else if ( action === "placeTemplate") {
+    else if (action === "placeTemplate") {
       const template = AbilityTemplate.fromItem(item);
-      if ( template ) template.drawPreview(event);
+      if (template) template.drawPreview(event);
     }
 
     // Re-enable the button
@@ -1039,12 +1043,13 @@ export default class ItemKryx extends Item {
     const character = game.user.character;
     const controlled = canvas.tokens.controlled;
     const targets = controlled.reduce((arr, t) => t.actor ? arr.concat([t.actor]) : arr, []);
-    if ( character && (controlled.length === 0) ) targets.push(character);
+    if (character && (controlled.length === 0)) targets.push(character);
     return targets;
   }
 
   /* -------------------------------------------- */
   /*  Factory Methods                             */
+
   /* -------------------------------------------- */
 
   /**

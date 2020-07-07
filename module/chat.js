@@ -3,25 +3,25 @@ import ActorKryx from "./actor/entity.js";
 /**
  * Highlight critical success or failure on d20 rolls
  */
-export const highlightCriticalSuccessFailure = function(message, html, data) {
-  if ( !message.isRoll || !message.isContentVisible ) return;
+export const highlightCriticalSuccessFailure = function (message, html, data) {
+  if (!message.isRoll || !message.isContentVisible) return;
 
   // Highlight rolls where the first part is a d20 roll
   const roll = message.roll;
-  if ( !roll.dice.length ) return;
+  if (!roll.dice.length) return;
   const d = roll.dice[0];
 
   // Ensure it is an un-modified d20 roll
-  const isD20 = (d.faces === 20) && ( d.results.length === 1 );
-  if ( !isD20 ) return;
+  const isD20 = (d.faces === 20) && (d.results.length === 1);
+  if (!isD20) return;
   const isModifiedRoll = ("success" in d.rolls[0]) || d.options.marginSuccess || d.options.marginFailure;
-  if ( isModifiedRoll ) return;
+  if (isModifiedRoll) return;
 
   // Highlight successes and failures
-  if ( d.options.critical && (d.total >= d.options.critical) ) html.find(".dice-total").addClass("critical");
-  else if ( d.options.fumble && (d.total <= d.options.fumble) ) html.find(".dice-total").addClass("fumble");
-  else if ( d.options.target ) {
-    if ( roll.total >= d.options.target ) html.find(".dice-total").addClass("success");
+  if (d.options.critical && (d.total >= d.options.critical)) html.find(".dice-total").addClass("critical");
+  else if (d.options.fumble && (d.total <= d.options.fumble)) html.find(".dice-total").addClass("fumble");
+  else if (d.options.target) {
+    if (roll.total >= d.options.target) html.find(".dice-total").addClass("success");
     else html.find(".dice-total").addClass("failure");
   }
 };
@@ -31,19 +31,19 @@ export const highlightCriticalSuccessFailure = function(message, html, data) {
 /**
  * Optionally hide the display of chat card action buttons which cannot be performed by the user
  */
-export const displayChatActionButtons = function(message, html, data) {
+export const displayChatActionButtons = function (message, html, data) {
   const chatCard = html.find(".kryx_rpg.chat-card");
-  if ( chatCard.length > 0 ) {
+  if (chatCard.length > 0) {
 
     // If the user is the message author or the actor owner, proceed
     let actor = game.actors.get(data.message.speaker.actor);
-    if ( actor && actor.owner ) return;
-    else if ( game.user.isGM || (data.author.id === game.user.id)) return;
+    if (actor && actor.owner) return;
+    else if (game.user.isGM || (data.author.id === game.user.id)) return;
 
     // Otherwise conceal action buttons except for saving throw
     const buttons = chatCard.find("button[data-action]");
     buttons.each((i, btn) => {
-      if ( btn.dataset.action === "save" ) return;
+      if (btn.dataset.action === "save") return;
       btn.style.display = "none"
     });
   }
@@ -60,7 +60,7 @@ export const displayChatActionButtons = function(message, html, data) {
  *
  * @return {Array}              The extended options Array including new context choices
  */
-export const addChatMessageContextOptions = function(html, options) {
+export const addChatMessageContextOptions = function (html, options) {
   let canApply = li => canvas.tokens.controlled.length && li.find(".dice-roll").length;
   options.push(
     {

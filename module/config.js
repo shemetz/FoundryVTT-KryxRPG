@@ -621,7 +621,7 @@ KRYX_RPG.languages = {
 };
 
 // Character Level XP Requirements
-KRYX_RPG.CHARACTER_EXP_LEVELS =  [
+KRYX_RPG.CHARACTER_EXP_LEVELS = [
   0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000,
   120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000]
 ;
@@ -679,7 +679,7 @@ KRYX_RPG.characterFlags = {
   "observantFeat": {
     name: "KRYX_RPG.FlagsObservant",
     hint: "KRYX_RPG.FlagsObservantHint",
-    skills: ['prc','inv'],
+    skills: ['prc', 'inv'],
     section: "Feats",
     type: Boolean
   },
@@ -692,7 +692,7 @@ KRYX_RPG.characterFlags = {
   "remarkableAthlete": {
     name: "KRYX_RPG.FlagsRemarkableAthlete",
     hint: "KRYX_RPG.FlagsRemarkableAthleteHint",
-    abilities: ['str','dex','con'],
+    abilities: ['str', 'dex', 'con'],
     section: "Feats",
     type: Boolean
   },
