@@ -538,24 +538,6 @@ KRYX_RPG.SPELL_SLOT_TABLE = [
 
 /* -------------------------------------------- */
 
-// Polymorph options.
-KRYX_RPG.polymorphSettings = {
-  keepPhysical: 'KRYX_RPG.PolymorphKeepPhysical',
-  keepMental: 'KRYX_RPG.PolymorphKeepMental',
-  keepSaves: 'KRYX_RPG.PolymorphKeepSaves',
-  keepSkills: 'KRYX_RPG.PolymorphKeepSkills',
-  mergeSaves: 'KRYX_RPG.PolymorphMergeSaves',
-  mergeSkills: 'KRYX_RPG.PolymorphMergeSkills',
-  keepClass: 'KRYX_RPG.PolymorphKeepClass',
-  keepFeats: 'KRYX_RPG.PolymorphKeepFeats',
-  keepSpells: 'KRYX_RPG.PolymorphKeepSpells',
-  keepItems: 'KRYX_RPG.PolymorphKeepItems',
-  keepBio: 'KRYX_RPG.PolymorphKeepBio',
-  keepVision: 'KRYX_RPG.PolymorphKeepVision'
-};
-
-/* -------------------------------------------- */
-
 /**
  * Skill, ability, and tool proficiency levels
  * Each level provides a proficiency multiplier
@@ -706,6 +688,4 @@ KRYX_RPG.characterFlags = {
 };
 
 // Configure allowed status flags
-KRYX_RPG.allowedActorFlags = [
-  "isPolymorphed", "originalActor"
-].concat(Object.keys(KRYX_RPG.characterFlags));
+KRYX_RPG.allowedActorFlags = Object.keys(KRYX_RPG.characterFlags);

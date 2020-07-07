@@ -448,83 +448,6 @@ export default class ActorSheetKryx extends ActorSheet {
   /* -------------------------------------------- */
 
   /**
-   * Handle dropping an Actor on the sheet to trigger a Polymorph workflow
-   * @param {DragEvent} event   The drop event
-   * @param {Object} data       The data transfer
-   * @private
-   */
-  async _onDropActor(event, data) {
-    const canPolymorph = game.user.isGM || (this.actor.owner && game.settings.get('kryx_rpg', 'allowPolymorphing'));
-    if (!canPolymorph) return false;
-
-    // Get the target actor
-    let sourceActor = null;
-    if (data.pack) {
-      const pack = game.packs.find(p => p.collection === data.pack);
-      sourceActor = await pack.getEntity(data.id);
-    } else {
-      sourceActor = game.actors.get(data.id);
-    }
-    if (!sourceActor) return;
-
-    // Define a function to record polymorph settings for future use
-    const rememberOptions = html => {
-      const options = {};
-      html.find('input').each((i, el) => {
-        options[el.name] = el.checked;
-      });
-      const settings = mergeObject(game.settings.get('kryx_rpg', 'polymorphSettings') || {}, options);
-      game.settings.set('kryx_rpg', 'polymorphSettings', settings);
-      return settings;
-    };
-
-    // Create and render the Dialog
-    return new Dialog({
-      title: game.i18n.localize('KRYX_RPG.PolymorphPromptTitle'),
-      content: {
-        options: game.settings.get('kryx_rpg', 'polymorphSettings'),
-        i18n: KRYX_RPG.polymorphSettings,
-        isToken: this.actor.isToken
-      },
-      default: 'accept',
-      buttons: {
-        accept: {
-          icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize('KRYX_RPG.PolymorphAcceptSettings'),
-          callback: html => this.actor.transformInto(sourceActor, rememberOptions(html))
-        },
-        wildshape: {
-          icon: '<i class="fas fa-paw"></i>',
-          label: game.i18n.localize('KRYX_RPG.PolymorphWildShape'),
-          callback: html => this.actor.transformInto(sourceActor, {
-            keepMental: true,
-            mergeSaves: true,
-            mergeSkills: true,
-            transformTokens: rememberOptions(html).transformTokens
-          })
-        },
-        polymorph: {
-          icon: '<i class="fas fa-pastafarianism"></i>',
-          label: game.i18n.localize('KRYX_RPG.Polymorph'),
-          callback: html => this.actor.transformInto(sourceActor, {
-            transformTokens: rememberOptions(html).transformTokens
-          })
-        },
-        cancel: {
-          icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize('Cancel')
-        }
-      }
-    }, {
-      classes: ['dialog', 'kryx_rpg'],
-      width: 600,
-      template: 'systems/kryx_rpg/templates/apps/polymorph-prompt.html'
-    }).render(true);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Handle dropping of an item reference or item data onto an Actor Sheet
    * @param {DragEvent} event     The concluding DragEvent which contains drop data
    * @param {Object} data         The data transfer extracted from the event
@@ -804,22 +727,5 @@ export default class ActorSheetKryx extends ActorSheet {
       choices: CONFIG.KRYX_RPG[a.dataset.options]
     };
     new TraitSelector(this.actor, options).render(true)
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-
-    // Add button to revert polymorph
-    if (!this.actor.isPolymorphed || this.actor.isToken) return buttons;
-    buttons.unshift({
-      label: 'KRYX_RPG.PolymorphRestoreTransformation',
-      class: "restore-transformation",
-      icon: "fas fa-backward",
-      onclick: ev => this.actor.revertOriginalForm()
-    });
-    return buttons;
   }
 }
