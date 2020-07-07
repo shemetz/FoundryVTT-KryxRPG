@@ -10,9 +10,9 @@
             </h1>
 
             <aside class="header-exp flexcol">
-                <div class="charlevel">
+                <div class="charlevel rollable">
                     <label>{{ localize "KRYX_RPG.Level" }} {{data.details.level}}</label>
-                    <span class="levels">{{classLabels}}</span>
+                    <span class="levels">{{className}}</span>
                 </div>
 
                 {{#unless disableExperience}}
@@ -31,13 +31,16 @@
             {{!-- Character Summary --}}
             <ul class="summary flexrow">
                 <li>
-                    <input type="text" name="data.details.race" value="{{data.details.race}}" placeholder="{{ localize 'KRYX_RPG.Race' }}"/>
+                    <input type="text" name="data.details.species" value="{{data.details.species}}"
+                           placeholder="{{ localize 'KRYX_RPG.Species' }}"/>
                 </li>
                 <li>
-                    <input type="text" name="data.details.background" value="{{data.details.background}}" placeholder="{{ localize 'KRYX_RPG.Background' }}"/>
+                    <input type="text" name="data.details.background" value="{{data.details.background}}"
+                           placeholder="{{ localize 'KRYX_RPG.Background' }}"/>
                 </li>
                 <li>
-                    <input type="text" name="data.details.alignment" value="{{data.details.alignment}}" placeholder="{{ localize 'KRYX_RPG.Alignment' }}"/>
+                    <input type="text" name="data.details.alignment" value="{{data.details.alignment}}"
+                           placeholder="{{ localize 'KRYX_RPG.Alignment' }}"/>
                 </li>
                 <li class="proficiency">
                     <span>{{ localize "KRYX_RPG.Proficiency" }} {{numberFormat data.attributes.prof decimals=0 sign=true}}</span>
@@ -56,23 +59,34 @@
                                data-dtype="Number" placeholder="10"/>
                     </div>
                     <footer class="attribute-footer">
-                        <input name="data.attributes.hp.temp" type="text" class="temphp" placeholder="+{{ localize 'KRYX_RPG.Temp' }}"
+                        <input name="data.attributes.hp.temp" type="text" class="temphp"
+                               placeholder="+{{ localize 'KRYX_RPG.Temp' }}"
                                value="{{data.attributes.hp.temp}}" data-dtype="{{data.attributes.hp.type}}"/>
-                        <input name="data.attributes.hp.tempmax" type="text" class="temphp" placeholder="+{{ localize 'KRYX_RPG.Max' }}"
+                        <input name="data.attributes.hp.tempmax" type="text" class="temphp"
+                               placeholder="+{{ localize 'KRYX_RPG.Max' }}"
                                value="{{data.attributes.hp.tempmax}}" data-dtype="{{data.attributes.hp.type}}"/>
                     </footer>
                 </li>
 
-                <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.HitDice" }}</h4>
+                {{#each data.mainResources as |res id|}}
+                {{#if res.limit}}
+                <li class="attribute mana-or-stamina">
+                    <h4 class="attribute-name box-title">{{ res.nameCapitalized }}</h4>
                     <div class="attribute-value multiple">
-                        <label class="hit-dice">{{data.attributes.hd}} <span class="sep"> / </span> {{data.details.level}}</label>
+                        <input name="data.mainResources.{{id}}.remaining" type="text" value="{{res.remaining}}"
+                               data-dtype="Number" placeholder="10"/>
+                        <span class="sep"> / </span>
+                        <!-- TODO - this shouldn't be an input probably-->
+                        <input name="data.mainResources.{{id}}.max" type="text" value="{{res.max}}"
+                               data-dtype="Number" placeholder="10"/>
                     </div>
                     <footer class="attribute-footer">
-                        <a class="rest short-rest">{{ localize "KRYX_RPG.RestS" }}</a>
-                        <a class="rest long-rest">{{ localize "KRYX_RPG.RestL" }}</a>
+                        <span>Limit: {{res.limit}}</span>
+                        <span>DC: {{res.dc}}</span>
                     </footer>
                 </li>
+                {{/if}}
+                {{/each}}
 
                 <li class="attribute">
                     <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.ArmorClass" }}</h4>
@@ -80,9 +94,6 @@
                         <input name="data.attributes.ac.value" type="text" value="{{data.attributes.ac.value}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
-                    <footer class="attribute-footer">
-                        <span class="spell-dc">{{localize "KRYX_RPG.SpellDC"}} {{data.attributes.spelldc}}</span>
-                    </footer>
                 </li>
 
                 <li class="attribute">
@@ -93,7 +104,8 @@
                     </div>
                     <footer class="attribute-footer">
                         <input type="text" class="speed" name="data.attributes.speed.special"
-                               value="{{data.attributes.speed.special}}" placeholder="{{ localize 'KRYX_RPG.SpeedSpecial' }}"/>
+                               value="{{data.attributes.speed.special}}"
+                               placeholder="{{ localize 'KRYX_RPG.SpeedSpecial' }}"/>
                     </footer>
                 </li>
 
@@ -102,11 +114,6 @@
                     <div class="attribute-value">
                         <span>{{numberFormat data.attributes.init.total decimals=0 sign=true}}</span>
                     </div>
-                    <footer class="attribute-footer">
-                        <span>{{ localize "KRYX_RPG.Modifier" }}</span>
-                        <input name="data.attributes.init.value" type="text" placeholder="0" data-dtype="Number"
-                               value="{{numberFormat data.attributes.init.value decimals=0 sign=true}}"/>
-                    </footer>
                 </li>
             </ul>
         </section>
@@ -117,7 +124,7 @@
         <a class="item active" data-tab="attributes">{{ localize "KRYX_RPG.Attributes" }}</a>
         <a class="item" data-tab="inventory">{{ localize "KRYX_RPG.Inventory" }}</a>
         <a class="item" data-tab="features">{{ localize "KRYX_RPG.Features" }}</a>
-        <a class="item" data-tab="spellbook">{{ localize "KRYX_RPG.Spellbook" }}</a>
+        <a class="item" data-tab="arsenal">{{ localize "KRYX_RPG.Arsenal" }}</a>
         <a class="item" data-tab="biography">{{ localize "KRYX_RPG.Biography" }}</a>
     </nav>
 
@@ -128,32 +135,40 @@
 
             {{!-- Ability Scores --}}
             <ul class="ability-scores flexrow">
-            {{#each data.abilities as |ability id|}}
-                <li class="ability {{#if ability.proficient}}proficient{{/if}}" data-ability="{{id}}">
+                {{#each data.abilities as |ability id|}}
+                <li class="ability" data-ability="{{id}}">
                     <h4 class="ability-name box-title rollable">{{ability.label}}</h4>
-                    <input class="ability-score" name="data.abilities.{{id}}.value" type="text" value="{{ability.value}}" data-dtype="Number" placeholder="10"/>
+                    <input class="ability-score" name="data.abilities.{{id}}.value" type="text"
+                           value="{{ability.signedValue}}" data-dtype="Number" placeholder="0"/>
+                </li>
+                {{/each}}
+                {{#each data.saves as |save id|}}
+                <li class="save {{#if save.proficient}}proficient{{/if}}" data-save="{{id}}">
+                    <h4 class="save-name box-title rollable">{{save.label}}</h4>
+                    <input class="save-score" name="data.save.{{id}}.value" type="text" value="{{save.signedValue}}"
+                           data-dtype="Number" placeholder="0"/>
                     <div class="ability-modifiers flexrow">
-                        <span class="ability-mod" title="Modifier">{{numberFormat ability.mod decimals=0 sign=true}}</span>
-                        <input type="hidden" name="data.abilities.{{id}}.proficient" value="{{ability.proficient}}" data-dtype="Number"/>
-                        <a class="proficiency-toggle ability-proficiency" title="{{ localize 'KRYX_RPG.Proficiency' }}">{{{ability.icon}}}</a>
-                        <span class="ability-save" title="Saving Throw">{{numberFormat ability.save decimals=0 sign=true}}</span>
+                        <input type="hidden" name="data.saves.{{id}}.proficiency" value="{{save.proficiency}}"
+                               data-dtype="Number"/>
+                        <a class="proficiency-toggle save-proficiency" title="{{ localize 'KRYX_RPG.Proficiency' }}">{{{save.icon}}}</a>
                     </div>
                 </li>
-            {{/each}}
+                {{/each}}
             </ul>
 
             {{!-- Skills --}}
             <ul class="skills-list">
-            {{#each data.skills as |skill s|}}
-                <li class="skill flexrow {{#if skill.value}}proficient{{/if}}" data-skill="{{s}}">
-                    <input type="hidden" name="data.skills.{{s}}.value" value="{{skill.value}}" data-dtype="Number"/>
+                {{#each data.skills as |skill s|}}
+                <li class="skill flexrow {{#if skill.proficiency}}proficient{{/if}}" data-skill="{{s}}">
+                    <input type="hidden" name="data.skills.{{s}}.proficiency" value="{{skill.proficiency}}"
+                           data-dtype="Number"/>
                     <a class="proficiency-toggle skill-proficiency" title="{{skill.hover}}">{{{skill.icon}}}</a>
                     <h4 class="skill-name rollable">{{skill.label}}</h4>
                     <span class="skill-ability">{{skill.ability}}</span>
                     <span class="skill-mod">{{numberFormat skill.total decimals=0 sign=true}}</span>
                     <span class="skill-passive">({{skill.passive}})</span>
                 </li>
-            {{/each}}
+                {{/each}}
             </ul>
 
             <section class="center-pane flexcol">
@@ -164,50 +179,61 @@
                     <li class="attribute resource">
                         <h4 class="attribute-name box-title">
                             <input name="data.resources.{{res.name}}.label" type="text" value="{{res.label}}"
-                                   placeholder="{{res.placeholder}}" />
+                                   placeholder="{{res.placeholder}}"/>
                         </h4>
                         <div class="attribute-value">
                             <label class="recharge checkbox">
-                                {{ localize "KRYX_RPG.AbbreviationSR" }} <input name="data.resources.{{res.name}}.sr" type="checkbox" {{checked res.sr}}/>
+                                {{ localize "KRYX_RPG.AbbreviationSR" }} <input name="data.resources.{{res.name}}.sr"
+                                                                                type="checkbox" {{checked res.sr}}/>
                             </label>
 
                             <input name="data.resources.{{res.name}}.value" type="text" value="{{res.value}}"
                                    data-dtype="Number" placeholder="0"/>
                             <span class="sep"> / </span>
                             <input name="data.resources.{{res.name}}.max" type="text" value="{{res.max}}"
-                                  data-dtype="Number" placeholder="0"/>
+                                   data-dtype="Number" placeholder="0"/>
 
                             <label class="recharge checkbox">
-                                {{ localize "KRYX_RPG.AbbreviationLR" }} <input name="data.resources.{{res.name}}.lr" type="checkbox" {{checked res.lr}}/>
+                                {{ localize "KRYX_RPG.AbbreviationLR" }} <input name="data.resources.{{res.name}}.lr"
+                                                                                type="checkbox" {{checked res.lr}}/>
                             </label>
                         </div>
                     </li>
                     {{/each}}
                 </ul>
 
+                {{!-- Resting --}}
+                <div class="resting restingRow flexrow">
+                    <div>
+                        <label class="hit-dice"><b>{{ localize "KRYX_RPG.HitDice" }}:</b>
+                            {{data.attributes.hitDiceRemaining}} <span class="sep"> / </span>
+                            {{data.details.level}}</label>
+                    </div>
+                    <a class="rest second-wind">{{ localize "KRYX_RPG.RestSecondWind" }}</a>
+                    <a class="rest short-rest">{{ localize "KRYX_RPG.RestShort" }}</a>
+                    <a class="rest long-rest">{{ localize "KRYX_RPG.RestLong" }}</a>
+                </div>
+
                 {{!-- Counters --}}
                 <div class="counters">
-                    <div class="counter flexrow death-saves">
-                        <h4 class="death-save rollable">{{ localize "KRYX_RPG.DeathSave" }}</h4>
-                        <div class="counter-value">
-                            <i class="fas fa-check"></i>
-                            <input type="text" name="data.attributes.death.success" data-dtype="Number" placeholder="0"
-                                   value="{{data.attributes.death.success}}"/>
-                            <i class="fas fa-times"></i>
-                            <input type="text" name="data.attributes.death.failure" data-dtype="Number" placeholder="0"
-                                   value="{{data.attributes.death.failure}}"/>
+                    <div class="counter flexrow">
+                        <div class="minor-counter-value">
+                            <h4>{{ localize "KRYX_RPG.ConExhausted" }}</h4>
+                            <input type="text" name="data.attributes.exhausted" data-dtype="Number" placeholder="0"
+                                   value="{{data.attributes.exhausted}}"/>
                         </div>
-                    </div>
-                    <div class="counter flexrow exhaustion">
-                        <h4>{{ localize "KRYX_RPG.Exhaustion" }}</h4>
-                        <div class="counter-value">
-                            <input type="text" name="data.attributes.exhaustion" data-dtype="Number" placeholder="0"
-                                   value="{{data.attributes.exhaustion}}" />
+                        <div class="minor-counter-value">
+                            <h4>{{ localize "KRYX_RPG.ConWounded" }}</h4>
+                            <input type="text" name="data.attributes.wounded" data-dtype="Number" placeholder="0"
+                                   value="{{data.attributes.wounded}}"/>
                         </div>
-                    </div>
-                    <div class="counter flexrow inspiration">
-                        <h4>{{ localize "KRYX_RPG.Inspiration" }}</h4>
-                        <div class="counter-value">
+                        <div class="minor-counter-value rollable death-save">
+                            <h4>{{ localize "KRYX_RPG.ConDying" }}</h4>
+                            <input type="text" name="data.attributes.dying" data-dtype="Number" placeholder="0"
+                                   value="{{data.attributes.dying}}"/>
+                        </div>
+                        <div class="minor-counter-value">
+                            <h4>{{ localize "KRYX_RPG.Inspiration" }}</h4>
                             <input type="checkbox" name="data.attributes.inspiration" data-dtype="Boolean"
                                    {{checked data.attributes.inspiration}}/>
                         </div>
@@ -236,7 +262,8 @@
 
         {{!-- Biography Tab --}}
         <div class="tab biography flexcol" data-group="primary" data-tab="biography">
-            {{editor content=data.details.biography.value target="data.details.biography.value" button=true owner=owner editable=editable}}
+            {{editor content=data.details.biography.value target="data.details.biography.value" button=true owner=owner
+            editable=editable}}
         </div>
     </section>
 </form>

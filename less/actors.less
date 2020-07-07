@@ -258,11 +258,12 @@
 
       .skill-mod {
         flex: 0 0 20px;
+        text-align: right;
       }
 
       .skill-passive {
         flex: 0 0 26px;
-        text-align: center;
+        text-align: right;
         color: @colorTan;
       }
     }
@@ -298,6 +299,14 @@
         }
       }
 
+      .counter-value-minor {
+        flex: none;
+        text-align: left;
+        > * {
+          display: inline;
+        }
+      }
+
       input[type="text"] {
         height: 20px;
         max-width: 20px;
@@ -320,6 +329,29 @@
     }
   }
 
+  /* ----------------------------------------- */
+  /*  Resting                                  */
+  /* ----------------------------------------- */
+
+  .resting {
+    flex: none;
+    padding: 5px 0;
+    margin: 0;
+    border-bottom: @borderGroove;
+
+    .restingRow {
+      height: 20px;
+      line-height: 20px;
+
+      h4 {
+        flex: auto;
+        margin: 0;
+        font-size: 13px;
+        font-weight: bold;
+        color: @colorOlive;
+      }
+    }
+  }
   /* ----------------------------------------- */
   /*  Traits                                   */
   /* ----------------------------------------- */
@@ -378,7 +410,7 @@
 
   .tab.features,
   .tab.inventory,
-  .tab.spellbook {
+  .tab.arsenal {
     overflow-y: hidden;
   }
 
@@ -549,7 +581,7 @@
   }
 
   /* ----------------------------------------- */
-  /*  Spellbook                                */
+  /*  Arsenal                                */
   /* ----------------------------------------- */
 
   .spellcasting-ability {
@@ -596,7 +628,7 @@
     text-align: right !important;
   }
 
-  .spell-school, .spell-action, .spell-target {
+  .superpower-cos, .superpower-theme, .superpower-action, .superpower-target {
     flex: 0 0 100px;
     font-size: 12px;
     color: @colorTan;
@@ -618,8 +650,8 @@
     }
   }
 
-  // Empty spellbook controls
-  .spellbook-empty .item-controls { flex: 1; }
+  // Empty arsenal controls
+  .arsenal-empty .item-controls { flex: 1; }
 
   /* ----------------------------------------- */
   /*  TinyMCE                                  */

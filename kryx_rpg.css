@@ -405,7 +405,7 @@
   /* ----------------------------------------- */
   /* Inventory List Filters */
   /* ----------------------------------------- */
-  /*  Spellbook                                */
+  /*  Arsenal                                  */
   /* ----------------------------------------- */
   /* ----------------------------------------- */
   /*  TinyMCE                                  */
@@ -525,7 +525,7 @@
   border-radius: 3px;
 }
 .kryx_rpg.sheet.actor .ability-scores .ability {
-  height: 70px;
+  height: 50px;
   text-align: center;
   border-bottom: 2px groove #eeede0;
 }
@@ -603,6 +603,7 @@
   flex: 0 0 26px;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill .skill-mod {
+  text-align: right;
   flex: 0 0 20px;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill .skill-passive {
@@ -627,11 +628,31 @@
   font-weight: bold;
   color: #4b4a44;
 }
+.kryx_rpg.sheet.actor .resting {
+  flex: none;
+  padding: 5px 0;
+  margin: 0;
+  border-bottom: 2px groove #eeede0;
+}
+.kryx_rpg.sheet.actor .resting .restingRow h4 {
+  flex: auto;
+  margin: 0;
+  font-size: 13px;
+  font-weight: bold;
+  color: #4b4a44;
+}
 .kryx_rpg.sheet.actor .counters .counter .counter-value {
   flex: none;
   text-align: right;
 }
 .kryx_rpg.sheet.actor .counters .counter .counter-value > * {
+  display: inline;
+}
+.kryx_rpg.sheet.actor .counters .counter .minor-counter-value {
+  flex: 1;
+  text-align: left;
+}
+.kryx_rpg.sheet.actor .counters .counter .minor-counter-value > * {
   display: inline;
 }
 .kryx_rpg.sheet.actor .counters .counter input[type="text"] {
@@ -692,7 +713,7 @@
 }
 .kryx_rpg.sheet.actor .tab.features,
 .kryx_rpg.sheet.actor .tab.inventory,
-.kryx_rpg.sheet.actor .tab.spellbook {
+.kryx_rpg.sheet.actor .tab.arsenal {
   overflow-y: hidden;
 }
 .kryx_rpg.sheet.actor .inventory-filters {
@@ -890,9 +911,10 @@
   padding-right: 8px;
   text-align: right !important;
 }
-.kryx_rpg.sheet.actor .spell-school,
-.kryx_rpg.sheet.actor .spell-action,
-.kryx_rpg.sheet.actor .spell-target {
+.kryx_rpg.sheet.actor .superpower-cost,
+.kryx_rpg.sheet.actor .superpower-theme,
+.kryx_rpg.sheet.actor .superpower-action,
+.kryx_rpg.sheet.actor .superpower-target {
   flex: 0 0 100px;
   font-size: 12px;
   color: #7a7971;
@@ -913,7 +935,7 @@
   border: 1px solid transparent;
   border-radius: 8px;
 }
-.kryx_rpg.sheet.actor .spellbook-empty .item-controls {
+.kryx_rpg.sheet.actor .arsenal-empty .item-controls {
   flex: 1;
 }
 .kryx_rpg.sheet.actor .editor {
@@ -1229,7 +1251,7 @@
   flex: none;
   margin-left: 3px;
 }
-.kryx_rpg.sheet.actor.character .sheet-header .expbar {
+.kryx_rpg.sheet.actor.character .sheet-header .xpbar {
   flex: 0 0 8px;
   width: 100%;
   margin-bottom: 5px;
@@ -1237,7 +1259,7 @@
   border: 1px solid #000;
   border-radius: 3px;
 }
-.kryx_rpg.sheet.actor.character .sheet-header .expbar .bar {
+.kryx_rpg.sheet.actor.character .sheet-header .xpbar .bar {
   height: 4px;
   margin: 1px;
   display: block;
@@ -1356,23 +1378,23 @@
   border-top: 4px solid #000;
 }
 .kryx_rpg.sheet.actor.character .inventory .item-controls,
-.kryx_rpg.sheet.actor.character .spellbook .item-controls {
+.kryx_rpg.sheet.actor.character .arsenal .item-controls {
   flex: 0 0 68px;
 }
 .kryx_rpg.sheet.actor.character .inventory .item-controls .item-toggle,
-.kryx_rpg.sheet.actor.character .spellbook .item-controls .item-toggle {
+.kryx_rpg.sheet.actor.character .arsenal .item-controls .item-toggle {
   color: #b5b3a4;
 }
 .kryx_rpg.sheet.actor.character .inventory .item-controls .item-toggle.active,
-.kryx_rpg.sheet.actor.character .spellbook .item-controls .item-toggle.active {
+.kryx_rpg.sheet.actor.character .arsenal .item-controls .item-toggle.active {
   color: #4b4a44;
 }
 .kryx_rpg.sheet.actor.character .inventory .item-controls .item-toggle.fixed,
-.kryx_rpg.sheet.actor.character .spellbook .item-controls .item-toggle.fixed {
+.kryx_rpg.sheet.actor.character .arsenal .item-controls .item-toggle.fixed {
   color: #44191A;
 }
 .kryx_rpg.sheet.actor.character .inventory .item-controls .item-toggle.fixed:hover,
-.kryx_rpg.sheet.actor.character .spellbook .item-controls .item-toggle.fixed:hover {
+.kryx_rpg.sheet.actor.character .arsenal .item-controls .item-toggle.fixed:hover {
   text-shadow: none;
 }
 /* ----------------------------------------- */
