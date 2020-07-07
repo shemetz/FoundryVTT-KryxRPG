@@ -160,10 +160,7 @@ export default class ActorKryx extends Actor {
         remaining: this.data.data.mainResources.mana.remaining,
         max: manaMax,
         limit: manaLimit,
-        dc: this.getSuperpowerDC(
-          data.attributes.spellcastingAbility,
-          parseInt(getProperty(this.data, "bonuses.spell_dc") || 0)
-        ),
+        dc: this.getSpellDC(),
         name: manaName,
         nameOfEffect: manaEffectName,
       },
@@ -171,10 +168,7 @@ export default class ActorKryx extends Actor {
         remaining: this.data.data.mainResources.stamina.remaining,
         max: staminaMax,
         limit: staminaLimit,
-        dc: this.getSuperpowerDC(
-          data.attributes.maneuversAbility,
-          parseInt(getProperty(this.data, "bonuses.maneuver_dc") || 0)
-        ),
+        dc: this.getManeuverDC(),
         name: staminaName,
         nameOfEffect: staminaEffectName,
       }
@@ -218,6 +212,20 @@ export default class ActorKryx extends Actor {
     const abilityValue = actorData.abilities[ability].value;
     const prof = actorData.attributes.prof;
     return 8 + abilityValue + prof + bonus;
+  }
+
+  getSpellDC() {
+    return this.getSuperpowerDC(
+      this.data.data.attributes.spellcastingAbility,
+      parseInt(this.data.data.bonuses.spell_dc)
+    )
+  }
+
+  getManeuverDC() {
+    return this.getSuperpowerDC(
+      this.data.data.attributes.maneuverAbility,
+      parseInt(this.data.data.bonuses.maneuver_dc)
+    )
   }
 
   /* -------------------------------------------- */
