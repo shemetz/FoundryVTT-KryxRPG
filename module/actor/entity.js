@@ -10,6 +10,12 @@ import {KRYX_RPG} from '../config.js';
  */
 export default class ActorKryx extends Actor {
 
+  static signedValue(number) {
+    return (number >= 0 ? "+" : "") + number;
+  }
+
+  /* -------------------------------------------- */
+
   /**
    * Augment the basic actor data with additional dynamic data.
    */
@@ -20,80 +26,39 @@ export default class ActorKryx extends Actor {
     const actorData = this.data;
     const data = actorData.data;
     const flags = actorData.flags.kryx_rpg || {};
-    const bonuses = getProperty(data, "bonuses.abilities") || {};
 
     // Prepare Character data
     if (actorData.type === "character") this._prepareCharacterData(actorData);
     else if (actorData.type === "npc") this._prepareNPCData(actorData);
 
-    let originalSaves = null;
-    let originalSkills = null;
-
-    // Ability modifiers and saves
-    // Character All Ability Check" and All Ability Save bonuses added when rolled since not a fixed value.
-    const saveBonus = Number.isNumeric(bonuses.save) ? parseInt(bonuses.save) : 0;
-    const checkBonus = Number.isNumeric(bonuses.check) ? parseInt(bonuses.check) : 0;
-    for (let [id, abl] of Object.entries(data.abilities)) {
-      abl.mod = Math.floor((abl.value - 10) / 2);
-      abl.prof = (abl.proficient || 0) * data.attributes.prof;
-      abl.saveBonus = saveBonus;
-      abl.checkBonus = checkBonus;
-      abl.save = abl.mod + abl.prof + abl.saveBonus;
-
-      // If we merged saves when transforming, take the highest bonus here.
-      if (originalSaves && abl.proficient) {
-        abl.save = Math.max(abl.save, originalSaves[id].save);
-      }
+    // Adding signed values
+    for (const [id, abl] of Object.entries(data.abilities)) {
+      abl.signedValue = ActorKryx.signedValue(abl.value)
+      abl.label = KRYX_RPG.abilities[id]
+    }
+    for (const [id, sav] of Object.entries(data.saves)) {
+      sav.signedValue = ActorKryx.signedValue(sav.value)
+      sav.label = KRYX_RPG.saves[id]
     }
 
     // Skill modifiers
-    const feats = KRYX_RPG.characterFlags;
-    const athlete = flags.remarkableAthlete;
-    const joat = flags.jackOfAllTrades;
-    const observant = flags.observantFeat;
-    const skillBonus = Number.isNumeric(bonuses.skill) ? parseInt(bonuses.skill) : 0;
-    let round = Math.floor;
-    for (let [id, skl] of Object.entries(data.skills)) {
-      skl.value = parseFloat(skl.value || 0);
-
-      // Apply Remarkable Athlete or Jack of all Trades
-      let multi = skl.value;
-      if (athlete && (skl.value === 0) && feats.remarkableAthlete.abilities.includes(skl.ability)) {
-        multi = 0.5;
-        round = Math.ceil;
-      }
-      if (joat && (skl.value === 0)) multi = 0.5;
-
-      // Compute modifier
-      skl.bonus = checkBonus + skillBonus;
-      skl.mod = data.abilities[skl.ability].mod;
-      skl.prof = round(multi * data.attributes.prof);
-      skl.total = skl.mod + skl.prof + skl.bonus;
-
-      // If we merged skills when transforming, take the highest bonus here.
-      if (originalSkills && skl.value > 0.5) {
-        skl.total = Math.max(skl.total, originalSkills[id].total);
-      }
-
-      // Compute passive bonus
-      const passive = observant && (feats.observantFeat.skills.includes(id)) ? 5 : 0;
-      skl.passive = 10 + skl.total + passive;
+    for (const [id, skl] of Object.entries(data.skills)) {
+      skl.mod = data.abilities[skl.ability].value;
+      skl.prof = Math.floor(skl.proficiency * data.attributes.prof);
+      skl.total = skl.mod + skl.prof;
+      skl.signedValue = ActorKryx.signedValue(skl.total);
+      skl.passive = 10 + skl.total;
     }
 
     // Determine Initiative Modifier
     const init = data.attributes.init;
-    init.mod = data.abilities.dex.mod;
-    if (joat) init.prof = Math.floor(0.5 * data.attributes.prof);
-    else if (athlete) init.prof = Math.ceil(0.5 * data.attributes.prof);
-    else init.prof = 0;
-    init.bonus = init.value + (flags.initiativeAlert ? 5 : 0);
+    init.mod = data.abilities.dex.value;
+    init.prof = 0;
+    init.bonus = new Roll(data.bonuses.initiative.value || "0", this.getRollData()).roll().total;
     init.total = init.mod + init.prof + init.bonus;
 
-    // Prepare spell-casting data
-    data.attributes.spelldc = this.getSpellDC(data.attributes.spellcasting);
-    // TODO: Only do this IF we have already processed item types (see Entity#initialize)
     if (this.items) {
-      this._computeSpellcastingProgression(actorData);
+      this._computeResourceProgression();
     }
   }
 
@@ -105,28 +70,20 @@ export default class ActorKryx extends Actor {
   _prepareCharacterData(actorData) {
     const data = actorData.data;
 
-    // Determine character level and available hit dice based on owned Class items
-    const [level, hd] = actorData.items.reduce((arr, item) => {
-      if (item.type === "class") {
-        const classLevels = parseInt(item.data.levels) || 1;
-        arr[0] += classLevels;
-        arr[1] += classLevels - (parseInt(item.data.hitDiceUsed) || 0);
-      }
-      return arr;
-    }, [0, 0]);
+    const level = data.class.level
+    const hdRemaining = level - data.class.hitDiceUsed
     data.details.level = level;
-    data.attributes.hd = hd;
-
-    // Character proficiency bonus
-    data.attributes.prof = Math.floor((level + 7) / 4);
+    data.attributes.hitDiceRemaining = hdRemaining;
+    data.attributes.tier = Math.floor(level / 5) + 1;
+    data.attributes.prof = data.attributes.tier + 1;
 
     // Experience required for next level
-    const xp = data.details.xp;
-    xp.max = this.getLevelExp(level || 1);
-    const prior = this.getLevelExp(level - 1 || 0);
-    const required = xp.max - prior;
-    const pct = Math.round((xp.value - prior) * 100 / required);
-    xp.pct = Math.clamped(pct, 0, 100);
+    const exp = data.details.exp;
+    exp.max = this.getLevelExp(level);
+    const prior = this.getLevelExp(level - 1);
+    const required = exp.max - prior;
+    const pct = Math.round((exp.value - prior) * 100 / required);
+    exp.pct = Math.clamped(pct, 0, 100);
   }
 
   /* -------------------------------------------- */
@@ -138,7 +95,7 @@ export default class ActorKryx extends Actor {
     const data = actorData.data;
 
     // Kill Experience
-    data.details.xp.value = this.getCRExp(data.details.cr);
+    data.details.exp.value = this.getCRExp(data.details.cr);
 
     // Proficiency
     data.attributes.prof = Math.floor((Math.max(data.details.cr, 1) + 7) / 4);
@@ -152,92 +109,73 @@ export default class ActorKryx extends Actor {
   /* -------------------------------------------- */
 
   /**
-   * Prepare data related to the spell-casting capabilities of the Actor
+   * Prepare data related to the superpower capabilities/resources of the Actor
    * @private
    */
-  _computeSpellcastingProgression(actorData) {
-    const spells = actorData.data.spells;
-    const isNPC = actorData.type === 'npc';
+  _computeResourceProgression() {
+    if (this.data.type === 'npc') {
+      // NPC resource maximum and limit are already part of its data
+      return
+    }
 
-    // Translate the list of classes into spell-casting progression
-    const progression = {
-      total: 0,
-      slot: 0,
-      pact: 0
-    };
+    const data = this.data.data
+    const classData = data.class
+    const level = classData.level
+    const isPsionicist = classData.name === "Psionicist"
+    const isAlchemist = KRYX_RPG.systemData.archetypesThatHaveConcoctions.includes(classData.archetype)
+    const progression = KRYX_RPG.RESOURCE_PROGRESSION_MULTIPLIERS[classData.progression]
+    let manaMax = Math.round(progression.mana * level)
+    let staminaMax = Math.round(progression.stamina * level)
+    let manaLimit = Math.ceil(progression.manaLimit * level)
+    let staminaLimit = Math.ceil(progression.staminaLimit * level)
+    let manaName = data.mainResources.mana.name
+    const staminaName = game.i18n.localize("KRYX_RPG.MainResourceStamina")
+    let manaEffectName = data.mainResources.mana.nameOfEffect
+    const staminaEffectName = game.i18n.localize("KRYX_RPG.MainResourceStaminaEffect")
 
-    // Keep track of the last seen caster in case we're in a single-caster situation.
-    let caster = null;
+    // EXCEPTION: half-half gish at level 1
+    if (level === 1 && classData.progression === "gishHalfHalf") {
+      manaMax = 1  // instead of 0
+    }
 
-    // Tabulate the total spell-casting progression
-    const classes = this.data.items.filter(i => i.type === "class");
-    for (let cls of classes) {
-      const d = cls.data;
-      if (d.spellcasting === "none") continue;
-      const levels = d.levels;
-      const prog = d.spellcasting;
-
-      // Accumulate levels
-      if (prog !== "pact") {
-        caster = cls;
-        progression.total++;
-      }
-      switch (prog) {
-        case 'third':
-          progression.slot += Math.floor(levels / 3);
-          break;
-        case 'half':
-          progression.slot += Math.floor(levels / 2);
-          break;
-        case 'full':
-          progression.slot += levels;
-          break;
-        case 'artificer':
-          progression.slot += Math.ceil(levels / 2);
-          break;
-        case 'pact':
-          progression.pact += levels;
-          break;
+    // EXCEPTION: psi
+    if (isPsionicist) {
+      manaName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedPsi")
+      if (classData.progression === "gishSpells") {
+        // Soulknife or Monk; can turn psi into stamina and use maneuvers
+        staminaLimit = Math.ceil(0.25 * level)
       }
     }
 
-    // EXCEPTION: single-classed non-full progression rounds up, rather than down
-    const isSingleClass = (progression.total === 1) && (progression.slot > 0);
-    if (!isNPC && isSingleClass && ['half', 'third'].includes(caster.data.spellcasting)) {
-      const denom = caster.data.spellcasting === 'third' ? 3 : 2;
-      progression.slot = Math.ceil(caster.data.levels / denom);
+    // EXCEPTION: alchemy
+    if (isAlchemist) {
+      manaName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalysts")
+      manaEffectName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalystsEffect")
     }
 
-    // EXCEPTION: NPC with an explicit spellcaster level
-    if (isNPC && actorData.data.details.spellLevel) {
-      progression.slot = actorData.data.details.spellLevel;
-    }
-
-    // Look up the number of slots per level from the progression table
-    const levels = Math.clamped(progression.slot, 0, 20);
-    const slots = KRYX_RPG.SPELL_SLOT_TABLE[levels - 1] || [];
-    for (let [n, lvl] of Object.entries(spells)) {
-      let i = parseInt(n.slice(-1));
-      if (Number.isNaN(i)) continue;
-      if (Number.isNumeric(lvl.override)) lvl.max = Math.max(parseInt(lvl.override), 1);
-      else lvl.max = slots[i - 1] || 0;
-      lvl.value = Math.min(parseInt(lvl.value), lvl.max);
-    }
-
-    // Determine the Actor's pact magic level (if any)
-    let pl = Math.clamped(progression.pact, 0, 20);
-    spells.pact = spells.pact || {};
-    if ((pl === 0) && isNPC && Number.isNumeric(spells.pact.override)) pl = actorData.data.details.spellLevel;
-
-    // Determine the number of Warlock pact slots per level
-    if (pl > 0) {
-      spells.pact.level = Math.ceil(Math.min(10, pl) / 2);
-      if (Number.isNumeric(spells.pact.override)) spells.pact.max = Math.max(parseInt(spells.pact.override), 1);
-      else spells.pact.max = Math.max(1, Math.min(pl, 2), Math.min(pl - 8, 3), Math.min(pl - 13, 4));
-      spells.pact.value = Math.min(spells.pact.value, spells.pact.max);
-    } else {
-      spells.pact.level = 0;
-      spells.pact.max = 0;
+    data.mainResources = {
+      mana: {
+        remaining: this.data.data.mainResources.mana.remaining,
+        max: manaMax,
+        limit: manaLimit,
+        dc: this.getSuperpowerDC(
+          data.attributes.spellcastingAbility,
+          parseInt(getProperty(this.data, "bonuses.spell_dc") || 0)
+        ),
+        name: manaName,
+        nameOfEffect: manaEffectName,
+      },
+      stamina: {
+        remaining: this.data.data.mainResources.stamina.remaining,
+        max: staminaMax,
+        limit: staminaLimit,
+        dc: this.getSuperpowerDC(
+          data.attributes.maneuversAbility,
+          parseInt(getProperty(this.data, "bonuses.maneuver_dc") || 0)
+        ),
+        name: staminaName,
+        nameOfEffect: staminaEffectName,
+      }
     }
   }
 
@@ -268,17 +206,16 @@ export default class ActorKryx extends Actor {
   /* -------------------------------------------- */
 
   /**
-   * Return the spell DC for this actor using a certain ability score
+   * Return the superpower DC for this actor using a certain ability score
    * @param {string} ability    The ability score, i.e. "str"
-   * @return {number}           The spell DC
+   * @param {number} bonus      An optional bonus to the DC
+   * @return {number}           The superpower DC
    */
-  getSpellDC(ability) {
+  getSuperpowerDC(ability, bonus) {
     const actorData = this.data.data;
-    let bonus = getProperty(actorData, "bonuses.spell.dc");
-    bonus = Number.isNumeric(bonus) ? parseInt(bonus) : 0;
-    ability = actorData.abilities[ability];
+    const abilityValue = actorData.abilities[ability].value;
     const prof = actorData.attributes.prof;
-    return 8 + (ability ? ability.mod : 0) + prof + bonus;
+    return 8 + abilityValue + prof + bonus;
   }
 
   /* -------------------------------------------- */
@@ -286,12 +223,7 @@ export default class ActorKryx extends Actor {
   /** @override */
   getRollData() {
     const data = super.getRollData();
-    data.classes = this.data.items.reduce((obj, i) => {
-      if (i.type === "class") {
-        obj[i.name.slugify({strict: true})] = i.data;
-      }
-      return obj;
-    }, {});
+    data.class = this.data.class
     data.prof = this.data.data.attributes.prof;
     return data;
   }
@@ -410,8 +342,9 @@ export default class ActorKryx extends Actor {
    * @param {ItemKryx} item   The spell being cast by the actor
    * @param {Event} event   The originating user interaction which triggered the cast
    */
-  async useSpell(item, {configureDialog = true} = {}) {
-    if (item.data.type !== "spell") throw new Error("Wrong Item type");
+  async useSuperpower(item, {configureDialog = true} = {}) {
+    //TODO rewrite all of this
+    if (item.data.type !== "superpower") throw new Error(`Wrong Item type - ${item.data.name} is ${item.data.type}`);
     const itemData = item.data.data;
 
     // Configure spellcasting data
@@ -424,10 +357,9 @@ export default class ActorKryx extends Actor {
     // Configure spell slot consumption and measured template placement from the form
     if (configureDialog && (usesSlots || item.hasAreaTarget || limitedUses)) {
       const spellFormData = await SpellCastDialog.create(this, item);
-      const isPact = spellFormData.get('level') === 'pact';
-      const lvl = isPact ? this.data.data.spells.pact.level : parseInt(spellFormData.get("level"));
+      const lvl = parseInt(spellFormData.get("level"));
       if (Boolean(spellFormData.get("consume"))) {
-        consume = isPact ? 'pact' : `spell${lvl}`;
+        consume = `spell${lvl}`;
       } else {
         consume = false;
       }
@@ -494,7 +426,7 @@ export default class ActorKryx extends Actor {
     }
 
     // Reliable Talent applies to any skill check we have full or better proficiency in
-    const reliableTalent = (skl.value >= 1 && this.getFlag("kryx_rpg", "reliableTalent"));
+    const reliableTalent = (skl.proficiency >= 1 && this.getFlag("kryx_rpg", "reliableTalent"));
 
     // Roll and return
     return d20Roll(mergeObject(options, {
@@ -505,32 +437,6 @@ export default class ActorKryx extends Actor {
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       reliableTalent: reliableTalent
     }));
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Roll a generic ability test or saving throw.
-   * Prompt the user for input on which variety of roll they want to do.
-   * @param {String}abilityId     The ability id (e.g. "str")
-   * @param {Object} options      Options which configure how ability tests or saving throws are rolled
-   */
-  rollAbility(abilityId, options = {}) {
-    const label = CONFIG.KRYX_RPG.abilities[abilityId];
-    new Dialog({
-      title: game.i18n.format("KRYX_RPG.AbilityPromptTitle", {ability: label}),
-      content: `<p>${game.i18n.format("KRYX_RPG.AbilityPromptText", {ability: label})}</p>`,
-      buttons: {
-        test: {
-          label: game.i18n.localize("KRYX_RPG.ActionAbil"),
-          callback: () => this.rollAbilityTest(abilityId, options)
-        },
-        save: {
-          label: game.i18n.localize("KRYX_RPG.ActionSave"),
-          callback: () => this.rollAbilitySave(abilityId, options)
-        }
-      }
-    }).render(true);
   }
 
   /* -------------------------------------------- */
@@ -548,17 +454,7 @@ export default class ActorKryx extends Actor {
 
     // Construct parts
     const parts = ["@mod"];
-    const data = {mod: abl.mod};
-
-    // Add feat-related proficiency bonuses
-    const feats = this.data.flags.kryx_rpg || {};
-    if (feats.remarkableAthlete && KRYX_RPG.characterFlags.remarkableAthlete.abilities.includes(abilityId)) {
-      parts.push("@proficiency");
-      data.proficiency = Math.ceil(0.5 * this.data.data.attributes.prof);
-    } else if (feats.jackOfAllTrades) {
-      parts.push("@proficiency");
-      data.proficiency = Math.floor(0.5 * this.data.data.attributes.prof);
-    }
+    const data = {mod: abl.value};
 
     // Add global actor bonus
     const bonuses = getProperty(this.data.data, "bonuses.abilities") || {};
@@ -573,35 +469,35 @@ export default class ActorKryx extends Actor {
       data: data,
       title: game.i18n.format("KRYX_RPG.AbilityPromptTitle", {ability: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
-      halflingLucky: feats.halflingLucky
+      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky")
     }));
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Roll an Ability Saving Throw
+   * Roll a Saving Throw
    * Prompt the user for input regarding Advantage/Disadvantage and any Situational Bonus
-   * @param {String} abilityId    The ability ID (e.g. "str")
-   * @param {Object} options      Options which configure how ability tests are rolled
+   * @param {String} saveId       The save ID (e.g. "reflex")
+   * @param {Object} options      Options which configure how save tests are rolled
    * @return {Promise<Roll>}      A Promise which resolves to the created Roll instance
    */
-  rollAbilitySave(abilityId, options = {}) {
-    const label = CONFIG.KRYX_RPG.abilities[abilityId];
-    const abl = this.data.data.abilities[abilityId];
+  rollSavingThrow(saveId, options = {}) {
+    const label = CONFIG.KRYX_RPG.saves[saveId];
+    const save = this.data.data.saves[saveId];
 
     // Construct parts
     const parts = ["@mod"];
-    const data = {mod: abl.mod};
+    const data = {mod: save.value};
 
     // Include proficiency bonus
-    if (abl.prof > 0) {
+    if (save.prof > 0) {
       parts.push("@prof");
-      data.prof = abl.prof;
+      data.prof = save.prof;
     }
 
     // Include a global actor ability save bonus
-    const bonuses = getProperty(this.data.data, "bonuses.abilities") || {};
+    const bonuses = getProperty(this.data.data, "bonuses.saves") || {};
     if (bonuses.save) {
       parts.push("@saveBonus");
       data.saveBonus = bonuses.save;
@@ -611,7 +507,7 @@ export default class ActorKryx extends Actor {
     return d20Roll(mergeObject(options, {
       parts: parts,
       data: data,
-      title: game.i18n.format("KRYX_RPG.SavePromptTitle", {ability: label}),
+      title: game.i18n.format("KRYX_RPG.SavePromptTitle", {save: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky")
     }));
@@ -711,20 +607,8 @@ export default class ActorKryx extends Actor {
    * @param {string} denomination    The hit denomination of hit die to roll. Example "d8"
    */
   async rollHitDie(denomination) {
-
-    // Find a class (if any) which has an available hit die of the requested denomination
-    const cls = this.items.find(i => {
-      const d = i.data.data;
-      return (d.hitDice === denomination) && ((d.levels || 1) - (d.hitDiceUsed || 0) > 0);
-    });
-
-    // If no class is available, display an error notification
-    if (!cls) {
-      return ui.notifications.error(game.i18n.format("KRYX_RPG.HitDiceWarn", {name: this.name, formula: formula}));
-    }
-
     // Prepare roll data
-    const parts = [`1${denomination}`, "@abilities.con.mod"];
+    const parts = [`1${denomination}`, "@abilities.con.value"];
     const title = game.i18n.localize("KRYX_RPG.HitDiceRoll");
     const rollData = duplicate(this.data.data);
 
@@ -736,12 +620,13 @@ export default class ActorKryx extends Actor {
       title: title,
       speaker: ChatMessage.getSpeaker({actor: this}),
       allowcritical: false,
+      fastForward: true,
       dialogOptions: {width: 350}
     });
     if (!roll) return;
 
     // Adjust actor data
-    await cls.update({"data.hitDiceUsed": cls.data.data.hitDiceUsed + 1});
+    await this.update({"data.class.hitDiceUsed": this.data.data.class.hitDiceUsed + 1});
     const hp = this.data.data.attributes.hp;
     const dhp = Math.min(hp.max - hp.value, roll.total);
     return this.update({"data.attributes.hp.value": hp.value + dhp});
@@ -760,7 +645,7 @@ export default class ActorKryx extends Actor {
     const data = this.data.data;
 
     // Take note of the initial hit points and number of hit dice the Actor has
-    const hd0 = data.attributes.hd;
+    const hd0 = data.class.level - data.class.hitDiceUsed;
     const hp0 = data.attributes.hp.value;
 
     // Display a Dialog for rolling hit dice
@@ -774,7 +659,7 @@ export default class ActorKryx extends Actor {
     }
 
     // Note the change in HP and HD which occurred
-    const dhd = data.attributes.hd - hd0;
+    const dhd = data.class.level - data.class.hitDiceUsed - hd0;
     const dhp = data.attributes.hp.value - hp0;
 
     // Recover character resources
@@ -784,11 +669,6 @@ export default class ActorKryx extends Actor {
         updateData[`data.resources.${k}.value`] = r.max;
       }
     }
-
-    // Recover pact slots.
-    const pact = data.spells.pact;
-    updateData['data.spells.pact.value'] = pact.override || pact.max;
-    await this.update(updateData);
 
     // Recover item uses
     const recovery = newDay ? ["sr", "day"] : ["sr"];
@@ -834,6 +714,53 @@ export default class ActorKryx extends Actor {
     }
   }
 
+
+  /* -------------------------------------------- */
+
+  /**
+   * Cause this Actor to spend a Second Wind
+   * During a Second Wind hit dice are spent to regain hit points
+   * @param {boolean} chat    Summarize the results of the rest workflow as a chat message
+   * @return {Promise}        A Promise which resolves once the short rest workflow has completed
+   */
+  async secondWind({chat = true} = {}) {
+    const data = this.data.data;
+
+    // Take note of the initial hit points and number of hit dice the Actor has
+    const hd0 = data.class.level - data.class.hitDiceUsed;
+    const hp0 = data.attributes.hp.value;
+
+    // Display a Dialog for using a second wind
+    await SecondWindDialog.secondWindDialog({actor: this});
+
+    // Note the change in HP and HD which occurred
+    const dhd = data.class.level - data.class.hitDiceUsed - hd0;
+    const dhp = data.attributes.hp.value - hp0;
+
+    // Display a Chat Message summarizing the rest effects
+    let restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorAction")
+
+    // Warriors can use Second Wind as a bonus action
+    if (data.class.name === "Warrior" && data.class.level >= 2) {
+      restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorBonusAction")
+    }
+
+    if (chat) {
+      ChatMessage.create({
+        user: game.user._id,
+        speaker: {actor: this, alias: this.name},
+        flavor: restFlavor,
+        content: game.i18n.format("KRYX_RPG.SecondWindResult", {name: this.name, dice: -dhd, health: dhp})
+      });
+    }
+
+    // Return data summarizing the rest effects
+    return {
+      dhd: dhd,
+      dhp: dhp,
+    }
+  }
+
   /* -------------------------------------------- */
 
   /**
@@ -870,37 +797,17 @@ export default class ActorKryx extends Actor {
       }
     }
 
-    // Recover spell slots
-    for (let [k, v] of Object.entries(data.spells)) {
-      if (!v.max && !v.override) continue;
-      updateData[`data.spells.${k}.value`] = v.override || v.max;
-    }
+    // Recover mana and stamina
+    updateData[`data.mainResources.mana.remaining`] = data.mainResources.mana.max;
+    updateData[`data.mainResources.stamina.remaining`] = data.mainResources.stamina.max;
 
-    // Recover pact slots.
-    const pact = data.spells.pact;
-    updateData['data.spells.pact.value'] = pact.override || pact.max;
-
-    // Determine the number of hit dice which may be recovered
-    let recoverHD = Math.max(Math.floor(data.details.level / 2), 1);
-    let dhd = 0;
-
-    // Sort classes which can recover HD, assuming players prefer recovering larger HD first.
-    const updateItems = this.items.filter(item => item.data.type === "class").sort((a, b) => {
-      let da = parseInt(a.data.data.hitDice.slice(1)) || 0;
-      let db = parseInt(b.data.data.hitDice.slice(1)) || 0;
-      return db - da;
-    }).reduce((updates, item) => {
-      const d = item.data.data;
-      if ((recoverHD > 0) && (d.hitDiceUsed > 0)) {
-        let delta = Math.min(d.hitDiceUsed || 0, recoverHD);
-        recoverHD -= delta;
-        dhd += delta;
-        updates.push({_id: item.id, "data.hitDiceUsed": d.hitDiceUsed - delta});
-      }
-      return updates;
-    }, []);
+    // Determine the number of hit dice which may be recovered (half your level rounded up; at least 1; no more than total spent)
+    const hitDiceAllowedToRecover = Math.ceil(data.class.level / 2)
+    const hitDiceRecovered = Math.min(Math.max(hitDiceAllowedToRecover, 1), data.class.hitDiceUsed);
+    updateData['data.class.hitDiceUsed'] = hitDiceRecovered
 
     // Iterate over owned items, restoring uses per day and recovering Hit Dice
+    const updateItems = []
     const recovery = newDay ? ["sr", "lr", "day"] : ["sr", "lr"];
     for (let item of this.items) {
       const d = item.data.data;
@@ -934,13 +841,13 @@ export default class ActorKryx extends Actor {
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("KRYX_RPG.LongRestResult", {name: this.name, health: dhp, dice: dhd})
+        content: game.i18n.format("KRYX_RPG.LongRestResult", {name: this.name, health: dhp, dice: hitDiceRecovered})
       });
     }
 
     // Return data summarizing the rest effects
     return {
-      dhd: dhd,
+      dhd: hitDiceRecovered,
       dhp: dhp,
       updateData: updateData,
       updateItems: updateItems,
@@ -959,8 +866,7 @@ export default class ActorKryx extends Actor {
     const curr = duplicate(this.data.data.currency);
     const convert = {
       cp: {into: "sp", each: 10},
-      sp: {into: "ep", each: 5},
-      ep: {into: "gp", each: 2},
+      sp: {into: "gp", each: 10},
       gp: {into: "pp", each: 10}
     };
     for (let [c, t] of Object.entries(convert)) {

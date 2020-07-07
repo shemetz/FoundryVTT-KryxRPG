@@ -32,7 +32,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
       case "cone": // Kryx RPG cone RAW should be 53.13 degrees
         templateData.angle = 53.13;
         break;
-      case "rect": // Kryx RPG rectangular AoEs are always cubes
+      case "rect": // Kryx RPG rectangular AoEs are always cubes but also usually don't exist
         templateData.distance = Math.hypot(target.value, target.value);
         templateData.width = target.value;
         templateData.direction = 45;

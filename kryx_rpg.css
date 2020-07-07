@@ -1229,7 +1229,7 @@
   flex: none;
   margin-left: 3px;
 }
-.kryx_rpg.sheet.actor.character .sheet-header .xpbar {
+.kryx_rpg.sheet.actor.character .sheet-header .expbar {
   flex: 0 0 8px;
   width: 100%;
   margin-bottom: 5px;
@@ -1237,7 +1237,7 @@
   border: 1px solid #000;
   border-radius: 3px;
 }
-.kryx_rpg.sheet.actor.character .sheet-header .xpbar .bar {
+.kryx_rpg.sheet.actor.character .sheet-header .expbar .bar {
   height: 4px;
   margin: 1px;
   display: block;

@@ -3,12 +3,14 @@ export const KRYX_RPG = {};
 
 // ASCII Artwork
 KRYX_RPG.ASCII = `_______________________________
-______      ______ _____ _____ 
-|  _  \\___  |  _  \\  ___|  ___|
-| | | ( _ ) | | | |___ \\| |__  
-| | | / _ \\/\\ | | |   \\ \\  __| 
-| |/ / (_>  < |/ //\\__/ / |___ 
-|___/ \\___/\\/___/ \\____/\\____/
+ _  __                  _____  _____   _____ 
+| |/ /                 |  __ \\|  __ \\ / ____|
+| ' / _ __ _   ___  __ | |__) | |__) | |  __ 
+|  < | '__| | | \\ \\/ / |  _  /|  ___/| | |_ |
+| . \\| |  | |_| |>  <  | | \\ \\| |    | |__| |
+|_|\\_\\_|   \\__, /_/\\_\\ |_|  \\_\\_|     \\_____|
+            __/ |                            
+           |___/                             
 _______________________________`;
 
 
@@ -25,43 +27,27 @@ KRYX_RPG.abilities = {
   "cha": "KRYX_RPG.AbilityCha"
 };
 
-/* -------------------------------------------- */
-
-/**
- * Character alignment options
- * @type {Object}
- */
-KRYX_RPG.alignments = {
-  'lg': "KRYX_RPG.AlignmentLG",
-  'ng': "KRYX_RPG.AlignmentNG",
-  'cg': "KRYX_RPG.AlignmentCG",
-  'ln': "KRYX_RPG.AlignmentLN",
-  'tn': "KRYX_RPG.AlignmentTN",
-  'cn': "KRYX_RPG.AlignmentCN",
-  'le': "KRYX_RPG.AlignmentLE",
-  'ne': "KRYX_RPG.AlignmentNE",
-  'ce': "KRYX_RPG.AlignmentCE"
+KRYX_RPG.saves = {
+  "fortitude": "KRYX_RPG.SaveFortitude",
+  "reflex": "KRYX_RPG.SaveReflex",
+  "will": "KRYX_RPG.SaveWill",
 };
 
+KRYX_RPG.shortenedAbility = {
+  "Strength": "KRYX_RPG.AbilityStrShort",
+  "Dexterity": "KRYX_RPG.AbilityDexShort",
+  "Constitution": "KRYX_RPG.AbilityConShort",
+  "Intelligence": "KRYX_RPG.AbilityIntShort",
+  "Wisdom": "KRYX_RPG.AbilityWisShort",
+  "Charisma": "KRYX_RPG.AbilityChaShort",
+};
+
+/* -------------------------------------------- */
 
 KRYX_RPG.weaponProficiencies = {
   "sim": "KRYX_RPG.WeaponSimpleProficiency",
   "mar": "KRYX_RPG.WeaponMartialProficiency"
 };
-
-KRYX_RPG.toolProficiencies = {
-  "art": "KRYX_RPG.ToolArtisans",
-  "disg": "KRYX_RPG.ToolDisguiseKit",
-  "forg": "KRYX_RPG.ToolForgeryKit",
-  "game": "KRYX_RPG.ToolGamingSet",
-  "herb": "KRYX_RPG.ToolHerbalismKit",
-  "music": "KRYX_RPG.ToolMusicalInstrument",
-  "navg": "KRYX_RPG.ToolNavigators",
-  "pois": "KRYX_RPG.ToolPoisonersKit",
-  "thief": "KRYX_RPG.ToolThieves",
-  "vehicle": "KRYX_RPG.ToolVehicle"
-};
-
 
 /* -------------------------------------------- */
 
@@ -81,7 +67,6 @@ KRYX_RPG.timePeriods = {
   "perm": "KRYX_RPG.TimePerm",
   "spec": "KRYX_RPG.Special"
 };
-
 
 /* -------------------------------------------- */
 
@@ -104,14 +89,12 @@ KRYX_RPG.abilityActivationTypes = {
 
 /* -------------------------------------------- */
 
-
 KRYX_RPG.abilityConsumptionTypes = {
   "ammo": "KRYX_RPG.ConsumeAmmunition",
   "attribute": "KRYX_RPG.ConsumeAttribute",
   "material": "KRYX_RPG.ConsumeMaterial",
   "charges": "KRYX_RPG.ConsumeCharges"
 };
-
 
 /* -------------------------------------------- */
 
@@ -172,7 +155,6 @@ KRYX_RPG.limitedUsePeriods = {
   "charges": "KRYX_RPG.Charges"
 };
 
-
 /* -------------------------------------------- */
 
 /**
@@ -180,16 +162,17 @@ KRYX_RPG.limitedUsePeriods = {
  * @type {Object}
  */
 KRYX_RPG.equipmentTypes = {
-  "light": "KRYX_RPG.EquipmentLight",
-  "medium": "KRYX_RPG.EquipmentMedium",
-  "heavy": "KRYX_RPG.EquipmentHeavy",
+  "leather": "KRYX_RPG.EquipmentLeather",
+  "hide": "KRYX_RPG.EquipmentHide",
+  "chain": "KRYX_RPG.EquipmentChain",
+  "scale": "KRYX_RPG.EquipmentScale",
+  "plate": "KRYX_RPG.EquipmentPlate",
   "bonus": "KRYX_RPG.EquipmentBonus",
   "natural": "KRYX_RPG.EquipmentNatural",
   "shield": "KRYX_RPG.EquipmentShield",
   "clothing": "KRYX_RPG.EquipmentClothing",
   "trinket": "KRYX_RPG.EquipmentTrinket"
 };
-
 
 /* -------------------------------------------- */
 
@@ -198,12 +181,13 @@ KRYX_RPG.equipmentTypes = {
  * @type {Object}
  */
 KRYX_RPG.armorProficiencies = {
-  "lgt": KRYX_RPG.equipmentTypes.light,
-  "med": KRYX_RPG.equipmentTypes.medium,
-  "hvy": KRYX_RPG.equipmentTypes.heavy,
-  "shl": "KRYX_RPG.EquipmentShieldProficiency"
+  "leather": KRYX_RPG.equipmentTypes.leather,
+  "hide": KRYX_RPG.equipmentTypes.hide,
+  "chain": KRYX_RPG.equipmentTypes.chain,
+  "scale": KRYX_RPG.equipmentTypes.scale,
+  "plate": KRYX_RPG.equipmentTypes.plate,
+  "shield": KRYX_RPG.equipmentTypes.shield,
 };
-
 
 /* -------------------------------------------- */
 
@@ -231,7 +215,6 @@ KRYX_RPG.consumableTypes = {
 KRYX_RPG.currencies = {
   "pp": "KRYX_RPG.CurrencyPP",
   "gp": "KRYX_RPG.CurrencyGP",
-  "ep": "KRYX_RPG.CurrencyEP",
   "sp": "KRYX_RPG.CurrencySP",
   "cp": "KRYX_RPG.CurrencyCP",
 };
@@ -253,7 +236,7 @@ KRYX_RPG.damageTypes = {
   "psychic": "KRYX_RPG.DamagePsychic",
   "radiant": "KRYX_RPG.DamageRadiant",
   "slashing": "KRYX_RPG.DamageSlashing",
-  "thunder": "KRYX_RPG.DamageThunder"
+  "concussion": "KRYX_RPG.DamageConcussion"
 };
 
 /* -------------------------------------------- */
@@ -277,7 +260,8 @@ KRYX_RPG.distanceUnits = {
  */
 KRYX_RPG.encumbrance = {
   currencyPerWeight: 50,
-  strMultiplier: 15
+  base: 150,
+  strMultiplier: 30
 };
 
 /* -------------------------------------------- */
@@ -298,8 +282,6 @@ KRYX_RPG.targetTypes = {
   "sphere": "KRYX_RPG.TargetSphere",
   "cylinder": "KRYX_RPG.TargetCylinder",
   "cone": "KRYX_RPG.TargetCone",
-  "square": "KRYX_RPG.TargetSquare",
-  "cube": "KRYX_RPG.TargetCube",
   "line": "KRYX_RPG.TargetLine",
   "wall": "KRYX_RPG.TargetWall"
 };
@@ -310,18 +292,16 @@ KRYX_RPG.targetTypes = {
 
 /**
  * Map the subset of target types which produce a template area of effect
- * The keys are KRYX_RPG target types and the values are MeasuredTemplate shape types
+ * The keys are Kryx RPG target types and the values are MeasuredTemplate shape types
  * @type {Object}
  */
 KRYX_RPG.areaTargetTypes = {
   cone: "cone",
-  cube: "rect",
   cylinder: "circle",
   line: "ray",
   radius: "circle",
   sphere: "circle",
-  square: "rect",
-  wall: "ray"
+  wall: "line"
 };
 
 
@@ -365,59 +345,34 @@ KRYX_RPG.senses = {
  * @type {Object}
  */
 KRYX_RPG.skills = {
-  "acr": "KRYX_RPG.SkillAcr",
-  "ani": "KRYX_RPG.SkillAni",
-  "arc": "KRYX_RPG.SkillArc",
-  "ath": "KRYX_RPG.SkillAth",
-  "dec": "KRYX_RPG.SkillDec",
-  "his": "KRYX_RPG.SkillHis",
-  "ins": "KRYX_RPG.SkillIns",
-  "itm": "KRYX_RPG.SkillItm",
-  "inv": "KRYX_RPG.SkillInv",
-  "med": "KRYX_RPG.SkillMed",
-  "nat": "KRYX_RPG.SkillNat",
-  "prc": "KRYX_RPG.SkillPrc",
-  "prf": "KRYX_RPG.SkillPrf",
-  "per": "KRYX_RPG.SkillPer",
-  "rel": "KRYX_RPG.SkillRel",
-  "slt": "KRYX_RPG.SkillSlt",
-  "ste": "KRYX_RPG.SkillSte",
-  "sur": "KRYX_RPG.SkillSur"
+  "acrobatics": "KRYX_RPG.SkillAcrobatics",
+  "alchemy": "KRYX_RPG.SkillAlchemy",
+  "arcana": "KRYX_RPG.SkillArcana",
+  "athletics": "KRYX_RPG.SkillAthletics",
+  "deception": "KRYX_RPG.SkillDeception",
+  "engineering": "KRYX_RPG.SkillEngineering",
+  "insight": "KRYX_RPG.SkillInsight",
+  "intimidation": "KRYX_RPG.SkillIntimidation",
+  "medicine": "KRYX_RPG.SkillMedicine",
+  "nature": "KRYX_RPG.SkillNature",
+  "occult": "KRYX_RPG.SkillOccult",
+  "perception": "KRYX_RPG.SkillPerception",
+  "performance": "KRYX_RPG.SkillPerformance",
+  "persuasion": "KRYX_RPG.SkillPersuasion",
+  "psionics": "KRYX_RPG.SkillPsionics",
+  "religion": "KRYX_RPG.SkillReligion",
+  "society": "KRYX_RPG.SkillSociety",
+  "stealth": "KRYX_RPG.SkillStealth",
 };
 
 
 /* -------------------------------------------- */
 
-KRYX_RPG.spellPreparationModes = {
-  "always": "KRYX_RPG.SpellPrepAlways",
-  "atwill": "KRYX_RPG.SpellPrepAtWill",
-  "innate": "KRYX_RPG.SpellPrepInnate",
-  "pact": "KRYX_RPG.PactMagic",
-  "prepared": "KRYX_RPG.SpellPrepPrepared"
-};
-
-KRYX_RPG.spellUpcastModes = ["always", "pact", "prepared"];
-
-
-KRYX_RPG.spellProgression = {
-  "none": "KRYX_RPG.SpellNone",
-  "full": "KRYX_RPG.SpellProgFull",
-  "half": "KRYX_RPG.SpellProgHalf",
-  "third": "KRYX_RPG.SpellProgThird",
-  "pact": "KRYX_RPG.SpellProgPact",
-  "artificer": "KRYX_RPG.SpellProgArt"
-};
-
-/* -------------------------------------------- */
-
-/**
- * The available choices for how spell damage scaling may be computed
- * @type {Object}
- */
-KRYX_RPG.spellScalingModes = {
-  "none": "KRYX_RPG.SpellNone",
-  "cantrip": "KRYX_RPG.SpellCantrip",
-  "level": "KRYX_RPG.SpellLevel"
+KRYX_RPG.superpowerAvailability = {
+  "known": "KRYX_RPG.SuperpowerAvailabilityKnown", // most superpowers are like this
+  "atwill": "KRYX_RPG.SuperpowerAvailabilityAtWill", // e.g. if given by the Barkskinned feat
+  "limited": "KRYX_RPG.SuperpowerAvailabilityLimited", // e.g. if given by the Divine Bearer feature (Celestial Suffused)
+  "spellbook": "KRYX_RPG.SuperpowerAvailabilitySpellbook", // in spellbook and not currently known (Wizard, Mage)
 };
 
 /* -------------------------------------------- */
@@ -457,103 +412,76 @@ KRYX_RPG.weaponProperties = {
   "spc": "KRYX_RPG.WeaponPropertiesSpc",
   "thr": "KRYX_RPG.WeaponPropertiesThr",
   "two": "KRYX_RPG.WeaponPropertiesTwo",
-  "ver": "KRYX_RPG.WeaponPropertiesVer"
-};
-
-
-// Spell Components
-KRYX_RPG.spellComponents = {
-  "V": "KRYX_RPG.ComponentVerbal",
-  "S": "KRYX_RPG.ComponentSomatic",
-  "M": "KRYX_RPG.ComponentMaterial"
+  "ver": "KRYX_RPG.WeaponPropertiesVer",
+  "sil": "KRYX_RPG.WeaponPropertiesSil",
 };
 
 // Spell Schools
-KRYX_RPG.spellSchools = {
-  "abj": "KRYX_RPG.SchoolAbj",
-  "con": "KRYX_RPG.SchoolCon",
-  "div": "KRYX_RPG.SchoolDiv",
-  "enc": "KRYX_RPG.SchoolEnc",
-  "evo": "KRYX_RPG.SchoolEvo",
-  "ill": "KRYX_RPG.SchoolIll",
-  "nec": "KRYX_RPG.SchoolNec",
-  "trs": "KRYX_RPG.SchoolTrs"
+KRYX_RPG.themes = {
+  "Acid": "KRYX_RPG.ThemeAcid",
+  "Air": "KRYX_RPG.ThemeAir",
+  "Alteration": "KRYX_RPG.ThemeAlteration",
+  "Antimagic": "KRYX_RPG.ThemeAntimagic",
+  "Beast": "KRYX_RPG.ThemeBeast",
+  "Blood": "KRYX_RPG.ThemeBlood",
+  "Chaos": "KRYX_RPG.ThemeChaos",
+  "Charm": "KRYX_RPG.ThemeCharm",
+  "Cosmos": "KRYX_RPG.ThemeCosmos",
+  "Courage": "KRYX_RPG.ThemeCourage",
+  "Creation": "KRYX_RPG.ThemeCreation",
+  "Death": "KRYX_RPG.ThemeDeath",
+  "Deceit": "KRYX_RPG.ThemeDeceit",
+  "Divination": "KRYX_RPG.ThemeDivination",
+  "Earth": "KRYX_RPG.ThemeEarth",
+  "Fate": "KRYX_RPG.ThemeFate",
+  "Fear": "KRYX_RPG.ThemeFear",
+  "Fire": "KRYX_RPG.ThemeFire",
+  "Force": "KRYX_RPG.ThemeForce",
+  "Holy": "KRYX_RPG.ThemeHoly",
+  "Ice": "KRYX_RPG.ThemeIce",
+  "Life": "KRYX_RPG.ThemeLife",
+  "Light": "KRYX_RPG.ThemeLight",
+  "Marksmanship": "KRYX_RPG.ThemeMarksmanship",
+  "Mind": "KRYX_RPG.ThemeMind",
+  "Pestilence": "KRYX_RPG.ThemePestilence",
+  "Planes": "KRYX_RPG.ThemePlanes",
+  "Plants": "KRYX_RPG.ThemePlants",
+  "Poison": "KRYX_RPG.ThemePoison",
+  "Protection": "KRYX_RPG.ThemeProtection",
+  "Sand": "KRYX_RPG.ThemeSand",
+  "Shadow": "KRYX_RPG.ThemeShadow",
+  "Skirmish": "KRYX_RPG.ThemeSkirmish",
+  "Spirit": "KRYX_RPG.ThemeSpirit",
+  "Storm": "KRYX_RPG.ThemeStorm",
+  "Survival": "KRYX_RPG.ThemeSurvival",
+  "Telekinesis": "KRYX_RPG.ThemeTelekinesis",
+  "Teleportation": "KRYX_RPG.ThemeTeleportation",
+  "Time": "KRYX_RPG.ThemeTime",
+  "Unholy": "KRYX_RPG.ThemeUnholy",
+  "Vanguard": "KRYX_RPG.ThemeVanguard",
+  "Water": "KRYX_RPG.ThemeWater",
 };
-
-// Spell Levels
-KRYX_RPG.spellLevels = {
-  0: "KRYX_RPG.SpellLevel0",
-  1: "KRYX_RPG.SpellLevel1",
-  2: "KRYX_RPG.SpellLevel2",
-  3: "KRYX_RPG.SpellLevel3",
-  4: "KRYX_RPG.SpellLevel4",
-  5: "KRYX_RPG.SpellLevel5",
-  6: "KRYX_RPG.SpellLevel6",
-  7: "KRYX_RPG.SpellLevel7",
-  8: "KRYX_RPG.SpellLevel8",
-  9: "KRYX_RPG.SpellLevel9"
-};
-
-// Spell Scroll Compendium UUIDs
-KRYX_RPG.spellScrollIds = {
-  0: 'Compendium.kryx_rpg.items.rQ6sO7HDWzqMhSI3',
-  1: 'Compendium.kryx_rpg.items.9GSfMg0VOA2b4uFN',
-  2: 'Compendium.kryx_rpg.items.XdDp6CKh9qEvPTuS',
-  3: 'Compendium.kryx_rpg.items.hqVKZie7x9w3Kqds',
-  4: 'Compendium.kryx_rpg.items.DM7hzgL836ZyUFB1',
-  5: 'Compendium.kryx_rpg.items.wa1VF8TXHmkrrR35',
-  6: 'Compendium.kryx_rpg.items.tI3rWx4bxefNCexS',
-  7: 'Compendium.kryx_rpg.items.mtyw4NS1s7j2EJaD',
-  8: 'Compendium.kryx_rpg.items.aOrinPg7yuDZEuWr',
-  9: 'Compendium.kryx_rpg.items.O4YbkJkLlnsgUszZ'
-};
-
-/**
- * Define the standard slot progression by character level.
- * The entries of this array represent the spell slot progression for a full spell-caster.
- * @type {Array[]}
- */
-KRYX_RPG.SPELL_SLOT_TABLE = [
-  [2],
-  [3],
-  [4, 2],
-  [4, 3],
-  [4, 3, 2],
-  [4, 3, 3],
-  [4, 3, 3, 1],
-  [4, 3, 3, 2],
-  [4, 3, 3, 3, 1],
-  [4, 3, 3, 3, 2],
-  [4, 3, 3, 3, 2, 1],
-  [4, 3, 3, 3, 2, 1],
-  [4, 3, 3, 3, 2, 1, 1],
-  [4, 3, 3, 3, 2, 1, 1],
-  [4, 3, 3, 3, 2, 1, 1, 1],
-  [4, 3, 3, 3, 2, 1, 1, 1],
-  [4, 3, 3, 3, 2, 1, 1, 1, 1],
-  [4, 3, 3, 3, 3, 1, 1, 1, 1],
-  [4, 3, 3, 3, 3, 2, 1, 1, 1],
-  [4, 3, 3, 3, 3, 2, 2, 1, 1]
-];
 
 /* -------------------------------------------- */
 
 /**
- * Skill, ability, and tool proficiency levels
+ * Skill, ability, and save proficiency levels
  * Each level provides a proficiency multiplier
  * @type {Object}
  */
 KRYX_RPG.proficiencyLevels = {
-  0: "KRYX_RPG.NotProficient",
-  1: "KRYX_RPG.Proficient",
-  0.5: "KRYX_RPG.HalfProficient",
-  2: "KRYX_RPG.Expertise"
+  "0": "KRYX_RPG.NotProficient",
+  "0.5": "KRYX_RPG.Capable",
+  "1": "KRYX_RPG.Proficient",
+  "1.5": "KRYX_RPG.Expertise"
 };
+
+KRYX_RPG.PROFICIENCY_LEVELS = [0.0, 0.5, 1.0, 1.5];
 
 /* -------------------------------------------- */
 
 
-// Condition Types
+// TODO Condition Types (probably split to list those with levels)
 KRYX_RPG.conditionTypes = {
   "blinded": "KRYX_RPG.ConBlinded",
   "charmed": "KRYX_RPG.ConCharmed",
@@ -573,7 +501,7 @@ KRYX_RPG.conditionTypes = {
   "unconscious": "KRYX_RPG.ConUnconscious"
 };
 
-// Languages
+// TODO Languages (probably just remove?)
 KRYX_RPG.languages = {
   "common": "KRYX_RPG.LanguagesCommon",
   "aarakocra": "KRYX_RPG.LanguagesAarakocra",
@@ -602,6 +530,7 @@ KRYX_RPG.languages = {
   "undercommon": "KRYX_RPG.LanguagesUndercommon"
 };
 
+// TODO - EXP - remove?
 // Character Level XP Requirements
 KRYX_RPG.CHARACTER_EXP_LEVELS = [
   0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000,
@@ -614,78 +543,177 @@ KRYX_RPG.CR_EXP_LEVELS = [
   20000, 22000, 25000, 33000, 41000, 50000, 62000, 75000, 90000, 105000, 120000, 135000, 155000
 ];
 
+KRYX_RPG.resourceProgression = {
+  "fullCaster": "KRYX_RPG.ResourceProgressionFullCaster",
+  "gishSpells": "KRYX_RPG.ResourceProgressionGishSpells",
+  "gishHalfHalf": "KRYX_RPG.ResourceProgressionGishHalfHalf",
+  "gishManeuvers": "KRYX_RPG.ResourceProgressionGishManeuvers",
+  "fullMartial": "KRYX_RPG.ResourceProgressionFullMartial",
+};
+
+/**
+ * see https://docs.google.com/spreadsheets/d/1sGvcz9vbq9yk4kRBEY6ZYGWhGO6-t7CWudznQcWPk74
+ */
+KRYX_RPG.RESOURCE_PROGRESSION_MULTIPLIERS = {
+  "fullCaster": {
+    mana: 1.5,
+    manaLimit: 0.25,
+    stamina: 0,
+    staminaLimit: 0,
+  },
+  "gishSpells": {
+    mana: 0.75,
+    manaLimit: 0.125,
+    stamina: 0,
+    staminaLimit: 0,
+  },
+  "gishHalfHalf": {
+    mana: 0.375, // minimum 1, at 1st level
+    manaLimit: 0.125,
+    stamina: 1.125,
+    staminaLimit: 0.25,
+  },
+  "gishManeuvers": {
+    mana: 0,
+    manaLimit: 0,
+    stamina: 2.25,
+    staminaLimit: 0.25,
+  },
+  "fullMartial": {
+    mana: 0,
+    manaLimit: 0,
+    stamina: 2.25,
+    staminaLimit: 0.25,
+  }
+};
+
+// "Arsenal" is the current temporary name of "The spells, maneuvers, and concoctions that a character is able to use".
+KRYX_RPG.ARSENAL_ORDERING = {
+  "atwill_spell": 1, // includes cantrips
+  "limited_spell": 2,
+  "known_spell": 3,
+  "spellbook_spell": 4,
+  "atwill_maneuver": 11,
+  "limited_maneuver": 12,
+  "known_maneuver": 13,
+}
+
 // Configure Optional Character Flags
 KRYX_RPG.characterFlags = {
-  "powerfulBuild": {
-    name: "KRYX_RPG.FlagsPowerfulBuild",
-    hint: "KRYX_RPG.FlagsPowerfulBuildHint",
-    section: "Racial Traits",
-    type: Boolean
-  },
-  "savageAttacks": {
-    name: "KRYX_RPG.FlagsSavageAttacks",
-    hint: "KRYX_RPG.FlagsSavageAttacksHint",
-    section: "Racial Traits",
-    type: Boolean
-  },
-  "elvenAccuracy": {
-    name: "KRYX_RPG.FlagsElvenAccuracy",
-    hint: "KRYX_RPG.FlagsElvenAccuracyHint",
-    section: "Racial Traits",
+  "savageAttacker": {
+    name: "KRYX_RPG.FlagsSavageAttacker",
+    hint: "KRYX_RPG.FlagsSavageAttackerHint",
+    section: "Feats & Features",
     type: Boolean
   },
   "halflingLucky": {
     name: "KRYX_RPG.FlagsHalflingLucky",
     hint: "KRYX_RPG.FlagsHalflingLuckyHint",
-    section: "Racial Traits",
-    type: Boolean
-  },
-  "initiativeAdv": {
-    name: "KRYX_RPG.FlagsInitiativeAdv",
-    hint: "KRYX_RPG.FlagsInitiativeAdvHint",
-    section: "Feats",
-    type: Boolean
-  },
-  "initiativeAlert": {
-    name: "KRYX_RPG.FlagsAlert",
-    hint: "KRYX_RPG.FlagsAlertHint",
-    section: "Feats",
-    type: Boolean
-  },
-  "jackOfAllTrades": {
-    name: "KRYX_RPG.FlagsJOAT",
-    hint: "KRYX_RPG.FlagsJOATHint",
-    section: "Feats",
-    type: Boolean
-  },
-  "observantFeat": {
-    name: "KRYX_RPG.FlagsObservant",
-    hint: "KRYX_RPG.FlagsObservantHint",
-    skills: ['prc', 'inv'],
-    section: "Feats",
+    section: "Feats & Features",
     type: Boolean
   },
   "reliableTalent": {
     name: "KRYX_RPG.FlagsReliableTalent",
     hint: "KRYX_RPG.FlagsReliableTalentHint",
-    section: "Feats",
+    section: "Feats & Features",
     type: Boolean
   },
-  "remarkableAthlete": {
-    name: "KRYX_RPG.FlagsRemarkableAthlete",
-    hint: "KRYX_RPG.FlagsRemarkableAthleteHint",
-    abilities: ['str', 'dex', 'con'],
-    section: "Feats",
-    type: Boolean
-  },
-  "weaponCriticalThreshold": {
-    name: "KRYX_RPG.FlagsCritThreshold",
-    hint: "KRYX_RPG.FlagsCritThresholdHint",
-    section: "Feats",
+  "carryingCapacityMultiplier": {
+    name: "KRYX_RPG.FlagsCarryingCapacityMultiplier",
+    hint: "KRYX_RPG.FlagsCarryingCapacityMultiplier",
+    section: "Miscellaneous",
     type: Number,
-    placeholder: 20
-  }
+    placeholder: 1
+  },
+  "initiativeAdv": {
+    name: "KRYX_RPG.FlagsInitiativeAdv",
+    hint: "KRYX_RPG.FlagsInitiativeAdvHint",
+    section: "Miscellaneous",
+    type: Boolean
+  },
 };
 
 // Configure allowed status flags
-KRYX_RPG.allowedActorFlags = Object.keys(KRYX_RPG.characterFlags);
+KRYX_RPG.allowedActorFlags = Object.keys(KRYX_RPG.characterFlags)
+
+KRYX_RPG.systemData = {
+  classes: {
+    "Acolyte": {
+      "Priest": {"hitDice": "d6", "progressionChoiceType": "caster"},
+      "Paladin": {"hitDice": "d10", "progressionChoiceType": "gish"},
+      "Avenger": {"hitDice": "d8", "progressionChoiceType": "gish"},
+    },
+    "Alchemist": {
+      "Chemist": {"hitDice": "d6", "progressionChoiceType": "caster"},
+      "Mutant": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+    },
+    "Mage": {
+      "Wizard": {"hitDice": "d6", "progressionChoiceType": "caster"},
+      "Magus": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+    },
+    "Naturalist": {
+      "Druid": {"hitDice": "d6", "progressionChoiceType": "caster"},
+      "Ranger": {"hitDice": "d8", "progressionChoiceType": "gish"},
+      "Warden": {"hitDice": "d10", "progressionChoiceType": "gish"},
+    },
+    "Occultist": {
+      "Warlock/Witch": {"hitDice": "d6", "progressionChoiceType": "caster"},
+      "Hexblade": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+    },
+    "Psionicist": {
+      "Psion": {"hitDice": "d6", "progressionChoiceType": "caster"},
+      "Soulknife": {"hitDice": "d10", "progressionChoiceType": "psiongish"},
+      "Monk": {"hitDice": "d8", "progressionChoiceType": "psiongish"},
+    },
+    "Rogue": {
+      "Infiltrator": {"hitDice": "d8", "progressionChoiceType": "martial"},
+      "Spellthief": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+      "Blood Hunter": {"hitDice": "d8", "progressionChoiceType": "gish"},
+    },
+    "Suffused": {
+      "Sorcerer": {"hitDice": "d6", "progressionChoiceType": "martial"},
+      "Bloodrager": {"hitDice": "d10", "progressionChoiceType": "spellgish"},
+    },
+    "Warrior": {
+      "Battlemaster": {"hitDice": "d10", "progressionChoiceType": "martial"},
+      "Berserker": {"hitDice": "d10", "progressionChoiceType": "martial"},
+      "Dervish": {"hitDice": "d10", "progressionChoiceType": "martial"},
+    },
+    "Minstrel": {
+      "Bard": {"hitDice": "d6", "progressionChoiceType": "caster"},
+      "Skald": {"hitDice": "d10", "progressionChoiceType": "gish"},
+    },
+  },
+  classProgressionChoiceTypes: {
+    // no choice will be shown for these:
+    "caster": ["fullCaster"],
+    "martial": ["fullMartial"],
+    "psiongish": ["gishSpells"],
+    // for these, there are several options for progression
+    "gish": ["gishSpells", "gishHalfHalf", "gishManeuvers"],
+    "spellgish": ["gishSpells", "gishHalfHalf"],
+  },
+  archetypesThatHaveConcoctions: ["Chemist", "Mutant", "Blood Hunter"],
+  spellcastingAbilities: ["int", "wis", "cha"],
+  maneuverAbilities: ["str", "dex"],
+  skillAbilities: {
+    "acrobatics": "dex",
+    "alchemy": "int",
+    "arcana": "int",
+    "athletics": "str",
+    "deception": "cha",
+    "engineering": "int",
+    "insight": "wis",
+    "intimidation": "cha",
+    "medicine": "wis",
+    "nature": "wis",
+    "occult": "int",
+    "perception": "wis",
+    "performance": "cha",
+    "persuasion": "cha",
+    "psionics": "int",
+    "religion": "wis",
+    "society": "int",
+    "stealth": "dex",
+  }
+}
