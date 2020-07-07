@@ -28,7 +28,12 @@ export default class ItemKryx extends Item {
       const actorData = this.actor.data.data;
 
       // Spells - Use Actor spellcasting modifier
-      if (this.data.type === "spell") return actorData.attributes.spellcasting || "int";
+      if (this.data.type === "superpower") {
+        if (this.data.kind === "spell")
+          return actorData.attributes.spellcastingAbility
+        else
+          return actorData.attributes.maneuverAbility
+      }
 
       // Tools - default to Intelligence
       else if (this.data.type === "tool") return "int";
@@ -40,7 +45,7 @@ export default class ItemKryx extends Item {
         // Melee weapons - Str or Dex if Finesse (PHB pg. 147)
         if (["simpleM", "martialM"].includes(wt)) {
           if (itemData.properties.fin === true) {   // Finesse weapons
-            return (actorData.abilities["dex"].mod >= actorData.abilities["str"].mod) ? "dex" : "str";
+            return (actorData.abilities.dex.value >= actorData.abilities.str.value) ? "dex" : "str";
           }
           return "str";
         }
@@ -157,24 +162,22 @@ export default class ItemKryx extends Item {
     const C = CONFIG.KRYX_RPG;
     const labels = {};
 
-    // Classes
-    if (itemData.type === "class") {
-      data.levels = Math.clamped(data.levels, 1, 20);
-    }
-
-    // Spell Level,  School, and Components
-    if (itemData.type === "spell") {
-      labels.level = C.spellLevels[data.level];
-      labels.school = C.spellSchools[data.school];
+    // Superpower - components
+    if (itemData.type === "superpower") {
       labels.components = Object.entries(data.components).reduce((arr, c) => {
         if (c[1] !== true) return arr;
-        arr.push(c[0].titleCase().slice(0, 1));
+        let letter = c[0].titleCase().slice(0, 1)
+        if (itemData.type === "spell"
+          && this.actor.data.mainResources.mana.nameOfEffect === "catalyst"
+          && letter === "C")
+          letter = "U" // unstable concoction
+        arr.push(letter);
         return arr;
       }, []);
     }
 
-    // Feat Items
-    else if (itemData.type === "feat") {
+    // Feat and Feature Items
+    else if (itemData.type === "feat" || itemData.type === "feature") {
       const act = data.activation;
       if (act && (act.type === C.abilityActivationTypes.legendary)) labels.featType = "Legendary Action";
       else if (act && (act.type === C.abilityActivationTypes.lair)) labels.featType = "Lair Action";
@@ -269,7 +272,7 @@ export default class ItemKryx extends Item {
       isHealing: this.isHealing,
       hasDamage: this.hasDamage,
       isVersatile: this.isVersatile,
-      isSpell: this.data.type === "spell",
+      isSuperpower: this.data.type === "superpower",
       hasSave: this.hasSave,
       hasAreaTarget: this.hasAreaTarget
     };
@@ -621,13 +624,6 @@ export default class ItemKryx extends Item {
       rollConfig.critical = parseInt(flags.weaponCriticalThreshold);
     }
 
-    // Elven Accuracy
-    if (["weapon", "spell"].includes(this.data.type)) {
-      if (flags.elvenAccuracy && ["dex", "int", "wis", "cha"].includes(this.abilityMod)) {
-        rollConfig.elvenAccuracy = true;
-      }
-    }
-
     // Apply Halfling Lucky
     if (flags.halflingLucky) rollConfig.halflingLucky = true;
 
@@ -650,24 +646,23 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  rollDamage({event, spellLevel = null, versatile = false} = {}) {
+  rollDamage({event, augmentedCost = null, versatile = false} = {}) {
     const itemData = this.data.data;
     const actorData = this.actor.data.data;
     if (!this.hasDamage) {
       throw new Error("You may not make a Damage Roll with this Item.");
     }
     const rollData = this.getRollData();
-    if (spellLevel) rollData.item.level = spellLevel;
+    rollData.item.effectiveCost = augmentedCost || rollData.item.cost
 
     // Define Roll parts
     const parts = itemData.damage.parts.map(d => d[0]);
     if (versatile && itemData.damage.versatile) parts[0] = itemData.damage.versatile;
-    if ((this.data.type === "spell")) {
+    if ((this.data.type === "superpower")) {
       if ((itemData.scaling.mode === "cantrip")) {
-        const lvl = this.actor.data.type === "character" ? actorData.details.level : actorData.details.spellLevel;
-        this._scaleCantripDamage(parts, lvl, itemData.scaling.formula);
+        this._scaleCantripDamage(parts, actorData.class.level, itemData.scaling.formula);
       } else if (spellLevel && (itemData.scaling.mode === "level") && itemData.scaling.formula) {
-        this._scaleSpellDamage(parts, itemData.level, spellLevel, itemData.scaling.formula);
+        this._scaleSpellDamage(parts, itemData.cost, rollData.item.effectiveCost, itemData.scaling.formula);
       }
     }
 
@@ -716,15 +711,15 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Adjust the spell damage formula to scale it for spell level up-casting
+   * Adjust the superpower damage formula to scale it for augmenting/enhancing
    * @param {Array} parts         The original damage parts
-   * @param {number} baseLevel    The default spell level
-   * @param {number} spellLevel   The casted spell level
+   * @param {number} baseCost    The default (minimum) cost)
+   * @param {number} effectiveCost   The amount of mana/stamina/psi/catalysts spent, or base cost if none were spent
    * @param {string} formula      The scaling formula
    * @private
    */
-  _scaleSpellDamage(parts, baseLevel, spellLevel, formula) {
-    const upcastLevels = Math.max(spellLevel - baseLevel, 0);
+  _scaleSpellDamage(parts, baseCost, effectiveCost, formula) {
+    const upcastLevels = Math.max(effectiveCost - baseCost, 0);
     if (upcastLevels === 0) return parts;
     const bonus = new Roll(formula).alter(0, upcastLevels);
     parts.push(bonus.formula);
@@ -734,7 +729,7 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Place an attack roll using an item (weapon, feat, spell, or equipment)
+   * Place an attack roll using an item (weapon, feat, superpower, or equipment)
    * Rely upon the d20Roll logic for the core implementation
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
@@ -902,7 +897,7 @@ export default class ItemKryx extends Item {
     const abl = this.abilityMod;
     if (abl) {
       const ability = rollData.abilities[abl];
-      rollData["mod"] = ability.mod || 0;
+      rollData["mod"] = ability.value || 0;
     }
 
     // Include a proficiency score

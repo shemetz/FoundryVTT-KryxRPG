@@ -105,7 +105,7 @@
                            value="{{ability.value}}" data-dtype="Number" placeholder="10"/>
                     <div class="ability-modifiers flexrow">
                         <span class="ability-mod"
-                              title="Modifier">{{numberFormat ability.mod decimals=0 sign=true}}</span>
+                              title="Modifier">{{numberFormat ability.value decimals=0 sign=true}}</span>
                         <input type="hidden" name="data.abilities.{{id}}.proficient" value="{{ability.proficient}}"
                                data-dtype="Number"/>
                         <a class="proficiency-toggle ability-proficiency" title="{{ localize 'KRYX_RPG.Proficiency' }}">{{{ability.icon}}}</a>

@@ -116,8 +116,8 @@ export default class ItemSheetKryx extends ItemSheet {
    * @private
    */
   _getItemStatus(item) {
-    if (item.type === "spell") {
-      return CONFIG.KRYX_RPG.spellPreparationModes[item.data.preparation];
+    if (item.type === "superpower") {
+      return CONFIG.KRYX_RPG.superpowerAvailability[item.data.availability];
     } else if (["weapon", "equipment"].includes(item.type)) {
       return item.data.equipped ? "Equipped" : "Unequipped";
     } else if (item.type === "tool") {
@@ -140,7 +140,7 @@ export default class ItemSheetKryx extends ItemSheet {
       props.push(...Object.entries(item.data.properties)
         .filter(e => e[1] === true)
         .map(e => CONFIG.KRYX_RPG.weaponProperties[e[0]]));
-    } else if (item.type === "spell") {
+    } else if (item.type === "superpower") {
       props.push(
         labels.components,
         labels.materials,
@@ -150,7 +150,7 @@ export default class ItemSheetKryx extends ItemSheet {
     } else if (item.type === "equipment") {
       props.push(CONFIG.KRYX_RPG.equipmentTypes[item.data.armor.type]);
       props.push(labels.armor);
-    } else if (item.type === "feat") {
+    } else if (item.type === "feat" || item.type === "feature") {
       props.push(labels.featType);
     }
 
