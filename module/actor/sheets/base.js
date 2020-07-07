@@ -76,9 +76,9 @@ export default class ActorSheetKryx extends ActorSheet {
 
     // Update skill labels
     for (let [s, skl] of Object.entries(data.actor.data.skills)) {
-      skl.ability = data.actor.data.abilities[skl.ability].label.substring(0, 3);
-      skl.icon = this._getProficiencyIcon(skl.value);
-      skl.hover = CONFIG.KRYX_RPG.proficiencyLevels[skl.value];
+      skl.ability = KRYX_RPG.systemData.skillAbilities[s].capitalize();
+      skl.icon = this._getProficiencyIcon(skl.proficiency);
+      skl.hover = CONFIG.KRYX_RPG.proficiencyLevels["" + skl.proficiency];
       skl.label = CONFIG.KRYX_RPG.skills[s];
     }
 
