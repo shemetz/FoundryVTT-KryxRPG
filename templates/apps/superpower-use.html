@@ -11,7 +11,8 @@
             <select name="level">
                 {{#select item.data.level}}
                 {{#each spellLevels as |l|}}
-                <option value="{{l.level}}" {{#unless l.canCast}}disabled{{/unless}}>{{l.label}}</option>
+                <option value="{{l.level}}" {{#unless l.canCast}}disabled{{
+                /unless}}>{{l.label}}</option>
                 {{/each}}
                 {{/select}}
             </select>
@@ -20,7 +21,8 @@
 
     <div class="form-group">
         {{#if canUpcast}}
-        <label class="checkbox">{{ localize "KRYX_RPG.SpellCastConsume" }} <input type="checkbox" name="consume" {{checked canCast}}/></label>
+        <label class="checkbox">{{ localize "KRYX_RPG.SpellCastConsume" }} <input type="checkbox" name="consume"
+                                                                                  {{checked canCast}}/></label>
         {{/if}}
 
         {{#if hasPlaceableTemplate}}

@@ -19,10 +19,12 @@
                     {{lookup config.weaponTypes data.weaponType }}
                 </li>
                 <li>
-                    <input type="text" name="data.rarity" value="{{data.rarity}}" placeholder="{{ localize 'KRYX_RPG.Rarity' }}"/>
+                    <input type="text" name="data.rarity" value="{{data.rarity}}"
+                           placeholder="{{ localize 'KRYX_RPG.Rarity' }}"/>
                 </li>
                 <li>
-                    <input type="text" name="data.source" value="{{data.source}}" placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
+                    <input type="text" name="data.source" value="{{data.source}}"
+                           placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
                 </li>
             </ul>
         </div>
@@ -60,16 +62,20 @@
             <div class="form-group stacked">
                 <label>{{ localize "KRYX_RPG.ItemWeaponStatus" }}</label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.proficient" {{checked data.proficient}}/> {{ localize "KRYX_RPG.Proficient" }}
+                    <input type="checkbox" name="data.proficient" {{checked data.proficient}}/> {{ localize
+                    "KRYX_RPG.Proficient" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.equipped" {{checked data.equipped}}/> {{ localize "KRYX_RPG.Equipped" }}
+                    <input type="checkbox" name="data.equipped" {{checked data.equipped}}/> {{ localize
+                    "KRYX_RPG.Equipped" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.identified" {{checked data.identified}}/> {{ localize "KRYX_RPG.Identified" }}
+                    <input type="checkbox" name="data.identified" {{checked data.identified}}/> {{ localize
+                    "KRYX_RPG.Identified" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.attuned" {{checked data.attuned}}/> {{ localize "KRYX_RPG.Attuned" }}
+                    <input type="checkbox" name="data.attuned" {{checked data.attuned}}/> {{ localize "KRYX_RPG.Attuned"
+                    }}
                 </label>
             </div>
 
@@ -78,7 +84,8 @@
                 <label>{{ localize "KRYX_RPG.ItemWeaponProperties" }}</label>
                 {{#each config.weaponProperties as |name prop|}}
                 <label class="checkbox">
-                    <input type="checkbox" name="data.properties.{{prop}}" {{checked (lookup ../data.properties prop)}}/> {{ name }}
+                    <input type="checkbox" name="data.properties.{{prop}}" {{checked (lookup ../data.properties
+                    prop)}}/> {{ name }}
                 </label>
                 {{/each}}
             </div>

@@ -22,7 +22,8 @@
                     {{labels.school}}
                 </li>
                 <li>
-                    <input type="text" name="data.source" value="{{data.source}}" placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
+                    <input type="text" name="data.source" value="{{data.source}}"
+                           placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
                 </li>
             </ul>
         </div>
@@ -72,19 +73,24 @@
             <div class="spell-components form-group stacked">
                 <label>{{ localize "KRYX_RPG.SpellComponents" }}</label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.vocal" {{checked data.components.vocal}}/> {{ localize "KRYX_RPG.ComponentVerbal" }}
+                    <input type="checkbox" name="data.components.vocal" {{checked data.components.vocal}}/> {{ localize
+                    "KRYX_RPG.ComponentVerbal" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.somatic" {{checked data.components.somatic}}/> {{ localize "KRYX_RPG.ComponentSomatic" }}
+                    <input type="checkbox" name="data.components.somatic" {{checked data.components.somatic}}/> {{
+                    localize "KRYX_RPG.ComponentSomatic" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.material" {{checked data.components.material}}/> {{ localize "KRYX_RPG.ComponentMaterial" }}
+                    <input type="checkbox" name="data.components.material" {{checked data.components.material}}/> {{
+                    localize "KRYX_RPG.ComponentMaterial" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.concentration" {{checked data.components.concentration}}/> {{ localize "KRYX_RPG.Concentration" }}
+                    <input type="checkbox" name="data.components.concentration" {{checked
+                           data.components.concentration}}/> {{ localize "KRYX_RPG.Concentration" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.ritual" {{checked data.components.ritual}}/> {{ localize "KRYX_RPG.Ritual" }}
+                    <input type="checkbox" name="data.components.ritual" {{checked data.components.ritual}}/> {{
+                    localize "KRYX_RPG.Ritual" }}
                 </label>
             </div>
 
@@ -95,9 +101,11 @@
                 {{#if data.materials.value}}
                 <div class="spell-materials flexrow">
                     <label>{{ localize "KRYX_RPG.Supply" }}</label>
-                    <input type="text" name="data.materials.supply" value="{{data.materials.supply}}" data-dtype="Number" Placeholder="0"/>
+                    <input type="text" name="data.materials.supply" value="{{data.materials.supply}}"
+                           data-dtype="Number" Placeholder="0"/>
                     <label>{{ localize "KRYX_RPG.CostGP" }}</label>
-                    <input type="text" name="data.materials.cost" value="{{data.materials.cost}}" data-dtype="Number" Placeholder="-"/>
+                    <input type="text" name="data.materials.cost" value="{{data.materials.cost}}" data-dtype="Number"
+                           Placeholder="-"/>
                     <label>{{ localize "KRYX_RPG.Consumed" }}</label>
                     <input type="checkbox" name="data.materials.consumed" {{checked data.materials.consumed}}/>
                 </div>
@@ -109,7 +117,8 @@
                 <label>{{ localize "KRYX_RPG.SpellPreparationMode" }}</label>
                 <div class="form-fields">
                     <label class="checkbox prepared">
-                        {{ localize "KRYX_RPG.SpellPrepared" }} <input type="checkbox" name="data.preparation.prepared" {{checked data.preparation.prepared}}/>
+                        {{ localize "KRYX_RPG.SpellPrepared" }} <input type="checkbox" name="data.preparation.prepared"
+                                                                       {{checked data.preparation.prepared}}/>
                     </label>
                     <select name="data.preparation.mode">
                         {{#select data.preparation.mode}}
@@ -143,7 +152,8 @@
                         {{/each}}
                         {{/select}}
                     </select>
-                    <input type="text" name="data.scaling.formula" value="{{data.scaling.formula}}" placeholder="{{ localize 'KRYX_RPG.ScalingFormula' }}"/>
+                    <input type="text" name="data.scaling.formula" value="{{data.scaling.formula}}"
+                           placeholder="{{ localize 'KRYX_RPG.ScalingFormula' }}"/>
                 </div>
             </div>
         </div>

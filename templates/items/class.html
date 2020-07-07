@@ -16,7 +16,8 @@
 
             <ul class="summary flexrow">
                 <li>
-                    <input type="text" name="data.source" value="{{data.source}}" placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
+                    <input type="text" name="data.source" value="{{data.source}}"
+                           placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
                 </li>
             </ul>
         </div>
@@ -33,7 +34,8 @@
 
         {{!-- Description Tab --}}
         <div class="tab flexrow active" data-group="primary" data-tab="description">
-            {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+            {{editor content=data.description.value target="data.description.value" button=true owner=owner
+            editable=editable}}
         </div>
 
         {{!-- Details Tab --}}
@@ -72,7 +74,8 @@
             <div class="form-group">
                 <label>{{localize "KRYX_RPG.HitDiceUsed"}}</label>
                 <div class="form-fields">
-                    <input type="text" placeholder="0" name="data.hitDiceUsed" value="{{data.hitDiceUsed}}" data-dtype="Number"/>
+                    <input type="text" placeholder="0" name="data.hitDiceUsed" value="{{data.hitDiceUsed}}"
+                           data-dtype="Number"/>
                 </div>
             </div>
 
@@ -81,9 +84,9 @@
                 <div class="form-fields">
                     <select name="data.spellcasting">
                         {{#select data.spellcasting}}
-                            {{#each config.spellProgression}}
-                                <option value="{{@key}}">{{localize this}}</option>
-                            {{/each}}
+                        {{#each config.spellProgression}}
+                        <option value="{{@key}}">{{localize this}}</option>
+                        {{/each}}
                         {{/select}}
                     </select>
                 </div>
@@ -93,7 +96,8 @@
             <div class="form-group">
                 <label>{{localize "KRYX_RPG.ClassSkillsNumber"}}</label>
                 <div class="form-fields">
-                    <input type="text" placeholder="0" name="data.skills.number" value="{{data.skills.number}}" data-dtype="Number"/>
+                    <input type="text" placeholder="0" name="data.skills.number" value="{{data.skills.number}}"
+                           data-dtype="Number"/>
                 </div>
             </div>
 
@@ -108,7 +112,7 @@
                 <div class="form-fields">
                     <ul class="traits-list">
                         {{#each data.skills.value}}
-                            <li class="tag {{this}}">{{lookup ../config.skills this}}</li>
+                        <li class="tag {{this}}">{{lookup ../config.skills this}}</li>
                         {{/each}}
                     </ul>
                 </div>

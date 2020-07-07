@@ -1,5 +1,5 @@
 <form class="{{cssClass}}" autocomplete="off">
-	<p class="notes">{{localize 'KRYX_RPG.FlagsInstructions'}}</p>
+    <p class="notes">{{localize 'KRYX_RPG.FlagsInstructions'}}</p>
 
     {{#each flags as |fs section|}}
     <h3 class="form-header">{{localize section}}</h3>
@@ -21,7 +21,8 @@
         </select>
 
         {{else}}
-        <input type="text" name="{{key}}" value="{{flag.value}}" placeholder="{{flag.placeholder}}" data-dtype="{{flag.type}}"/>
+        <input type="text" name="{{key}}" value="{{flag.value}}" placeholder="{{flag.placeholder}}"
+               data-dtype="{{flag.type}}"/>
         {{/if}}
 
         <p class="notes">{{localize flag.hint}}</p>

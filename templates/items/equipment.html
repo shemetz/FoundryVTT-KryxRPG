@@ -19,10 +19,12 @@
                     {{lookup config.equipmentTypes data.armor.type }}
                 </li>
                 <li>
-                    <input type="text" name="data.rarity" value="{{data.rarity}}" placeholder="{{ localize 'KRYX_RPG.Rarity' }}"/>
+                    <input type="text" name="data.rarity" value="{{data.rarity}}"
+                           placeholder="{{ localize 'KRYX_RPG.Rarity' }}"/>
                 </li>
                 <li>
-                    <input type="text" name="data.source" value="{{data.source}}" placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
+                    <input type="text" name="data.source" value="{{data.source}}"
+                           placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
                 </li>
             </ul>
         </div>
@@ -61,16 +63,20 @@
             <div class="form-group stacked">
                 <label>{{ localize "KRYX_RPG.ItemEquipmentStatus" }}</label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.proficient" {{checked data.proficient}}/> {{ localize "KRYX_RPG.Proficient" }}
+                    <input type="checkbox" name="data.proficient" {{checked data.proficient}}/> {{ localize
+                    "KRYX_RPG.Proficient" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.equipped" {{checked data.equipped}}/> {{ localize "KRYX_RPG.Equipped" }}
+                    <input type="checkbox" name="data.equipped" {{checked data.equipped}}/> {{ localize
+                    "KRYX_RPG.Equipped" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.identified" {{checked data.identified}}/> {{ localize "KRYX_RPG.Identified" }}
+                    <input type="checkbox" name="data.identified" {{checked data.identified}}/> {{ localize
+                    "KRYX_RPG.Identified" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.attuned" {{checked data.attuned}}/> {{ localize "KRYX_RPG.Attuned" }}
+                    <input type="checkbox" name="data.attuned" {{checked data.attuned}}/> {{ localize "KRYX_RPG.Attuned"
+                    }}
                 </label>
             </div>
 
@@ -78,7 +84,7 @@
             <div class="form-group">
                 <label>{{ localize "KRYX_RPG.ArmorClass" }}</label>
                 <div class="form-fields">
-                   <input type="text" name="data.armor.value" value="{{data.armor.value}}" data-dtype="Number"/>
+                    <input type="text" name="data.armor.value" value="{{data.armor.value}}" data-dtype="Number"/>
                 </div>
             </div>
 
@@ -86,7 +92,8 @@
             <div class="form-group">
                 <label>{{ localize "KRYX_RPG.ItemEquipmentDexMod" }}</label>
                 <div class="form-fields">
-                   <input type="text" name="data.armor.dex" value="{{data.armor.dex}}" data-dtype="Number" placeholder="{{ localize 'KRYX_RPG.Unlimited' }}"/>
+                    <input type="text" name="data.armor.dex" value="{{data.armor.dex}}" data-dtype="Number"
+                           placeholder="{{ localize 'KRYX_RPG.Unlimited' }}"/>
                 </div>
             </div>
 
@@ -94,7 +101,8 @@
             <div class="form-group">
                 <label>{{ localize "KRYX_RPG.ItemRequiredStr" }}</label>
                 <div class="form-fields">
-                   <input type="text" name="data.strength" value="{{data.strength}}" data-dtype="Number" placeholder="{{ localize 'KRYX_RPG.None' }}"/>
+                    <input type="text" name="data.strength" value="{{data.strength}}" data-dtype="Number"
+                           placeholder="{{ localize 'KRYX_RPG.None' }}"/>
                 </div>
             </div>
 

@@ -7,7 +7,7 @@
 </div>
 
 <ol class="inventory-list">
-{{#each sections as |section sid|}}
+    {{#each sections as |section sid|}}
     <li class="inventory-header flexrow">
         <h3 class="item-name flexrow">{{localize section.label}}</h3>
 
@@ -18,15 +18,16 @@
 
         {{#if ../owner}}
         <div class="item-controls">
-            <a class="item-control item-create" title="{{localize 'KRYX_RPG.FeatureAdd'}}" {{#each section.dataset as |v k|}}data-{{k}}="{{v}}"{{/each}}>
-                <i class="fas fa-plus"></i> {{localize "KRYX_RPG.Add"}}
+            <a class="item-control item-create" title="{{localize 'KRYX_RPG.FeatureAdd'}}" {{#each section.dataset as |v
+               k|}}data-{{k}}="{{v}}" {{/each}}>
+            <i class="fas fa-plus"></i> {{localize "KRYX_RPG.Add"}}
             </a>
         </div>
         {{/if}}
     </li>
 
     <ol class="item-list">
-    {{#each section.items as |item iid|}}
+        {{#each section.items as |item iid|}}
         <li class="item flexrow {{#if isDepleted}}depleted{{/if}}" data-item-id="{{item._id}}">
             <div class="item-name flexrow rollable">
                 <div class="item-image" style="background-image: url({{item.img}})"></div>
@@ -67,7 +68,7 @@
             </div>
             {{/if}}
         </li>
-    {{/each}}
+        {{/each}}
     </ol>
-{{/each}}
+    {{/each}}
 </ol>
