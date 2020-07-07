@@ -18,7 +18,7 @@ export default class ActorSheetKryx extends ActorSheet {
      */
     this._filters = {
       inventory: new Set(),
-      spellbook: new Set(),
+      arsenal: new Set(),
       features: new Set()
     };
   }
@@ -31,7 +31,7 @@ export default class ActorSheetKryx extends ActorSheet {
       scrollY: [
         ".inventory .inventory-list",
         ".features .inventory-list",
-        ".spellbook .inventory-list"
+        ".arsenal .inventory-list"
       ],
       tabs: [{navSelector: ".tabs", contentSelector: ".sheet-body", initial: "description"}]
     });
@@ -67,15 +67,24 @@ export default class ActorSheetKryx extends ActorSheet {
     data.labels = this.actor.labels || {};
     data.filters = this._filters;
 
+    // Capitalize mana and stamina
+    data.data.mainResources.mana.nameCapitalized = data.data.mainResources.mana.name.capitalize()
+    data.data.mainResources.stamina.nameCapitalized = data.data.mainResources.stamina.name.capitalize()
+
     // Ability Scores
-    for (let [a, abl] of Object.entries(data.actor.data.abilities)) {
-      abl.icon = this._getProficiencyIcon(abl.proficient);
-      abl.hover = CONFIG.KRYX_RPG.proficiencyLevels[abl.proficient];
+    for (const [a, abl] of Object.entries(data.data.abilities)) {
       abl.label = CONFIG.KRYX_RPG.abilities[a];
     }
 
+    // Saving Throws
+    for (const [a, sav] of Object.entries(data.data.saves)) {
+      sav.icon = this._getProficiencyIcon(sav.proficiency);
+      sav.hover = CONFIG.KRYX_RPG.proficiencyLevels["" + sav.proficiency];
+      sav.label = CONFIG.KRYX_RPG.saves[a];
+    }
+
     // Update skill labels
-    for (let [s, skl] of Object.entries(data.actor.data.skills)) {
+    for (const [s, skl] of Object.entries(data.data.skills)) {
       skl.ability = KRYX_RPG.systemData.skillAbilities[s].capitalize();
       skl.icon = this._getProficiencyIcon(skl.proficiency);
       skl.hover = CONFIG.KRYX_RPG.proficiencyLevels["" + skl.proficiency];
@@ -83,7 +92,7 @@ export default class ActorSheetKryx extends ActorSheet {
     }
 
     // Update traits
-    this._prepareTraits(data.actor.data.traits);
+    this._prepareTraits(data.data.traits);
 
     // Prepare owned items
     this._prepareItems(data);
@@ -96,6 +105,7 @@ export default class ActorSheetKryx extends ActorSheet {
 
   _prepareTraits(traits) {
     const map = {
+      "themes": CONFIG.KRYX_RPG.themes,
       "dr": CONFIG.KRYX_RPG.damageTypes,
       "di": CONFIG.KRYX_RPG.damageTypes,
       "dv": CONFIG.KRYX_RPG.damageTypes,
@@ -103,7 +113,6 @@ export default class ActorSheetKryx extends ActorSheet {
       "languages": CONFIG.KRYX_RPG.languages,
       "armorProf": CONFIG.KRYX_RPG.armorProficiencies,
       "weaponProf": CONFIG.KRYX_RPG.weaponProficiencies,
-      "toolProf": CONFIG.KRYX_RPG.toolProficiencies
     };
     for (let [t, choices] of Object.entries(map)) {
       const trait = traits[t];
@@ -121,100 +130,61 @@ export default class ActorSheetKryx extends ActorSheet {
       if (trait.custom) {
         trait.custom.split(";").forEach((c, i) => trait.selected[`custom${i + 1}`] = c.trim());
       }
-      trait.cssClass = !isObjectEmpty(trait.selected) ? "" : "inactive";
+      trait.cssClass = isObjectEmpty(trait.selected) ? "inactive" : ""
     }
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Insert a spell into the spellbook object when rendering the character sheet
+   * Insert arsenal tab (with sections) when rendering the character sheet
    * @param {Object} data     The Actor data being prepared
-   * @param {Array} spells    The spell data being prepared
+   * @param {Array} superpowers    The superpowers data being prepared
    * @private
    */
-  _prepareSpellbook(data, spells) {
-    const owner = this.actor.owner;
-    const levels = data.data.spells;
-    const spellbook = {};
+  _prepareArsenalTab(data, superpowers) {
+    const isOwner = !!this.actor.owner
+    const catalog = {} // this object will hold the sections. in 5e code it's "spellbook"
 
-    // Define some mappings
-    const sections = {
-      "atwill": -20,
-      "innate": -10,
-      "pact": 0.5
-    };
-
-    // Label spell slot uses headers
-    const useLabels = {
-      "-20": "-",
-      "-10": "-",
-      "0": "&infin;"
-    };
-
-    // Format a spellbook entry for a certain indexed level
-    const registerSection = (sl, i, label, level = {}) => {
-      spellbook[i] = {
-        order: i,
+    // Add and format a catalog entry
+    const registerSection = (availability, superpowerType) => {
+      const key = availability + "_" + superpowerType
+      const order = CONFIG.KRYX_RPG.ARSENAL_ORDERING[key]
+      const mainResources = data.actor.data.mainResources
+      const resource = superpowerType === "spell" ? mainResources.mana : mainResources.stamina
+      const superpowerTypesName = resource.nameOfEffect.capitalize() + "s" // e.g. "Spells", "Concoctions"
+      const superpowerResourceName = resource.name.capitalize() // e.g. "Mana", "Psi"
+      const label = CONFIG.KRYX_RPG.superpowerAvailability[availability] + " " + superpowerTypesName
+      catalog[key] = {
+        order: order,
         label: label,
-        usesSlots: i > 0,
-        canCreate: owner && (i >= 1),
-        canPrepare: (data.actor.type === "character") && (i >= 1),
-        spells: [],
-        uses: useLabels[i] || level.value || 0,
-        slots: useLabels[i] || level.max || 0,
-        override: level.override || 0,
-        dataset: {"type": "spell", "level": i},
-        prop: sl
-      };
-    };
-
-    // Determine the maximum spell level which has a slot
-    const maxLevel = Array.fromRange(10).reduce((max, i) => {
-      if (i === 0) return max;
-      const level = levels[`spell${i}`];
-      if ((level.max || level.override) && (i > max)) max = i;
-      return max;
-    }, 0);
-
-    // Structure the spellbook for every level up to the maximum which has a slot
-    if (maxLevel > 0) {
-      registerSection("spell0", 0, CONFIG.KRYX_RPG.spellLevels[0]);
-      for (let lvl = 1; lvl <= maxLevel; lvl++) {
-        const sl = `spell${lvl}`;
-        registerSection(sl, lvl, CONFIG.KRYX_RPG.spellLevels[lvl], levels[sl]);
+        canCreate: isOwner,
+        resourceName: superpowerResourceName,
+        superpowers: [],
+        dataset: {type: "superpower", kind: superpowerType, availability: availability},
       }
     }
-    if (levels.pact && levels.pact.max) {
-      registerSection("spell0", 0, CONFIG.KRYX_RPG.spellLevels[0]);
-      registerSection("pact", sections.pact, CONFIG.KRYX_RPG.spellPreparationModes.pact, levels.pact);
+
+    if (data.actor.data.mainResources.mana.limit > 0) {
+      registerSection("atwill", "spell");
+      registerSection("known", "spell");
     }
 
-    // Iterate over every spell item, adding spells to the spellbook by section
-    spells.forEach(spell => {
-      const mode = spell.data.preparation.mode || "prepared";
-      let s = spell.data.level || 0;
-      const sl = `spell${s}`;
+    if (data.actor.data.mainResources.stamina.limit > 0) {
+      registerSection("known", "maneuver");
+    }
 
-      // Spellcasting mode specific headings
-      if (mode in sections) {
-        s = sections[mode];
-        if (!spellbook[s]) {
-          registerSection(mode, s, CONFIG.KRYX_RPG.spellPreparationModes[mode], levels[mode]);
-        }
-      }
+    // Iterate over every superpower item, adding superpowers to the book by section, sometimes adding sections
+    superpowers.forEach(superpower => {
+      const availability = superpower.data.availability
+      const superpowerType = superpower.data.type
+      const key = availability + "_" + superpowerType
+      if (!catalog[key]) registerSection(availability, superpowerType)
+      catalog[key].superpowers.push(superpower)
+    })
 
-      // Higher-level spell headings
-      else if (!spellbook[s]) {
-        registerSection(sl, s, CONFIG.KRYX_RPG.spellLevels[s], levels[sl]);
-      }
-
-      // Add the spell to the relevant heading
-      spellbook[s].spells.push(spell);
-    });
-
-    // Sort the spellbook by section level
-    const sorted = Object.values(spellbook);
+    // Sort the catalog
+    const sorted = Object.values(catalog);
     sorted.sort((a, b) => a.order - b.order);
     return sorted;
   }
@@ -269,7 +239,7 @@ export default class ActorSheetKryx extends ActorSheet {
       0: '<i class="far fa-circle"></i>',
       0.5: '<i class="fas fa-adjust"></i>',
       1: '<i class="fas fa-check"></i>',
-      2: '<i class="fas fa-check-double"></i>'
+      1.5: '<i class="fas fa-check-double"></i>'
     };
     return icons[level];
   }
@@ -303,8 +273,8 @@ export default class ActorSheetKryx extends ActorSheet {
       // Relative updates for numeric fields
       inputs.find('input[data-dtype="Number"]').change(this._onChangeInputDelta.bind(this));
 
-      // Ability Proficiency
-      html.find('.ability-proficiency').click(this._onToggleAbilityProficiency.bind(this));
+      // Save Proficiency
+      html.find('.save-proficiency').click(this._onToggleSaveProficiency.bind(this));
 
       // Toggle Skill Proficiency
       html.find('.skill-proficiency').on("click contextmenu", this._onCycleSkillProficiency.bind(this));
@@ -320,7 +290,6 @@ export default class ActorSheetKryx extends ActorSheet {
       html.find('.item-edit').click(this._onItemEdit.bind(this));
       html.find('.item-delete').click(this._onItemDelete.bind(this));
       html.find('.item-uses input').click(ev => ev.target.select()).change(this._onUsesChange.bind(this));
-      html.find('.slot-max-override').click(this._onSpellSlotOverride.bind(this));
     }
 
     // Owner Only Listeners
@@ -329,6 +298,8 @@ export default class ActorSheetKryx extends ActorSheet {
       // Ability Checks
       html.find('.ability-name').click(this._onRollAbilityTest.bind(this));
 
+      // Saving Throws
+      html.find('.save-name').click(this._onRollSavingThrow.bind(this));
 
       // Roll Skill Checks
       html.find('.skill-name').click(this._onRollSkillCheck.bind(this));
@@ -405,15 +376,17 @@ export default class ActorSheetKryx extends ActorSheet {
 
     // Get the current level and the array of levels
     const level = parseFloat(field.val());
-    const levels = [0, 1, 0.5, 2];
+    const levels = KRYX_RPG.PROFICIENCY_LEVELS // [0, 0.5, 1, 1.5]
     let idx = levels.indexOf(level);
 
     // Toggle next level - forward on click, backwards on right
+    let newLevel
     if (event.type === "click") {
-      field.val(levels[(idx === levels.length - 1) ? 0 : idx + 1]);
+      newLevel = levels[(idx + 1) % levels.length]
     } else if (event.type === "contextmenu") {
-      field.val(levels[(idx === 0) ? levels.length - 1 : idx - 1]);
-    }
+      newLevel = levels[(idx + levels.length - 1) % levels.length]
+    } else return
+    field.val(newLevel)
 
     // Update the field value and save the form
     this._onSubmit(event);
@@ -437,11 +410,6 @@ export default class ActorSheetKryx extends ActorSheet {
     // Case 1 - Dropped Item
     if (data.type === "Item") {
       return this._onDropItem(event, data);
-    }
-
-    // Case 2 - Dropped Actor
-    if (data.type === "Actor") {
-      return this._onDropActor(event, data);
     }
   }
 
@@ -509,30 +477,6 @@ export default class ActorSheetKryx extends ActorSheet {
   /* -------------------------------------------- */
 
   /**
-   * Handle enabling editing for a spell slot override value
-   * @param {MouseEvent} event    The originating click event
-   * @private
-   */
-  async _onSpellSlotOverride(event) {
-    const span = event.currentTarget.parentElement;
-    const level = span.dataset.level;
-    const override = this.actor.data.data.spells[level].override || span.dataset.slots;
-    const input = document.createElement("INPUT");
-    input.type = "text";
-    input.name = `data.spells.${level}.override`;
-    input.value = override;
-    input.placeholder = span.dataset.slots;
-    input.dataset.dtype = "Number";
-
-    // Replace the HTML
-    const parent = span.parentElement;
-    parent.removeChild(span);
-    parent.appendChild(input);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Change the uses amount of an Owned Item within the Actor
    * @param {Event} event   The triggering click event
    * @private
@@ -557,9 +501,9 @@ export default class ActorSheetKryx extends ActorSheet {
     const itemId = event.currentTarget.closest(".item").dataset.itemId;
     const item = this.actor.getOwnedItem(itemId);
 
-    // Roll spells through the actor
-    if (item.data.type === "spell") {
-      return this.actor.useSpell(item, {configureDialog: !event.shiftKey});
+    // Roll superpowers through the actor
+    if (item.data.type === "superpower") {
+      return this.actor.useSuperpower(item, {configureDialog: !event.shiftKey});
     }
 
     // Otherwise roll the Item directly
@@ -664,7 +608,20 @@ export default class ActorSheetKryx extends ActorSheet {
   _onRollAbilityTest(event) {
     event.preventDefault();
     let ability = event.currentTarget.parentElement.dataset.ability;
-    this.actor.rollAbility(ability, {event: event});
+    this.actor.rollAbilityTest(ability, {event: event})
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle rolling a saving throw
+   * @param {Event} event   The originating click event
+   * @private
+   */
+  _onRollSavingThrow(event) {
+    event.preventDefault();
+    let save = event.currentTarget.parentElement.dataset.save;
+    this.actor.rollSavingThrow(save, {event: event})
   }
 
   /* -------------------------------------------- */
@@ -687,10 +644,11 @@ export default class ActorSheetKryx extends ActorSheet {
    * @param {Event} event     The originating click event
    * @private
    */
-  _onToggleAbilityProficiency(event) {
+  _onToggleSaveProficiency(event) {
     event.preventDefault();
     const field = event.currentTarget.previousElementSibling;
-    this.actor.update({[field.name]: 1 - parseInt(field.value)});
+    console.warn("TODO - save proficiency. field = " + field)
+    // this.actor.update({[field.name]: 1 - parseInt(field.value)});
   }
 
   /* -------------------------------------------- */
