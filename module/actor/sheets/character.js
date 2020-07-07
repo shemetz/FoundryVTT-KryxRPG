@@ -1,5 +1,6 @@
 import ActorSheetKryx from "./base.js";
 import {KRYX_RPG} from "../../config.js";
+import {showUpdateClassDialog} from "../../apps/update-class.js";
 
 /**
  * An Actor sheet for player character type actors in the Kryx RPG system.
@@ -225,6 +226,9 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     super.activateListeners(html);
     if (!this.options.editable) return;
 
+    // Class and level
+    html.find(".charlevel").click(this._onUpdateClass.bind(this));
+
     // Inventory Functions
     html.find(".currency-convert").click(this._onConvertCurrency.bind(this));
 
@@ -321,5 +325,17 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
       content: `<p>${game.i18n.localize("KRYX_RPG.CurrencyConvertHint")}</p>`,
       yes: () => this.actor.convertCurrency()
     });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Handle mouse click events to convert currency to the highest possible denomination
+   * @param {MouseEvent} event    The originating click event
+   * @private
+   */
+  async _onUpdateClass(event) {
+    event.preventDefault();
+    return showUpdateClassDialog(this.actor)
   }
 }
