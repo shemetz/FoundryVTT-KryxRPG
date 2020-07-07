@@ -9,15 +9,15 @@ export const preloadHandlebarsTemplates = async function() {
   const templatePaths = [
 
     // Actor Sheet Partials
-    "systems/dnd5e/templates/actors/parts/actor-traits.html",
-    "systems/dnd5e/templates/actors/parts/actor-inventory.html",
-    "systems/dnd5e/templates/actors/parts/actor-features.html",
-    "systems/dnd5e/templates/actors/parts/actor-spellbook.html",
+    "systems/kryx_rpg/templates/actors/parts/actor-traits.html",
+    "systems/kryx_rpg/templates/actors/parts/actor-inventory.html",
+    "systems/kryx_rpg/templates/actors/parts/actor-features.html",
+    "systems/kryx_rpg/templates/actors/parts/actor-spellbook.html",
 
     // Item Sheet Partials
-    "systems/dnd5e/templates/items/parts/item-action.html",
-    "systems/dnd5e/templates/items/parts/item-activation.html",
-    "systems/dnd5e/templates/items/parts/item-description.html"
+    "systems/kryx_rpg/templates/items/parts/item-action.html",
+    "systems/kryx_rpg/templates/items/parts/item-activation.html",
+    "systems/kryx_rpg/templates/items/parts/item-description.html"
   ];
 
   // Load the template parts

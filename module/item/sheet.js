@@ -1,17 +1,17 @@
 import TraitSelector from "../apps/trait-selector.js";
 
 /**
- * Override and extend the core ItemSheet implementation to handle D&D5E specific item types
+ * Override and extend the core ItemSheet implementation to handle Kryx RPG specific item types
  * @type {ItemSheet}
  */
-export default class ItemSheet5e extends ItemSheet {
+export default class ItemSheetKryx extends ItemSheet {
 
   /** @override */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
       width: 560,
       height: 420,
-      classes: ["dnd5e", "sheet", "item"],
+      classes: ["kryx_rpg", "sheet", "item"],
       resizable: false,
       scrollY: [".tab.details"],
       tabs: [{navSelector: ".tabs", contentSelector: ".sheet-body", initial: "description"}]
@@ -22,7 +22,7 @@ export default class ItemSheet5e extends ItemSheet {
 
   /** @override */
   get template() {
-    const path = "systems/dnd5e/templates/items/";
+    const path = "systems/kryx_rpg/templates/items/";
     return `${path}/${this.item.data.type}.html`;
   }
 
@@ -34,7 +34,7 @@ export default class ItemSheet5e extends ItemSheet {
     data.labels = this.item.labels;
 
     // Include CONFIG values
-    data.config = CONFIG.DND5E;
+    data.config = CONFIG.KRYX_RPG;
 
     // Item Type, Status, and Details
     data.itemType = data.item.type.titleCase();
@@ -118,7 +118,7 @@ export default class ItemSheet5e extends ItemSheet {
    */
   _getItemStatus(item) {
     if ( item.type === "spell" ) {
-      return CONFIG.DND5E.spellPreparationModes[item.data.preparation];
+      return CONFIG.KRYX_RPG.spellPreparationModes[item.data.preparation];
     }
     else if ( ["weapon", "equipment"].includes(item.type) ) {
       return item.data.equipped ? "Equipped" : "Unequipped";
@@ -142,7 +142,7 @@ export default class ItemSheet5e extends ItemSheet {
     if ( item.type === "weapon" ) {
       props.push(...Object.entries(item.data.properties)
         .filter(e => e[1] === true)
-        .map(e => CONFIG.DND5E.weaponProperties[e[0]]));
+        .map(e => CONFIG.KRYX_RPG.weaponProperties[e[0]]));
     }
 
     else if ( item.type === "spell" ) {
@@ -155,7 +155,7 @@ export default class ItemSheet5e extends ItemSheet {
     }
 
     else if ( item.type === "equipment" ) {
-      props.push(CONFIG.DND5E.equipmentTypes[item.data.armor.type]);
+      props.push(CONFIG.KRYX_RPG.equipmentTypes[item.data.armor.type]);
       props.push(labels.armor);
     }
 
@@ -165,7 +165,7 @@ export default class ItemSheet5e extends ItemSheet {
 
     // Action type
     if ( item.data.actionType ) {
-      props.push(CONFIG.DND5E.itemActionTypes[item.data.actionType]);
+      props.push(CONFIG.KRYX_RPG.itemActionTypes[item.data.actionType]);
     }
 
     // Action usage
@@ -258,7 +258,7 @@ export default class ItemSheet5e extends ItemSheet {
   _onConfigureClassSkills(event) {
     event.preventDefault();
     const skills = this.item.data.data.skills;
-    const choices = skills.choices && skills.choices.length ? skills.choices : Object.keys(CONFIG.DND5E.skills);
+    const choices = skills.choices && skills.choices.length ? skills.choices : Object.keys(CONFIG.KRYX_RPG.skills);
     const a = event.currentTarget;
     const label = a.parentElement;
 
@@ -266,7 +266,7 @@ export default class ItemSheet5e extends ItemSheet {
     new TraitSelector(this.item, {
       name: a.dataset.edit,
       title: label.innerText,
-      choices: Object.entries(CONFIG.DND5E.skills).reduce((obj, e) => {
+      choices: Object.entries(CONFIG.KRYX_RPG.skills).reduce((obj, e) => {
         if ( choices.includes(e[0] ) ) obj[e[0]] = e[1];
         return obj;
       }, {}),

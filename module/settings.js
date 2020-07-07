@@ -3,7 +3,7 @@ export const registerSystemSettings = function() {
   /**
    * Track the system version upon which point a migration was last applied
    */
-  game.settings.register("dnd5e", "systemMigrationVersion", {
+  game.settings.register("kryx_rpg", "systemMigrationVersion", {
     name: "System Migration Version",
     scope: "world",
     config: false,
@@ -14,34 +14,34 @@ export const registerSystemSettings = function() {
   /**
    * Register resting variants
    */
-  game.settings.register("dnd5e", "restVariant", {
-    name: "SETTINGS.5eRestN",
-    hint: "SETTINGS.5eRestL",
+  game.settings.register("kryx_rpg", "restVariant", {
+    name: "SETTINGS.KryxRpgRestN",
+    hint: "SETTINGS.KryxRpgRestL",
     scope: "world",
     config: true,
     default: "normal",
     type: String,
     choices: {
-      "normal": "SETTINGS.5eRestPHB",
-      "gritty": "SETTINGS.5eRestGritty",
-      "epic": "SETTINGS.5eRestEpic",
+      "normal": "SETTINGS.KryxRpgRestPHB",
+      "gritty": "SETTINGS.KryxRpgRestGritty",
+      "epic": "SETTINGS.KryxRpgRestEpic",
     }
   });
 
   /**
    * Register diagonal movement rule setting
    */
-  game.settings.register("dnd5e", "diagonalMovement", {
-    name: "SETTINGS.5eDiagN",
-    hint: "SETTINGS.5eDiagL",
+  game.settings.register("kryx_rpg", "diagonalMovement", {
+    name: "SETTINGS.KryxRpgDiagN",
+    hint: "SETTINGS.KryxRpgDiagL",
     scope: "world",
     config: true,
     default: "555",
     type: String,
     choices: {
-      "555": "SETTINGS.5eDiagPHB",
-      "5105": "SETTINGS.5eDiagDMG",
-      "EUCL": "SETTINGS.5eDiagEuclidean",
+      "555": "SETTINGS.KryxRpgDiagPHB",
+      "5105": "SETTINGS.KryxRpgDiagDMG",
+      "EUCL": "SETTINGS.KryxRpgDiagEuclidean",
     },
     onChange: rule => canvas.grid.diagonalRule = rule
   });
@@ -49,28 +49,28 @@ export const registerSystemSettings = function() {
   /**
    * Register Initiative formula setting
    */
-  function _set5eInitiative(tiebreaker) {
+  function _setKryxInitiative(tiebreaker) {
     CONFIG.Combat.initiative.tiebreaker = tiebreaker;
     CONFIG.Combat.initiative.decimals = tiebreaker ? 2 : 0;
     if ( ui.combat && ui.combat._rendered ) ui.combat.render();
   }
-  game.settings.register("dnd5e", "initiativeDexTiebreaker", {
-    name: "SETTINGS.5eInitTBN",
-    hint: "SETTINGS.5eInitTBL",
+  game.settings.register("kryx_rpg", "initiativeDexTiebreaker", {
+    name: "SETTINGS.KryxRpgInitTBN",
+    hint: "SETTINGS.KryxRpgInitTBL",
     scope: "world",
     config: true,
     default: false,
     type: Boolean,
-    onChange: enable => _set5eInitiative(enable)
+    onChange: enable => _setKryxInitiative(enable)
   });
-  _set5eInitiative(game.settings.get("dnd5e", "initiativeDexTiebreaker"));
+  _setKryxInitiative(game.settings.get("kryx_rpg", "initiativeDexTiebreaker"));
 
   /**
    * Require Currency Carrying Weight
    */
-  game.settings.register("dnd5e", "currencyWeight", {
-    name: "SETTINGS.5eCurWtN",
-    hint: "SETTINGS.5eCurWtL",
+  game.settings.register("kryx_rpg", "currencyWeight", {
+    name: "SETTINGS.KryxRpgCurWtN",
+    hint: "SETTINGS.KryxRpgCurWtL",
     scope: "world",
     config: true,
     default: true,
@@ -80,9 +80,9 @@ export const registerSystemSettings = function() {
   /**
    * Option to disable XP bar for session-based or story-based advancement.
    */
-  game.settings.register("dnd5e", "disableExperienceTracking", {
-    name: "SETTINGS.5eNoExpN",
-    hint: "SETTINGS.5eNoExpL",
+  game.settings.register("kryx_rpg", "disableExperienceTracking", {
+    name: "SETTINGS.KryxRpgNoExpN",
+    hint: "SETTINGS.KryxRpgNoExpL",
     scope: "world",
     config: true,
     default: false,
@@ -92,9 +92,9 @@ export const registerSystemSettings = function() {
   /**
    * Option to automatically create Spell Measured Template on roll
    */
-  game.settings.register("dnd5e", "alwaysPlaceSpellTemplate", {
-    name: "SETTINGS.5eAutoSpellTemplateN",
-    hint: "SETTINGS.5eAutoSpellTemplateL",
+  game.settings.register("kryx_rpg", "alwaysPlaceSpellTemplate", {
+    name: "SETTINGS.KryxRpgAutoSpellTemplateN",
+    hint: "SETTINGS.KryxRpgAutoSpellTemplateL",
     scope: "client",
     config: true,
     default: false,
@@ -104,9 +104,9 @@ export const registerSystemSettings = function() {
   /**
    * Option to automatically collapse Item Card descriptions
    */
-  game.settings.register("dnd5e", "autoCollapseItemCards", {
-    name: "SETTINGS.5eAutoCollapseCardN",
-    hint: "SETTINGS.5eAutoCollapseCardL",
+  game.settings.register("kryx_rpg", "autoCollapseItemCards", {
+    name: "SETTINGS.KryxRpgAutoCollapseCardN",
+    hint: "SETTINGS.KryxRpgAutoCollapseCardL",
     scope: "client",
     config: true,
     default: false,
@@ -119,9 +119,9 @@ export const registerSystemSettings = function() {
   /**
    * Option to allow GMs to restrict polymorphing to GMs only.
    */
-  game.settings.register('dnd5e', 'allowPolymorphing', {
-    name: 'SETTINGS.5eAllowPolymorphingN',
-    hint: 'SETTINGS.5eAllowPolymorphingL',
+  game.settings.register('kryx_rpg', 'allowPolymorphing', {
+    name: 'SETTINGS.KryxRpgAllowPolymorphingN',
+    hint: 'SETTINGS.KryxRpgAllowPolymorphingL',
     scope: 'world',
     config: true,
     default: false,
@@ -131,7 +131,7 @@ export const registerSystemSettings = function() {
   /**
    * Remember last-used polymorph settings.
    */
-  game.settings.register('dnd5e', 'polymorphSettings', {
+  game.settings.register('kryx_rpg', 'polymorphSettings', {
     scope: 'client',
     default: {
       keepPhysical: false,

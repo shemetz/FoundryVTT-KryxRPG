@@ -13,8 +13,8 @@ export default class LongRestDialog extends Dialog {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      template: "systems/dnd5e/templates/apps/long-rest.html",
-      classes: ["dnd5e", "dialog"]
+      template: "systems/kryx_rpg/templates/apps/long-rest.html",
+      classes: ["kryx_rpg", "dialog"]
     });
   }
 
@@ -23,7 +23,7 @@ export default class LongRestDialog extends Dialog {
   /** @override */
   getData() {
     const data = super.getData();
-    const variant = game.settings.get("dnd5e", "restVariant");
+    const variant = game.settings.get("kryx_rpg", "restVariant");
     data.promptNewDay = variant !== "gritty";     // It's always a new day when resting 1 week
     data.newDay = variant === "normal";           // It's probably a new day when resting normally (8 hours)
     return data;
@@ -34,7 +34,7 @@ export default class LongRestDialog extends Dialog {
   /**
    * A helper constructor function which displays the Long Rest confirmation dialog and returns a Promise once it's
    * workflow has been resolved.
-   * @param {Actor5e} actor
+   * @param {ActorKryx} actor
    * @return {Promise}
    */
   static async longRestDialog({ actor } = {}) {
@@ -47,9 +47,9 @@ export default class LongRestDialog extends Dialog {
             label: "Rest",
             callback: html => {
               let newDay = false;
-              if (game.settings.get("dnd5e", "restVariant") === "normal")
+              if (game.settings.get("kryx_rpg", "restVariant") === "normal")
                 newDay = html.find('input[name="newDay"]')[0].checked;
-              else if(game.settings.get("dnd5e", "restVariant") === "gritty")
+              else if(game.settings.get("kryx_rpg", "restVariant") === "gritty")
                 newDay = true;
               resolve(newDay);
             }

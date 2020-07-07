@@ -10,13 +10,13 @@
  * @param {number} slot     The hotbar slot to use
  * @returns {Promise}
  */
-export async function create5eMacro(data, slot) {
+export async function createKryxMacro(data, slot) {
   if ( data.type !== "Item" ) return;
   if (!( "data" in data ) ) return ui.notifications.warn("You can only create macro buttons for owned Items");
   const item = data.data;
 
   // Create the macro command
-  const command = `game.dnd5e.rollItemMacro("${item.name}");`;
+  const command = `game.kryx_rpg.rollItemMacro("${item.name}");`;
   let macro = game.macros.entities.find(m => (m.name === item.name) && (m.command === command));
   if ( !macro ) {
     macro = await Macro.create({
@@ -24,7 +24,7 @@ export async function create5eMacro(data, slot) {
       type: "script",
       img: item.img,
       command: command,
-      flags: {"dnd5e.itemMacro": true}
+      flags: {"kryx_rpg.itemMacro": true}
     });
   }
   game.user.assignHotbarMacro(macro, slot);

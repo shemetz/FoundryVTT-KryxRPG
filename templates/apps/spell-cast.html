@@ -1,12 +1,12 @@
 <form id="spell-config-form">
-    <p>{{ localize "DND5E.SpellCastHint" }} <strong>{{item.name}}</strong> {{ localize "DND5E.spell" }}.</p>
+    <p>{{ localize "KRYX_RPG.SpellCastHint" }} <strong>{{item.name}}</strong> {{ localize "KRYX_RPG.spell" }}.</p>
 
     {{#unless canCast}}
-    <p class="notification error">{{ localize "DND5E.SpellCastNoSlots" }}</p>
+    <p class="notification error">{{ localize "KRYX_RPG.SpellCastNoSlots" }}</p>
     {{/unless}}
 
     <div class="form-group">
-        <label>{{ localize "DND5E.SpellCastUpcast" }}</label>
+        <label>{{ localize "KRYX_RPG.SpellCastUpcast" }}</label>
         <div class="form-fields">
             <select name="level">
                 {{#select item.data.level}}
@@ -20,12 +20,12 @@
 
     <div class="form-group">
         {{#if canUpcast}}
-        <label class="checkbox">{{ localize "DND5E.SpellCastConsume" }} <input type="checkbox" name="consume" {{checked canCast}}/></label>
+        <label class="checkbox">{{ localize "KRYX_RPG.SpellCastConsume" }} <input type="checkbox" name="consume" {{checked canCast}}/></label>
         {{/if}}
 
         {{#if hasPlaceableTemplate}}
         <div class="form-group">
-            <label class="checkbox">{{ localize "DND5E.PlaceTemplate" }}
+            <label class="checkbox">{{ localize "KRYX_RPG.PlaceTemplate" }}
                 <input type="checkbox" name="placeTemplate" checked/>
             </label>
         </div>

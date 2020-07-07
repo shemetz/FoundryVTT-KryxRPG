@@ -5,7 +5,7 @@ import AbilityTemplate from "../pixi/ability-template.js";
 /**
  * Override and extend the basic :class:`Item` implementation
  */
-export default class Item5e extends Item {
+export default class ItemKryx extends Item {
 
   /* -------------------------------------------- */
   /*  Item Properties                             */
@@ -123,7 +123,7 @@ export default class Item5e extends Item {
    */
   get hasAreaTarget() {
     const target = this.data.data.target;
-    return target && (target.type in CONFIG.DND5E.areaTargetTypes);
+    return target && (target.type in CONFIG.KRYX_RPG.areaTargetTypes);
   }
 
   /* -------------------------------------------- */
@@ -152,7 +152,7 @@ export default class Item5e extends Item {
     const itemData = this.data;
     const actorData = this.actor ? this.actor.data : {};
     const data = itemData.data;
-    const C = CONFIG.DND5E;
+    const C = CONFIG.KRYX_RPG;
     const labels = {};
 
     // Classes
@@ -285,7 +285,7 @@ export default class Item5e extends Item {
 
     // Render the chat card template
     const templateType = ["tool"].includes(this.data.type) ? this.data.type : "item";
-    const template = `systems/dnd5e/templates/chat/${templateType}-card.html`;
+    const template = `systems/kryx_rpg/templates/chat/${templateType}-card.html`;
     const html = await renderTemplate(template, templateData);
 
     // Basic chat message data
@@ -329,7 +329,7 @@ export default class Item5e extends Item {
     const consume = itemData.consume || {};
     if ( !consume.type ) return true;
     const actor = this.actor;
-    const typeLabel = CONFIG.DND5E.abilityConsumptionTypes[consume.type];
+    const typeLabel = CONFIG.KRYX_RPG.abilityConsumptionTypes[consume.type];
     const amount = parseInt(consume.amount || 1);
 
     // Only handle certain types for certain actions
@@ -337,7 +337,7 @@ export default class Item5e extends Item {
 
     // No consumed target set
     if ( !consume.target ) {
-      ui.notifications.warn(game.i18n.format("DND5E.ConsumeWarningNoResource", {name: this.name, type: typeLabel}));
+      ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoResource", {name: this.name, type: typeLabel}));
       return false;
     }
 
@@ -362,11 +362,11 @@ export default class Item5e extends Item {
 
     // Verify that the consumed resource is available
     if ( [null, undefined].includes(consumed) ) {
-      ui.notifications.warn(game.i18n.format("DND5E.ConsumeWarningNoSource", {name: this.name, type: typeLabel}));
+      ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoSource", {name: this.name, type: typeLabel}));
       return false;
     }
     if ( !quantity || (quantity - amount < 0) ) {
-      ui.notifications.warn(game.i18n.format("DND5E.ConsumeWarningNoQuantity", {name: this.name, type: typeLabel}));
+      ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoQuantity", {name: this.name, type: typeLabel}));
       return false;
     }
 
@@ -482,7 +482,7 @@ export default class Item5e extends Item {
    */
   _equipmentChatData(data, labels, props) {
     props.push(
-      CONFIG.DND5E.equipmentTypes[data.armor.type],
+      CONFIG.KRYX_RPG.equipmentTypes[data.armor.type],
       labels.armor || null,
       data.stealth.value ? "Stealth Disadvantage" : null,
     );
@@ -496,7 +496,7 @@ export default class Item5e extends Item {
    */
   _weaponChatData(data, labels, props) {
     props.push(
-      CONFIG.DND5E.weaponTypes[data.weaponType],
+      CONFIG.KRYX_RPG.weaponTypes[data.weaponType],
     );
   }
 
@@ -508,7 +508,7 @@ export default class Item5e extends Item {
    */
   _consumableChatData(data, labels, props) {
     props.push(
-      CONFIG.DND5E.consumableTypes[data.consumableType],
+      CONFIG.KRYX_RPG.consumableTypes[data.consumableType],
       data.uses.value + "/" + data.uses.max + " Charges"
     );
     data.hasCharges = data.uses.value >= 0;
@@ -522,8 +522,8 @@ export default class Item5e extends Item {
    */
   _toolChatData(data, labels, props) {
     props.push(
-      CONFIG.DND5E.abilities[data.ability] || null,
-      CONFIG.DND5E.proficiencyLevels[data.proficient || 0]
+      CONFIG.KRYX_RPG.abilities[data.ability] || null,
+      CONFIG.KRYX_RPG.proficiencyLevels[data.proficient || 0]
     );
   }
 
@@ -577,7 +577,7 @@ export default class Item5e extends Item {
   async rollAttack(options={}) {
     const itemData = this.data.data;
     const actorData = this.actor.data.data;
-    const flags = this.actor.data.flags.dnd5e || {};
+    const flags = this.actor.data.flags.kryx_rpg || {};
     if ( !this.hasAttack ) {
       throw new Error("You may not place an Attack Roll with this Item.");
     }
@@ -807,7 +807,7 @@ export default class Item5e extends Item {
         }
         // Case 5, item unusable, display warning and do nothing
         else {
-          ui.notifications.warn(game.i18n.format("DND5E.ItemNoUses", {name: this.name}));
+          ui.notifications.warn(game.i18n.format("KRYX_RPG.ItemNoUses", {name: this.name}));
         }
       }
     }
@@ -869,7 +869,7 @@ export default class Item5e extends Item {
       event: options.event,
       parts: parts,
       data: rollData,
-      template: "systems/dnd5e/templates/chat/tool-roll-dialog.html",
+      template: "systems/kryx_rpg/templates/chat/tool-roll-dialog.html",
       title: title,
       speaker: ChatMessage.getSpeaker({actor: this.actor}),
       flavor: `${this.name} - Tool Check`,
@@ -878,7 +878,7 @@ export default class Item5e extends Item {
         top: options.event ? options.event.clientY - 80 : null,
         left: window.innerWidth - 710,
       },
-      halflingLucky: this.actor.getFlag("dnd5e", "halflingLucky" ) || false
+      halflingLucky: this.actor.getFlag("kryx_rpg", "halflingLucky" ) || false
     });
   }
 
@@ -1049,18 +1049,18 @@ export default class Item5e extends Item {
 
   /**
    * Create a consumable spell scroll Item from a spell Item.
-   * @param {Item5e} spell      The spell to be made into a scroll
-   * @return {Item5e}           The created scroll consumable item
+   * @param {ItemKryx} spell      The spell to be made into a scroll
+   * @return {ItemKryx}           The created scroll consumable item
    * @private
    */
   static async createScrollFromSpell(spell) {
 
     // Get spell data
-    const itemData = spell instanceof Item5e ? spell.data : spell;
+    const itemData = spell instanceof ItemKryx ? spell.data : spell;
     const {actionType, description, source, activation, duration, target, range, damage, save, level} = itemData.data;
 
     // Get scroll data
-    const scrollUuid = CONFIG.DND5E.spellScrollIds[level];
+    const scrollUuid = CONFIG.KRYX_RPG.spellScrollIds[level];
     const scrollItem = await fromUuid(scrollUuid);
     const scrollData = scrollItem.data;
     delete scrollData._id;
@@ -1077,7 +1077,7 @@ export default class Item5e extends Item {
 
     // Create the spell scroll data
     const spellScrollData = mergeObject(scrollData, {
-      name: `${game.i18n.localize("DND5E.SpellScroll")}: ${itemData.name}`,
+      name: `${game.i18n.localize("KRYX_RPG.SpellScroll")}: ${itemData.name}`,
       img: itemData.img,
       data: {
         "description.value": desc.trim(),

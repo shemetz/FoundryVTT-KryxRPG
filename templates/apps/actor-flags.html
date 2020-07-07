@@ -1,5 +1,5 @@
 <form class="{{cssClass}}" autocomplete="off">
-	<p class="notes">{{localize 'DND5E.FlagsInstructions'}}</p>
+	<p class="notes">{{localize 'KRYX_RPG.FlagsInstructions'}}</p>
 
     {{#each flags as |fs section|}}
     <h3 class="form-header">{{localize section}}</h3>
@@ -29,8 +29,8 @@
     {{/each}}
     {{/each}}
 
-    <h3 class="form-header">{{localize "DND5E.Bonuses"}}</h3>
-    <p class="notes">{{localize "DND5E.BonusesHint"}}</p>
+    <h3 class="form-header">{{localize "KRYX_RPG.Bonuses"}}</h3>
+    <p class="notes">{{localize "KRYX_RPG.BonusesHint"}}</p>
     {{#each bonuses as |b|}}
     <div class="form-group">
         <label>{{localize b.label}}</label>
@@ -39,6 +39,6 @@
     {{/each}}
 
     <button type="submit" name="submit">
-        <i class="far fa-save"></i> {{localize 'DND5E.FlagsSave'}}
+        <i class="far fa-save"></i> {{localize 'KRYX_RPG.FlagsSave'}}
     </button>
 </form>

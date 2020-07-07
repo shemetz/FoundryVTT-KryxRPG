@@ -6,12 +6,12 @@
 
         <section class="header-details flexrow">
             <h1 class="charname">
-                <input name="name" type="text" value="{{actor.name}}" placeholder="{{ localize 'DND5E.Name' }}"/>
+                <input name="name" type="text" value="{{actor.name}}" placeholder="{{ localize 'KRYX_RPG.Name' }}"/>
             </h1>
 
             <aside class="header-exp flexcol">
                 <div class="charlevel">
-                    <label>{{ localize "DND5E.Level" }} {{data.details.level}}</label>
+                    <label>{{ localize "KRYX_RPG.Level" }} {{data.details.level}}</label>
                     <span class="levels">{{classLabels}}</span>
                 </div>
 
@@ -31,23 +31,23 @@
             {{!-- Character Summary --}}
             <ul class="summary flexrow">
                 <li>
-                    <input type="text" name="data.details.race" value="{{data.details.race}}" placeholder="{{ localize 'DND5E.Race' }}"/>
+                    <input type="text" name="data.details.race" value="{{data.details.race}}" placeholder="{{ localize 'KRYX_RPG.Race' }}"/>
                 </li>
                 <li>
-                    <input type="text" name="data.details.background" value="{{data.details.background}}" placeholder="{{ localize 'DND5E.Background' }}"/>
+                    <input type="text" name="data.details.background" value="{{data.details.background}}" placeholder="{{ localize 'KRYX_RPG.Background' }}"/>
                 </li>
                 <li>
-                    <input type="text" name="data.details.alignment" value="{{data.details.alignment}}" placeholder="{{ localize 'DND5E.Alignment' }}"/>
+                    <input type="text" name="data.details.alignment" value="{{data.details.alignment}}" placeholder="{{ localize 'KRYX_RPG.Alignment' }}"/>
                 </li>
                 <li class="proficiency">
-                    <span>{{ localize "DND5E.Proficiency" }} {{numberFormat data.attributes.prof decimals=0 sign=true}}</span>
+                    <span>{{ localize "KRYX_RPG.Proficiency" }} {{numberFormat data.attributes.prof decimals=0 sign=true}}</span>
                 </li>
             </ul>
 
             {{!-- Header Attributes --}}
             <ul class="attributes flexrow">
                 <li class="attribute health">
-                    <h4 class="attribute-name box-title">{{ localize "DND5E.Health" }}</h4>
+                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Health" }}</h4>
                     <div class="attribute-value multiple">
                         <input name="data.attributes.hp.value" type="text" value="{{data.attributes.hp.value}}"
                                data-dtype="Number" placeholder="10"/>
@@ -56,54 +56,54 @@
                                data-dtype="Number" placeholder="10"/>
                     </div>
                     <footer class="attribute-footer">
-                        <input name="data.attributes.hp.temp" type="text" class="temphp" placeholder="+{{ localize 'DND5E.Temp' }}"
+                        <input name="data.attributes.hp.temp" type="text" class="temphp" placeholder="+{{ localize 'KRYX_RPG.Temp' }}"
                                value="{{data.attributes.hp.temp}}" data-dtype="{{data.attributes.hp.type}}"/>
-                        <input name="data.attributes.hp.tempmax" type="text" class="temphp" placeholder="+{{ localize 'DND5E.Max' }}"
+                        <input name="data.attributes.hp.tempmax" type="text" class="temphp" placeholder="+{{ localize 'KRYX_RPG.Max' }}"
                                value="{{data.attributes.hp.tempmax}}" data-dtype="{{data.attributes.hp.type}}"/>
                     </footer>
                 </li>
 
                 <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "DND5E.HitDice" }}</h4>
+                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.HitDice" }}</h4>
                     <div class="attribute-value multiple">
                         <label class="hit-dice">{{data.attributes.hd}} <span class="sep"> / </span> {{data.details.level}}</label>
                     </div>
                     <footer class="attribute-footer">
-                        <a class="rest short-rest">{{ localize "DND5E.RestS" }}</a>
-                        <a class="rest long-rest">{{ localize "DND5E.RestL" }}</a>
+                        <a class="rest short-rest">{{ localize "KRYX_RPG.RestS" }}</a>
+                        <a class="rest long-rest">{{ localize "KRYX_RPG.RestL" }}</a>
                     </footer>
                 </li>
 
                 <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "DND5E.ArmorClass" }}</h4>
+                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.ArmorClass" }}</h4>
                     <div class="attribute-value">
                         <input name="data.attributes.ac.value" type="text" value="{{data.attributes.ac.value}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
                     <footer class="attribute-footer">
-                        <span class="spell-dc">{{localize "DND5E.SpellDC"}} {{data.attributes.spelldc}}</span>
+                        <span class="spell-dc">{{localize "KRYX_RPG.SpellDC"}} {{data.attributes.spelldc}}</span>
                     </footer>
                 </li>
 
                 <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "DND5E.Speed" }}</h4>
+                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Speed" }}</h4>
                     <div class="attribute-value">
                         <input name="data.attributes.speed.value" type="text"
                                value="{{data.attributes.speed.value}}" placeholder="0"/>
                     </div>
                     <footer class="attribute-footer">
                         <input type="text" class="speed" name="data.attributes.speed.special"
-                               value="{{data.attributes.speed.special}}" placeholder="{{ localize 'DND5E.SpeedSpecial' }}"/>
+                               value="{{data.attributes.speed.special}}" placeholder="{{ localize 'KRYX_RPG.SpeedSpecial' }}"/>
                     </footer>
                 </li>
 
                 <li class="attribute initiative">
-                    <h4 class="attribute-name box-title">{{ localize "DND5E.Initiative" }}</h4>
+                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Initiative" }}</h4>
                     <div class="attribute-value">
                         <span>{{numberFormat data.attributes.init.total decimals=0 sign=true}}</span>
                     </div>
                     <footer class="attribute-footer">
-                        <span>{{ localize "DND5E.Modifier" }}</span>
+                        <span>{{ localize "KRYX_RPG.Modifier" }}</span>
                         <input name="data.attributes.init.value" type="text" placeholder="0" data-dtype="Number"
                                value="{{numberFormat data.attributes.init.value decimals=0 sign=true}}"/>
                     </footer>
@@ -114,11 +114,11 @@
 
     {{!-- NPC Sheet Navigation --}}
     <nav class="sheet-navigation tabs" data-group="primary">
-        <a class="item active" data-tab="attributes">{{ localize "DND5E.Attributes" }}</a>
-        <a class="item" data-tab="inventory">{{ localize "DND5E.Inventory" }}</a>
-        <a class="item" data-tab="features">{{ localize "DND5E.Features" }}</a>
-        <a class="item" data-tab="spellbook">{{ localize "DND5E.Spellbook" }}</a>
-        <a class="item" data-tab="biography">{{ localize "DND5E.Biography" }}</a>
+        <a class="item active" data-tab="attributes">{{ localize "KRYX_RPG.Attributes" }}</a>
+        <a class="item" data-tab="inventory">{{ localize "KRYX_RPG.Inventory" }}</a>
+        <a class="item" data-tab="features">{{ localize "KRYX_RPG.Features" }}</a>
+        <a class="item" data-tab="spellbook">{{ localize "KRYX_RPG.Spellbook" }}</a>
+        <a class="item" data-tab="biography">{{ localize "KRYX_RPG.Biography" }}</a>
     </nav>
 
     {{!-- NPC Sheet Body --}}
@@ -135,7 +135,7 @@
                     <div class="ability-modifiers flexrow">
                         <span class="ability-mod" title="Modifier">{{numberFormat ability.mod decimals=0 sign=true}}</span>
                         <input type="hidden" name="data.abilities.{{id}}.proficient" value="{{ability.proficient}}" data-dtype="Number"/>
-                        <a class="proficiency-toggle ability-proficiency" title="{{ localize 'DND5E.Proficiency' }}">{{{ability.icon}}}</a>
+                        <a class="proficiency-toggle ability-proficiency" title="{{ localize 'KRYX_RPG.Proficiency' }}">{{{ability.icon}}}</a>
                         <span class="ability-save" title="Saving Throw">{{numberFormat ability.save decimals=0 sign=true}}</span>
                     </div>
                 </li>
@@ -168,7 +168,7 @@
                         </h4>
                         <div class="attribute-value">
                             <label class="recharge checkbox">
-                                {{ localize "DND5E.AbbreviationSR" }} <input name="data.resources.{{res.name}}.sr" type="checkbox" {{checked res.sr}}/>
+                                {{ localize "KRYX_RPG.AbbreviationSR" }} <input name="data.resources.{{res.name}}.sr" type="checkbox" {{checked res.sr}}/>
                             </label>
 
                             <input name="data.resources.{{res.name}}.value" type="text" value="{{res.value}}"
@@ -178,7 +178,7 @@
                                   data-dtype="Number" placeholder="0"/>
 
                             <label class="recharge checkbox">
-                                {{ localize "DND5E.AbbreviationLR" }} <input name="data.resources.{{res.name}}.lr" type="checkbox" {{checked res.lr}}/>
+                                {{ localize "KRYX_RPG.AbbreviationLR" }} <input name="data.resources.{{res.name}}.lr" type="checkbox" {{checked res.lr}}/>
                             </label>
                         </div>
                     </li>
@@ -188,7 +188,7 @@
                 {{!-- Counters --}}
                 <div class="counters">
                     <div class="counter flexrow death-saves">
-                        <h4 class="death-save rollable">{{ localize "DND5E.DeathSave" }}</h4>
+                        <h4 class="death-save rollable">{{ localize "KRYX_RPG.DeathSave" }}</h4>
                         <div class="counter-value">
                             <i class="fas fa-check"></i>
                             <input type="text" name="data.attributes.death.success" data-dtype="Number" placeholder="0"
@@ -199,14 +199,14 @@
                         </div>
                     </div>
                     <div class="counter flexrow exhaustion">
-                        <h4>{{ localize "DND5E.Exhaustion" }}</h4>
+                        <h4>{{ localize "KRYX_RPG.Exhaustion" }}</h4>
                         <div class="counter-value">
                             <input type="text" name="data.attributes.exhaustion" data-dtype="Number" placeholder="0"
                                    value="{{data.attributes.exhaustion}}" />
                         </div>
                     </div>
                     <div class="counter flexrow inspiration">
-                        <h4>{{ localize "DND5E.Inspiration" }}</h4>
+                        <h4>{{ localize "KRYX_RPG.Inspiration" }}</h4>
                         <div class="counter-value">
                             <input type="checkbox" name="data.attributes.inspiration" data-dtype="Boolean"
                                    {{checked data.attributes.inspiration}}/>
@@ -215,23 +215,23 @@
                 </div>
 
                 {{!-- Traits --}}
-                {{> "systems/dnd5e/templates/actors/parts/actor-traits.html"}}
+                {{> "systems/kryx_rpg/templates/actors/parts/actor-traits.html"}}
             </section>
         </div>
 
         {{!-- Inventory Tab --}}
         <div class="tab inventory flexcol" data-group="primary" data-tab="inventory">
-            {{> "systems/dnd5e/templates/actors/parts/actor-inventory.html" sections=inventory}}
+            {{> "systems/kryx_rpg/templates/actors/parts/actor-inventory.html" sections=inventory}}
         </div>
 
         {{!-- Features Tab --}}
         <div class="tab features flexcol" data-group="primary" data-tab="features">
-            {{> "systems/dnd5e/templates/actors/parts/actor-features.html" sections=features}}
+            {{> "systems/kryx_rpg/templates/actors/parts/actor-features.html" sections=features}}
         </div>
 
         {{!-- Spellbook Tab --}}
         <div class="tab spellbook flexcol" data-group="primary" data-tab="spellbook">
-            {{> "systems/dnd5e/templates/actors/parts/actor-spellbook.html"}}
+            {{> "systems/kryx_rpg/templates/actors/parts/actor-spellbook.html"}}
         </div>
 
         {{!-- Biography Tab --}}

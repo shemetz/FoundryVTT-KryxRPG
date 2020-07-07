@@ -1,11 +1,11 @@
-import ActorSheet5e from "./base.js";
+import ActorSheetKryx from "./base.js";
 
 /**
- * An Actor sheet for player character type actors in the D&D5E system.
- * Extends the base ActorSheet5e class.
- * @type {ActorSheet5e}
+ * An Actor sheet for player character type actors in the Kryx RPG system.
+ * Extends the base ActorSheetKryx class.
+ * @type {ActorSheetKryx}
  */
-export default class ActorSheet5eCharacter extends ActorSheet5e {
+export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
   /**
    * Define default rendering options for the NPC sheet
@@ -13,7 +13,7 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
    */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
-      classes: ["dnd5e", "sheet", "actor", "character"],
+      classes: ["kryx_rpg", "sheet", "actor", "character"],
       width: 720,
       height: 680
     });
@@ -28,8 +28,8 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
    * @type {String}
    */
   get template() {
-    if ( !game.user.isGM && this.actor.limited ) return "systems/dnd5e/templates/actors/limited-sheet.html";
-    return "systems/dnd5e/templates/actors/character-sheet.html";
+    if ( !game.user.isGM && this.actor.limited ) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
+    return "systems/kryx_rpg/templates/actors/character-sheet.html";
   }
 
   /* -------------------------------------------- */
@@ -49,14 +49,14 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
     sheetData["resources"] = ["primary", "secondary", "tertiary"].reduce((arr, r) => {
       const res = sheetData.data.resources[r] || {};
       res.name = r;
-      res.placeholder = game.i18n.localize("DND5E.Resource"+r.titleCase());
+      res.placeholder = game.i18n.localize("KRYX_RPG.Resource"+r.titleCase());
       if (res && res.value === 0) delete res.value;
       if (res && res.max === 0) delete res.max;
       return arr.concat([res]);
     }, []);
 
     // Experience Tracking
-    sheetData["disableExperience"] = game.settings.get("dnd5e", "disableExperienceTracking");
+    sheetData["disableExperience"] = game.settings.get("kryx_rpg", "disableExperienceTracking");
     sheetData["classLabels"] = this.actor.itemTypes.class.map(c => c.name).join(", ");
 
     // Return data for rendering
@@ -73,12 +73,12 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
 
     // Categorize items as inventory, spellbook, features, and classes
     const inventory = {
-      weapon: { label: "DND5E.ItemTypeWeaponPl", items: [], dataset: {type: "weapon"} },
-      equipment: { label: "DND5E.ItemTypeEquipmentPl", items: [], dataset: {type: "equipment"} },
-      consumable: { label: "DND5E.ItemTypeConsumablePl", items: [], dataset: {type: "consumable"} },
-      tool: { label: "DND5E.ItemTypeToolPl", items: [], dataset: {type: "tool"} },
-      backpack: { label: "DND5E.ItemTypeContainerPl", items: [], dataset: {type: "backpack"} },
-      loot: { label: "DND5E.ItemTypeLootPl", items: [], dataset: {type: "loot"} }
+      weapon: { label: "KRYX_RPG.ItemTypeWeaponPl", items: [], dataset: {type: "weapon"} },
+      equipment: { label: "KRYX_RPG.ItemTypeEquipmentPl", items: [], dataset: {type: "equipment"} },
+      consumable: { label: "KRYX_RPG.ItemTypeConsumablePl", items: [], dataset: {type: "consumable"} },
+      tool: { label: "KRYX_RPG.ItemTypeToolPl", items: [], dataset: {type: "tool"} },
+      backpack: { label: "KRYX_RPG.ItemTypeContainerPl", items: [], dataset: {type: "backpack"} },
+      loot: { label: "KRYX_RPG.ItemTypeLootPl", items: [], dataset: {type: "loot"} }
     };
 
     // Partition items by category
@@ -129,9 +129,9 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
 
     // Organize Features
     const features = {
-      classes: { label: "DND5E.ItemTypeClassPl", items: [], hasActions: false, dataset: {type: "class"}, isClass: true },
-      active: { label: "DND5E.FeatureActive", items: [], hasActions: true, dataset: {type: "feat", "activation.type": "action"} },
-      passive: { label: "DND5E.FeaturePassive", items: [], hasActions: false, dataset: {type: "feat"} }
+      classes: { label: "KRYX_RPG.ItemTypeClassPl", items: [], hasActions: false, dataset: {type: "class"}, isClass: true },
+      active: { label: "KRYX_RPG.FeatureActive", items: [], hasActions: true, dataset: {type: "feat", "activation.type": "action"} },
+      passive: { label: "KRYX_RPG.FeaturePassive", items: [], hasActions: false, dataset: {type: "feat"} }
     };
     for ( let f of feats ) {
       if ( f.data.activation.type ) features.active.items.push(f);
@@ -160,14 +160,14 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
       const isPrepared =  getProperty(item.data, "preparation.prepared");
       item.toggleClass = isPrepared ? "active" : "";
       if ( isAlways ) item.toggleClass = "fixed";
-      if ( isAlways ) item.toggleTitle = CONFIG.DND5E.spellPreparationModes.always;
-      else if ( isPrepared ) item.toggleTitle = CONFIG.DND5E.spellPreparationModes.prepared;
-      else item.toggleTitle = game.i18n.localize("DND5E.SpellUnprepared");
+      if ( isAlways ) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.always;
+      else if ( isPrepared ) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.prepared;
+      else item.toggleTitle = game.i18n.localize("KRYX_RPG.SpellUnprepared");
     }
     else {
       const isActive = getProperty(item.data, "equipped");
       item.toggleClass = isActive ? "active" : "";
-      item.toggleTitle = game.i18n.localize(isActive ? "DND5E.Equipped" : "DND5E.Unequipped");
+      item.toggleTitle = game.i18n.localize(isActive ? "KRYX_RPG.Equipped" : "KRYX_RPG.Unequipped");
     }
   }
 
@@ -197,18 +197,18 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
     }[actorData.data.traits.size] || 1;
 
     // Apply Powerful Build feat
-    if ( this.actor.getFlag("dnd5e", "powerfulBuild") ) mod = Math.min(mod * 2, 8);
+    if ( this.actor.getFlag("kryx_rpg", "powerfulBuild") ) mod = Math.min(mod * 2, 8);
 
     // Add Currency Weight
-    if ( game.settings.get("dnd5e", "currencyWeight") ) {
+    if ( game.settings.get("kryx_rpg", "currencyWeight") ) {
       const currency = actorData.data.currency;
       const numCoins = Object.values(currency).reduce((val, denom) => val += denom, 0);
-      totalWeight += numCoins / CONFIG.DND5E.encumbrance.currencyPerWeight;
+      totalWeight += numCoins / CONFIG.KRYX_RPG.encumbrance.currencyPerWeight;
     }
 
     // Compute Encumbrance percentage
     const enc = {
-      max: actorData.data.abilities.str.value * CONFIG.DND5E.encumbrance.strMultiplier * mod,
+      max: actorData.data.abilities.str.value * CONFIG.KRYX_RPG.encumbrance.strMultiplier * mod,
       value: Math.round(totalWeight * 10) / 10,
     };
     enc.pct = Math.min(enc.value * 100 / enc.max, 99);
@@ -306,8 +306,8 @@ export default class ActorSheet5eCharacter extends ActorSheet5e {
   async _onConvertCurrency(event) {
     event.preventDefault();
     return Dialog.confirm({
-      title: `${game.i18n.localize("DND5E.CurrencyConvert")}`,
-      content: `<p>${game.i18n.localize("DND5E.CurrencyConvertHint")}</p>`,
+      title: `${game.i18n.localize("KRYX_RPG.CurrencyConvert")}`,
+      content: `<p>${game.i18n.localize("KRYX_RPG.CurrencyConvertHint")}</p>`,
       yes: () => this.actor.convertCurrency()
     });
   }

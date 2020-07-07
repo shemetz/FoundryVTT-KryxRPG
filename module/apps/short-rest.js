@@ -26,8 +26,8 @@ export default class ShortRestDialog extends Dialog {
   /** @override */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
-	    template: "systems/dnd5e/templates/apps/short-rest.html",
-      classes: ["dnd5e", "dialog"]
+	    template: "systems/kryx_rpg/templates/apps/short-rest.html",
+      classes: ["kryx_rpg", "dialog"]
     });
   }
 
@@ -51,7 +51,7 @@ export default class ShortRestDialog extends Dialog {
     data.denomination = this._denom;
 
     // Determine rest type
-    const variant = game.settings.get("dnd5e", "restVariant");
+    const variant = game.settings.get("kryx_rpg", "restVariant");
     data.promptNewDay = variant !== "epic";     // It's never a new day when only resting 1 minute
     data.newDay = false;                        // It may be a new day, but not by default
     return data;
@@ -88,7 +88,7 @@ export default class ShortRestDialog extends Dialog {
   /**
    * A helper constructor function which displays the Short Rest dialog and returns a Promise once it's workflow has
    * been resolved.
-   * @param {Actor5e} actor
+   * @param {ActorKryx} actor
    * @return {Promise}
    */
   static async shortRestDialog({actor}={}) {
@@ -101,7 +101,7 @@ export default class ShortRestDialog extends Dialog {
             label: "Rest",
             callback: html => {
               let newDay = false;
-              if (game.settings.get("dnd5e", "restVariant") === "gritty")
+              if (game.settings.get("kryx_rpg", "restVariant") === "gritty")
                 newDay = html.find('input[name="newDay"]')[0].checked;
               resolve(newDay);
             }
@@ -124,7 +124,7 @@ export default class ShortRestDialog extends Dialog {
    * A helper constructor function which displays the Long Rest confirmation dialog and returns a Promise once it's
    * workflow has been resolved.
    * @deprecated
-   * @param {Actor5e} actor
+   * @param {ActorKryx} actor
    * @return {Promise}
    */
   static async longRestDialog({actor}={}) {

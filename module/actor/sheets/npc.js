@@ -1,11 +1,11 @@
-import ActorSheet5e from "../sheets/base.js";
+import ActorSheetKryx from "../sheets/base.js";
 
 /**
- * An Actor sheet for NPC type characters in the D&D5E system.
- * Extends the base ActorSheet5e class.
- * @type {ActorSheet5e}
+ * An Actor sheet for NPC type characters in the Kryx RPG system.
+ * Extends the base ActorSheetKryx class.
+ * @type {ActorSheetKryx}
  */
-export default class ActorSheet5eNPC extends ActorSheet5e {
+export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
   /**
    * Define default rendering options for the NPC sheet
@@ -13,7 +13,7 @@ export default class ActorSheet5eNPC extends ActorSheet5e {
    */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
-      classes: ["dnd5e", "sheet", "actor", "npc"],
+      classes: ["kryx_rpg", "sheet", "actor", "npc"],
       width: 600,
       height: 680
     });
@@ -28,8 +28,8 @@ export default class ActorSheet5eNPC extends ActorSheet5e {
    * @type {String}
    */
   get template() {
-    if ( !game.user.isGM && this.actor.limited ) return "systems/dnd5e/templates/actors/limited-sheet.html";
-    return "systems/dnd5e/templates/actors/npc-sheet.html";
+    if ( !game.user.isGM && this.actor.limited ) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
+    return "systems/kryx_rpg/templates/actors/npc-sheet.html";
   }
 
   /* -------------------------------------------- */
@@ -42,10 +42,10 @@ export default class ActorSheet5eNPC extends ActorSheet5e {
 
     // Categorize Items as Features and Spells
     const features = {
-      weapons: { label: game.i18n.localize("DND5E.AttackPl"), items: [] , hasActions: true, dataset: {type: "weapon", "weapon-type": "natural"} },
-      actions: { label: game.i18n.localize("DND5E.ActionPl"), items: [] , hasActions: true, dataset: {type: "feat", "activation.type": "action"} },
-      passive: { label: game.i18n.localize("DND5E.Features"), items: [], dataset: {type: "feat"} },
-      equipment: { label: game.i18n.localize("DND5E.Inventory"), items: [], dataset: {type: "loot"}}
+      weapons: { label: game.i18n.localize("KRYX_RPG.AttackPl"), items: [] , hasActions: true, dataset: {type: "weapon", "weapon-type": "natural"} },
+      actions: { label: game.i18n.localize("KRYX_RPG.ActionPl"), items: [] , hasActions: true, dataset: {type: "feat", "activation.type": "action"} },
+      passive: { label: game.i18n.localize("KRYX_RPG.Features"), items: [], dataset: {type: "feat"} },
+      equipment: { label: game.i18n.localize("KRYX_RPG.Inventory"), items: [], dataset: {type: "loot"}}
     };
 
     // Start by classifying items into groups for rendering

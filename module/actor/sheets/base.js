@@ -1,14 +1,14 @@
-import Item5e from "../../item/entity.js";
+import ItemKryx from "../../item/entity.js";
 import TraitSelector from "../../apps/trait-selector.js";
 import ActorSheetFlags from "../../apps/actor-flags.js";
-import {DND5E} from '../../config.js';
+import {KRYX_RPG} from '../../config.js';
 
 /**
- * Extend the basic ActorSheet class to do all the D&D5e things!
+ * Extend the basic ActorSheet class to do all the Kryx RPG things!
  * This sheet is an Abstract layer which is not used.
  * @extends {ActorSheet}
  */
-export default class ActorSheet5e extends ActorSheet {
+export default class ActorSheetKryx extends ActorSheet {
   constructor(...args) {
     super(...args);
 
@@ -53,7 +53,7 @@ export default class ActorSheet5e extends ActorSheet {
       cssClass: isOwner ? "editable" : "locked",
       isCharacter: this.entity.data.type === "character",
       isNPC: this.entity.data.type === "npc",
-      config: CONFIG.DND5E,
+      config: CONFIG.KRYX_RPG,
     };
 
     // The Actor and its Items
@@ -70,16 +70,16 @@ export default class ActorSheet5e extends ActorSheet {
     // Ability Scores
     for ( let [a, abl] of Object.entries(data.actor.data.abilities)) {
       abl.icon = this._getProficiencyIcon(abl.proficient);
-      abl.hover = CONFIG.DND5E.proficiencyLevels[abl.proficient];
-      abl.label = CONFIG.DND5E.abilities[a];
+      abl.hover = CONFIG.KRYX_RPG.proficiencyLevels[abl.proficient];
+      abl.label = CONFIG.KRYX_RPG.abilities[a];
     }
 
     // Update skill labels
     for ( let [s, skl] of Object.entries(data.actor.data.skills)) {
       skl.ability = data.actor.data.abilities[skl.ability].label.substring(0, 3);
       skl.icon = this._getProficiencyIcon(skl.value);
-      skl.hover = CONFIG.DND5E.proficiencyLevels[skl.value];
-      skl.label = CONFIG.DND5E.skills[s];
+      skl.hover = CONFIG.KRYX_RPG.proficiencyLevels[skl.value];
+      skl.label = CONFIG.KRYX_RPG.skills[s];
     }
 
     // Update traits
@@ -96,14 +96,14 @@ export default class ActorSheet5e extends ActorSheet {
 
   _prepareTraits(traits) {
     const map = {
-      "dr": CONFIG.DND5E.damageTypes,
-      "di": CONFIG.DND5E.damageTypes,
-      "dv": CONFIG.DND5E.damageTypes,
-      "ci": CONFIG.DND5E.conditionTypes,
-      "languages": CONFIG.DND5E.languages,
-      "armorProf": CONFIG.DND5E.armorProficiencies,
-      "weaponProf": CONFIG.DND5E.weaponProficiencies,
-      "toolProf": CONFIG.DND5E.toolProficiencies
+      "dr": CONFIG.KRYX_RPG.damageTypes,
+      "di": CONFIG.KRYX_RPG.damageTypes,
+      "dv": CONFIG.KRYX_RPG.damageTypes,
+      "ci": CONFIG.KRYX_RPG.conditionTypes,
+      "languages": CONFIG.KRYX_RPG.languages,
+      "armorProf": CONFIG.KRYX_RPG.armorProficiencies,
+      "weaponProf": CONFIG.KRYX_RPG.weaponProficiencies,
+      "toolProf": CONFIG.KRYX_RPG.toolProficiencies
     };
     for ( let [t, choices] of Object.entries(map) ) {
       const trait = traits[t];
@@ -179,15 +179,15 @@ export default class ActorSheet5e extends ActorSheet {
 
     // Structure the spellbook for every level up to the maximum which has a slot
     if ( maxLevel > 0 ) {
-      registerSection("spell0", 0, CONFIG.DND5E.spellLevels[0]);
+      registerSection("spell0", 0, CONFIG.KRYX_RPG.spellLevels[0]);
       for (let lvl = 1; lvl <= maxLevel; lvl++) {
         const sl = `spell${lvl}`;
-        registerSection(sl, lvl, CONFIG.DND5E.spellLevels[lvl], levels[sl]);
+        registerSection(sl, lvl, CONFIG.KRYX_RPG.spellLevels[lvl], levels[sl]);
       }
     }
     if ( levels.pact && levels.pact.max ) {
-      registerSection("spell0", 0, CONFIG.DND5E.spellLevels[0]);
-      registerSection("pact", sections.pact, CONFIG.DND5E.spellPreparationModes.pact, levels.pact);
+      registerSection("spell0", 0, CONFIG.KRYX_RPG.spellLevels[0]);
+      registerSection("pact", sections.pact, CONFIG.KRYX_RPG.spellPreparationModes.pact, levels.pact);
     }
 
     // Iterate over every spell item, adding spells to the spellbook by section
@@ -200,13 +200,13 @@ export default class ActorSheet5e extends ActorSheet {
       if ( mode in sections ) {
         s = sections[mode];
         if ( !spellbook[s] ){
-          registerSection(mode, s, CONFIG.DND5E.spellPreparationModes[mode], levels[mode]);
+          registerSection(mode, s, CONFIG.KRYX_RPG.spellPreparationModes[mode], levels[mode]);
         }
       }
 
       // Higher-level spell headings
       else if ( !spellbook[s] ) {
-        registerSection(sl, s, CONFIG.DND5E.spellLevels[s], levels[sl]);
+        registerSection(sl, s, CONFIG.KRYX_RPG.spellLevels[s], levels[sl]);
       }
 
       // Add the spell to the relevant heading
@@ -452,7 +452,7 @@ export default class ActorSheet5e extends ActorSheet {
    * @private
    */
   async _onDropActor(event, data) {
-    const canPolymorph = game.user.isGM || (this.actor.owner && game.settings.get('dnd5e', 'allowPolymorphing'));
+    const canPolymorph = game.user.isGM || (this.actor.owner && game.settings.get('kryx_rpg', 'allowPolymorphing'));
     if ( !canPolymorph ) return false;
 
     // Get the target actor
@@ -471,29 +471,29 @@ export default class ActorSheet5e extends ActorSheet {
       html.find('input').each((i, el) => {
         options[el.name] = el.checked;
       });
-      const settings = mergeObject(game.settings.get('dnd5e', 'polymorphSettings') || {}, options);
-      game.settings.set('dnd5e', 'polymorphSettings', settings);
+      const settings = mergeObject(game.settings.get('kryx_rpg', 'polymorphSettings') || {}, options);
+      game.settings.set('kryx_rpg', 'polymorphSettings', settings);
       return settings;
     };
 
     // Create and render the Dialog
     return new Dialog({
-      title: game.i18n.localize('DND5E.PolymorphPromptTitle'),
+      title: game.i18n.localize('KRYX_RPG.PolymorphPromptTitle'),
       content: {
-        options: game.settings.get('dnd5e', 'polymorphSettings'),
-        i18n: DND5E.polymorphSettings,
+        options: game.settings.get('kryx_rpg', 'polymorphSettings'),
+        i18n: KRYX_RPG.polymorphSettings,
         isToken: this.actor.isToken
       },
       default: 'accept',
       buttons: {
         accept: {
           icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize('DND5E.PolymorphAcceptSettings'),
+          label: game.i18n.localize('KRYX_RPG.PolymorphAcceptSettings'),
           callback: html => this.actor.transformInto(sourceActor, rememberOptions(html))
         },
         wildshape: {
           icon: '<i class="fas fa-paw"></i>',
-          label: game.i18n.localize('DND5E.PolymorphWildShape'),
+          label: game.i18n.localize('KRYX_RPG.PolymorphWildShape'),
           callback: html => this.actor.transformInto(sourceActor, {
             keepMental: true,
             mergeSaves: true,
@@ -503,7 +503,7 @@ export default class ActorSheet5e extends ActorSheet {
         },
         polymorph: {
           icon: '<i class="fas fa-pastafarianism"></i>',
-          label: game.i18n.localize('DND5E.Polymorph'),
+          label: game.i18n.localize('KRYX_RPG.Polymorph'),
           callback: html => this.actor.transformInto(sourceActor, {
             transformTokens: rememberOptions(html).transformTokens
           })
@@ -514,9 +514,9 @@ export default class ActorSheet5e extends ActorSheet {
         }
       }
     }, {
-      classes: ['dialog', 'dnd5e'],
+      classes: ['dialog', 'kryx_rpg'],
       width: 600,
-      template: 'systems/dnd5e/templates/apps/polymorph-prompt.html'
+      template: 'systems/kryx_rpg/templates/apps/polymorph-prompt.html'
     }).render(true);
   }
 
@@ -540,7 +540,7 @@ export default class ActorSheet5e extends ActorSheet {
 
     // Create a spell scroll from a spell item
     if ( (itemData.type === "spell") && (this._tabs[0].active === "inventory") ) {
-      const scroll = await Item5e.createScrollFromSpell(itemData);
+      const scroll = await ItemKryx.createScrollFromSpell(itemData);
       itemData = scroll.data;
     }
 
@@ -694,7 +694,7 @@ export default class ActorSheet5e extends ActorSheet {
     const header = event.currentTarget;
     const type = header.dataset.type;
     const itemData = {
-      name: game.i18n.format("DND5E.ItemNew", {type: type.capitalize()}),
+      name: game.i18n.format("KRYX_RPG.ItemNew", {type: type.capitalize()}),
       type: type,
       data: duplicate(header.dataset)
     };
@@ -799,7 +799,7 @@ export default class ActorSheet5e extends ActorSheet {
     const options = {
       name: a.dataset.target,
       title: label.innerText,
-      choices: CONFIG.DND5E[a.dataset.options]
+      choices: CONFIG.KRYX_RPG[a.dataset.options]
     };
     new TraitSelector(this.actor, options).render(true)
   }
@@ -813,7 +813,7 @@ export default class ActorSheet5e extends ActorSheet {
     // Add button to revert polymorph
     if ( !this.actor.isPolymorphed || this.actor.isToken ) return buttons;
     buttons.unshift({
-      label: 'DND5E.PolymorphRestoreTransformation',
+      label: 'KRYX_RPG.PolymorphRestoreTransformation',
       class: "restore-transformation",
       icon: "fas fa-backward",
       onclick: ev => this.actor.revertOriginalForm()

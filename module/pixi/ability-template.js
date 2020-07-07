@@ -1,19 +1,19 @@
-import { DND5E } from "../config.js";
+import { KRYX_RPG } from "../config.js";
 
 /**
- * A helper class for building MeasuredTemplates for 5e spells and abilities
+ * A helper class for building MeasuredTemplates for Kryx RPG spells and abilities
  * @extends {MeasuredTemplate}
  */
 export default class AbilityTemplate extends MeasuredTemplate {
 
   /**
-   * A factory method to create an AbilityTemplate instance using provided data from an Item5e instance
-   * @param {Item5e} item               The Item object for which to construct the template
+   * A factory method to create an AbilityTemplate instance using provided data from an ItemKryx instance
+   * @param {ItemKryx} item               The Item object for which to construct the template
    * @return {AbilityTemplate|null}     The template object, or null if the item does not produce a template
    */
   static fromItem(item) {
     const target = getProperty(item.data, "data.target") || {};
-    const templateShape = DND5E.areaTargetTypes[target.type];
+    const templateShape = KRYX_RPG.areaTargetTypes[target.type];
     if ( !templateShape ) return null;
 
     // Prepare template data
@@ -29,15 +29,15 @@ export default class AbilityTemplate extends MeasuredTemplate {
 
     // Additional type-specific data
     switch ( templateShape ) {
-      case "cone": // 5e cone RAW should be 53.13 degrees
+      case "cone": // Kryx RPG cone RAW should be 53.13 degrees
         templateData.angle = 53.13;
         break;
-      case "rect": // 5e rectangular AoEs are always cubes
+      case "rect": // Kryx RPG rectangular AoEs are always cubes
         templateData.distance = Math.hypot(target.value, target.value);
         templateData.width = target.value;
         templateData.direction = 45;
         break;
-      case "ray": // 5e rays are most commonly 5ft wide
+      case "ray": // Kryx RPG rays are most commonly 5ft wide
         templateData.width = 5;
         break;
       default:

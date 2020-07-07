@@ -3,19 +3,19 @@ import ShortRestDialog from "../apps/short-rest.js";
 import LongRestDialog from "../apps/long-rest.js";
 import SpellCastDialog from "../apps/spell-cast-dialog.js";
 import AbilityTemplate from "../pixi/ability-template.js";
-import {DND5E} from '../config.js';
+import {KRYX_RPG} from '../config.js';
 
 /**
- * Extend the base Actor class to implement additional logic specialized for D&D5e.
+ * Extend the base Actor class to implement additional logic specialized for Kryx RPG.
  */
-export default class Actor5e extends Actor {
+export default class ActorKryx extends Actor {
 
   /**
    * Is this Actor currently polymorphed into some other creature?
    * @return {boolean}
    */
   get isPolymorphed() {
-    return this.getFlag("dnd5e", "isPolymorphed") || false;
+    return this.getFlag("kryx_rpg", "isPolymorphed") || false;
   }
 
   /* -------------------------------------------- */
@@ -29,7 +29,7 @@ export default class Actor5e extends Actor {
     // Get the Actor's data object
     const actorData = this.data;
     const data = actorData.data;
-    const flags = actorData.flags.dnd5e || {};
+    const flags = actorData.flags.kryx_rpg || {};
     const bonuses = getProperty(data, "bonuses.abilities") || {};
 
     // Prepare Character data
@@ -42,8 +42,8 @@ export default class Actor5e extends Actor {
     // If we are a polymorphed actor, retrieve the skills and saves data from
     // the original actor for later merging.
     if (this.isPolymorphed) {
-      const transformOptions = this.getFlag('dnd5e', 'transformOptions');
-      const original = game.actors?.get(this.getFlag('dnd5e', 'originalActor'));
+      const transformOptions = this.getFlag('kryx_rpg', 'transformOptions');
+      const original = game.actors?.get(this.getFlag('kryx_rpg', 'originalActor'));
 
       if (original) {
         if (transformOptions.mergeSaves) {
@@ -74,7 +74,7 @@ export default class Actor5e extends Actor {
     }
 
     // Skill modifiers
-    const feats = DND5E.characterFlags;
+    const feats = KRYX_RPG.characterFlags;
     const athlete = flags.remarkableAthlete;
     const joat = flags.jackOfAllTrades;
     const observant = flags.observantFeat;
@@ -232,7 +232,7 @@ export default class Actor5e extends Actor {
 
     // Look up the number of slots per level from the progression table
     const levels = Math.clamped(progression.slot, 0, 20);
-    const slots = DND5E.SPELL_SLOT_TABLE[levels - 1] || [];
+    const slots = KRYX_RPG.SPELL_SLOT_TABLE[levels - 1] || [];
     for ( let [n, lvl] of Object.entries(spells) ) {
       let i = parseInt(n.slice(-1));
       if ( Number.isNaN(i) ) continue;
@@ -266,7 +266,7 @@ export default class Actor5e extends Actor {
    * @return {Number}       The XP required
    */
   getLevelExp(level) {
-    const levels = CONFIG.DND5E.CHARACTER_EXP_LEVELS;
+    const levels = CONFIG.KRYX_RPG.CHARACTER_EXP_LEVELS;
     return levels[Math.min(level, levels.length - 1)];
   }
 
@@ -279,7 +279,7 @@ export default class Actor5e extends Actor {
    */
   getCRExp(cr) {
     if (cr < 1.0) return Math.max(200 * cr, 10);
-    return CONFIG.DND5E.CR_EXP_LEVELS[cr];
+    return CONFIG.KRYX_RPG.CR_EXP_LEVELS[cr];
   }
 
   /* -------------------------------------------- */
@@ -340,7 +340,7 @@ export default class Actor5e extends Actor {
     // Apply changes in Actor size to Token width/height
     const newSize = data["data.traits.size"];
     if ( newSize && (newSize !== getProperty(this.data, "data.traits.size")) ) {
-      let size = CONFIG.DND5E.tokenSizes[newSize];
+      let size = CONFIG.KRYX_RPG.tokenSizes[newSize];
       if ( this.isToken ) this.token.update({height: size, width: size});
       else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
         data["token.height"] = size;
@@ -422,7 +422,7 @@ export default class Actor5e extends Actor {
 
   /**
    * Cast a Spell, consuming a spell slot of a certain level
-   * @param {Item5e} item   The spell being cast by the actor
+   * @param {ItemKryx} item   The spell being cast by the actor
    * @param {Event} event   The originating user interaction which triggered the cast
    */
   async useSpell(item, {configureDialog=true}={}) {
@@ -431,7 +431,7 @@ export default class Actor5e extends Actor {
 
     // Configure spellcasting data
     let lvl = itemData.level;
-    const usesSlots = (lvl > 0) && CONFIG.DND5E.spellUpcastModes.includes(itemData.preparation.mode);
+    const usesSlots = (lvl > 0) && CONFIG.KRYX_RPG.spellUpcastModes.includes(itemData.preparation.mode);
     const limitedUses = !!itemData.uses.per;
     let consume = `spell${lvl}`;
     let placeTemplate = false;
@@ -464,7 +464,7 @@ export default class Actor5e extends Actor {
     // Update Item data
     if ( limitedUses ) {
       const uses = parseInt(itemData.uses.value || 0);
-      if ( uses <= 0 ) ui.notifications.warn(game.i18n.format("DND5E.ItemNoUses", {name: item.name}));
+      if ( uses <= 0 ) ui.notifications.warn(game.i18n.format("KRYX_RPG.ItemNoUses", {name: item.name}));
       await item.update({"data.uses.value": Math.max(parseInt(item.data.data.uses.value || 0) - 1, 0)})
     }
 
@@ -509,15 +509,15 @@ export default class Actor5e extends Actor {
     }
 
     // Reliable Talent applies to any skill check we have full or better proficiency in
-    const reliableTalent = (skl.value >= 1 && this.getFlag("dnd5e", "reliableTalent"));
+    const reliableTalent = (skl.value >= 1 && this.getFlag("kryx_rpg", "reliableTalent"));
 
     // Roll and return
     return d20Roll(mergeObject(options, {
       parts: parts,
       data: data,
-      title: game.i18n.format("DND5E.SkillPromptTitle", {skill: CONFIG.DND5E.skills[skillId]}),
+      title: game.i18n.format("KRYX_RPG.SkillPromptTitle", {skill: CONFIG.KRYX_RPG.skills[skillId]}),
       speaker: ChatMessage.getSpeaker({actor: this}),
-      halflingLucky: this.getFlag("dnd5e", "halflingLucky"),
+      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       reliableTalent: reliableTalent
     }));
   }
@@ -531,17 +531,17 @@ export default class Actor5e extends Actor {
    * @param {Object} options      Options which configure how ability tests or saving throws are rolled
    */
   rollAbility(abilityId, options={}) {
-    const label = CONFIG.DND5E.abilities[abilityId];
+    const label = CONFIG.KRYX_RPG.abilities[abilityId];
     new Dialog({
-      title: game.i18n.format("DND5E.AbilityPromptTitle", {ability: label}),
-      content: `<p>${game.i18n.format("DND5E.AbilityPromptText", {ability: label})}</p>`,
+      title: game.i18n.format("KRYX_RPG.AbilityPromptTitle", {ability: label}),
+      content: `<p>${game.i18n.format("KRYX_RPG.AbilityPromptText", {ability: label})}</p>`,
       buttons: {
         test: {
-          label: game.i18n.localize("DND5E.ActionAbil"),
+          label: game.i18n.localize("KRYX_RPG.ActionAbil"),
           callback: () => this.rollAbilityTest(abilityId, options)
         },
         save: {
-          label: game.i18n.localize("DND5E.ActionSave"),
+          label: game.i18n.localize("KRYX_RPG.ActionSave"),
           callback: () => this.rollAbilitySave(abilityId, options)
         }
       }
@@ -558,7 +558,7 @@ export default class Actor5e extends Actor {
    * @return {Promise<Roll>}      A Promise which resolves to the created Roll instance
    */
   rollAbilityTest(abilityId, options={}) {
-    const label = CONFIG.DND5E.abilities[abilityId];
+    const label = CONFIG.KRYX_RPG.abilities[abilityId];
     const abl = this.data.data.abilities[abilityId];
 
     // Construct parts
@@ -566,8 +566,8 @@ export default class Actor5e extends Actor {
     const data = {mod: abl.mod};
 
     // Add feat-related proficiency bonuses
-    const feats = this.data.flags.dnd5e || {};
-    if ( feats.remarkableAthlete && DND5E.characterFlags.remarkableAthlete.abilities.includes(abilityId) ) {
+    const feats = this.data.flags.kryx_rpg || {};
+    if ( feats.remarkableAthlete && KRYX_RPG.characterFlags.remarkableAthlete.abilities.includes(abilityId) ) {
       parts.push("@proficiency");
       data.proficiency = Math.ceil(0.5 * this.data.data.attributes.prof);
     }
@@ -587,7 +587,7 @@ export default class Actor5e extends Actor {
     return d20Roll(mergeObject(options, {
       parts: parts,
       data: data,
-      title: game.i18n.format("DND5E.AbilityPromptTitle", {ability: label}),
+      title: game.i18n.format("KRYX_RPG.AbilityPromptTitle", {ability: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
       halflingLucky: feats.halflingLucky
     }));
@@ -603,7 +603,7 @@ export default class Actor5e extends Actor {
    * @return {Promise<Roll>}      A Promise which resolves to the created Roll instance
    */
   rollAbilitySave(abilityId, options={}) {
-    const label = CONFIG.DND5E.abilities[abilityId];
+    const label = CONFIG.KRYX_RPG.abilities[abilityId];
     const abl = this.data.data.abilities[abilityId];
 
     // Construct parts
@@ -627,9 +627,9 @@ export default class Actor5e extends Actor {
     return d20Roll(mergeObject(options, {
       parts: parts,
       data: data,
-      title: game.i18n.format("DND5E.SavePromptTitle", {ability: label}),
+      title: game.i18n.format("KRYX_RPG.SavePromptTitle", {ability: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
-      halflingLucky: this.getFlag("dnd5e", "halflingLucky")
+      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky")
     }));
   }
 
@@ -658,9 +658,9 @@ export default class Actor5e extends Actor {
     const roll = await d20Roll(mergeObject(options, {
       parts: parts,
       data: data,
-      title: game.i18n.localize("DND5E.DeathSavingThrow"),
+      title: game.i18n.localize("KRYX_RPG.DeathSavingThrow"),
       speaker: speaker,
-      halflingLucky: this.getFlag("dnd5e", "halflingLucky"),
+      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       targetValue: 10
     }));
     if ( !roll ) return null;
@@ -680,7 +680,7 @@ export default class Actor5e extends Actor {
           "data.attributes.death.failure": 0,
           "data.attributes.hp.value": 1
         });
-        await ChatMessage.create({content: game.i18n.format("DND5E.DeathSaveCriticalSuccess", {name: this.name}), speaker});
+        await ChatMessage.create({content: game.i18n.format("KRYX_RPG.DeathSaveCriticalSuccess", {name: this.name}), speaker});
       }
 
       // 3 Successes = survive and reset checks
@@ -689,7 +689,7 @@ export default class Actor5e extends Actor {
           "data.attributes.death.success": 0,
           "data.attributes.death.failure": 0
         });
-        await ChatMessage.create({content: game.i18n.format("DND5E.DeathSaveSuccess", {name: this.name}), speaker});
+        await ChatMessage.create({content: game.i18n.format("KRYX_RPG.DeathSaveSuccess", {name: this.name}), speaker});
       }
 
       // Increment successes
@@ -706,7 +706,7 @@ export default class Actor5e extends Actor {
           "data.attributes.death.success": 0,
           "data.attributes.death.failure": 0
         });
-        await ChatMessage.create({content: game.i18n.format("DND5E.DeathSaveFailure", {name: this.name}), speaker});
+        await ChatMessage.create({content: game.i18n.format("KRYX_RPG.DeathSaveFailure", {name: this.name}), speaker});
       }
 
       // Increment failures
@@ -733,12 +733,12 @@ export default class Actor5e extends Actor {
 
     // If no class is available, display an error notification
     if ( !cls ) {
-      return ui.notifications.error(game.i18n.format("DND5E.HitDiceWarn", {name: this.name, formula: formula}));
+      return ui.notifications.error(game.i18n.format("KRYX_RPG.HitDiceWarn", {name: this.name, formula: formula}));
     }
 
     // Prepare roll data
     const parts = [`1${denomination}`, "@abilities.con.mod"];
-    const title = game.i18n.localize("DND5E.HitDiceRoll");
+    const title = game.i18n.localize("KRYX_RPG.HitDiceRoll");
     const rollData = duplicate(this.data.data);
 
     // Call the roll helper utility
@@ -816,10 +816,10 @@ export default class Actor5e extends Actor {
 
     // Display a Chat Message summarizing the rest effects
     let restFlavor;
-    switch (game.settings.get("dnd5e", "restVariant")) {
-      case 'normal': restFlavor = game.i18n.localize("DND5E.ShortRestNormal"); break;
-      case 'gritty': restFlavor = game.i18n.localize(newDay ? "DND5E.ShortRestOvernight" : "DND5E.ShortRestGritty"); break;
-      case 'epic':  restFlavor = game.i18n.localize("DND5E.ShortRestEpic"); break;
+    switch (game.settings.get("kryx_rpg", "restVariant")) {
+      case 'normal': restFlavor = game.i18n.localize("KRYX_RPG.ShortRestNormal"); break;
+      case 'gritty': restFlavor = game.i18n.localize(newDay ? "KRYX_RPG.ShortRestOvernight" : "KRYX_RPG.ShortRestGritty"); break;
+      case 'epic':  restFlavor = game.i18n.localize("KRYX_RPG.ShortRestEpic"); break;
     }
 
     if ( chat ) {
@@ -827,7 +827,7 @@ export default class Actor5e extends Actor {
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("DND5E.ShortRestResult", {name: this.name, dice: -dhd, health: dhp})
+        content: game.i18n.format("KRYX_RPG.ShortRestResult", {name: this.name, dice: -dhd, health: dhp})
       });
     }
 
@@ -925,10 +925,10 @@ export default class Actor5e extends Actor {
 
     // Display a Chat Message summarizing the rest effects
     let restFlavor;
-    switch (game.settings.get("dnd5e", "restVariant")) {
-      case 'normal': restFlavor = game.i18n.localize(newDay ? "DND5E.LongRestOvernight" : "DND5E.LongRestNormal"); break;
-      case 'gritty': restFlavor = game.i18n.localize("DND5E.LongRestGritty"); break;
-      case 'epic':  restFlavor = game.i18n.localize("DND5E.LongRestEpic"); break;
+    switch (game.settings.get("kryx_rpg", "restVariant")) {
+      case 'normal': restFlavor = game.i18n.localize(newDay ? "KRYX_RPG.LongRestOvernight" : "KRYX_RPG.LongRestNormal"); break;
+      case 'gritty': restFlavor = game.i18n.localize("KRYX_RPG.LongRestGritty"); break;
+      case 'epic':  restFlavor = game.i18n.localize("KRYX_RPG.LongRestEpic"); break;
     }
 
     if ( chat ) {
@@ -936,7 +936,7 @@ export default class Actor5e extends Actor {
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("DND5E.LongRestResult", {name: this.name, health: dhp, dice: dhd})
+        content: game.i18n.format("KRYX_RPG.LongRestResult", {name: this.name, health: dhp, dice: dhd})
       });
     }
 
@@ -955,7 +955,7 @@ export default class Actor5e extends Actor {
   /**
    * Convert all carried currency to the highest possible denomination to reduce the number of raw coins being
    * carried by an Actor.
-   * @return {Promise<Actor5e>}
+   * @return {Promise<ActorKryx>}
    */
   convertCurrency() {
     const curr = duplicate(this.data.data.currency);
@@ -998,15 +998,15 @@ export default class Actor5e extends Actor {
     keepItems=false, keepBio=false, keepVision=false, transformTokens=true}={}) {
 
     // Ensure the player is allowed to polymorph
-    const allowed = game.settings.get("dnd5e", "allowPolymorphing");
+    const allowed = game.settings.get("kryx_rpg", "allowPolymorphing");
     if ( !allowed && !game.user.isGM ) {
-      return ui.notifications.warn(game.i18n.localize("DND5E.PolymorphWarn"));
+      return ui.notifications.warn(game.i18n.localize("KRYX_RPG.PolymorphWarn"));
     }
 
     // Get the original Actor data and the new source data
     const o = duplicate(this.data);
-    o.flags.dnd5e = o.flags.dnd5e || {};
-    o.flags.dnd5e.transformOptions = {mergeSkills, mergeSaves};
+    o.flags.kryx_rpg = o.flags.kryx_rpg || {};
+    o.flags.kryx_rpg.transformOptions = {mergeSkills, mergeSaves};
     const source = duplicate(target.data);
 
     // Prepare new data to merge from the source
@@ -1078,7 +1078,7 @@ export default class Actor5e extends Actor {
     if (!keepClass && d.data.details.cr) {
       d.items.push({
         type: 'class',
-        name: game.i18n.localize('DND5E.PolymorphTmpClass'),
+        name: game.i18n.localize('KRYX_RPG.PolymorphTmpClass'),
         data: { levels: d.data.details.cr }
       });
     }
@@ -1090,8 +1090,8 @@ export default class Actor5e extends Actor {
     if (keepVision) d.data.traits.senses = o.data.traits.senses;
 
     // Set new data flags
-    if ( !this.isPolymorphed || !d.flags.dnd5e.originalActor ) d.flags.dnd5e.originalActor = this.id;
-    d.flags.dnd5e.isPolymorphed = true;
+    if ( !this.isPolymorphed || !d.flags.kryx_rpg.originalActor ) d.flags.kryx_rpg.originalActor = this.id;
+    d.flags.kryx_rpg.isPolymorphed = true;
 
     // Update unlinked Tokens in place since they can simply be re-dropped from the base actor
     if (this.isToken) {
@@ -1103,7 +1103,7 @@ export default class Actor5e extends Actor {
 
     // Update regular Actors by creating a new Actor with the Polymorphed data
     await this.sheet.close();
-    Hooks.callAll('dnd5e.transformActor', this, target, d, {
+    Hooks.callAll('kryx_rpg.transformActor', this, target, d, {
       keepPhysical, keepMental, keepSaves, keepSkills, mergeSaves, mergeSkills,
       keepClass, keepFeats, keepSpells, keepItems, keepBio, keepVision, transformTokens
     });
@@ -1132,7 +1132,7 @@ export default class Actor5e extends Actor {
   async revertOriginalForm() {
     if ( !this.isPolymorphed ) return;
     if ( !this.owner ) {
-      return ui.notifications.warn(game.i18n.localize("DND5E.PolymorphRevertWarn"));
+      return ui.notifications.warn(game.i18n.localize("KRYX_RPG.PolymorphRevertWarn"));
     }
 
     // If we are reverting an unlinked token, simply replace it with the base actor prototype
@@ -1144,7 +1144,7 @@ export default class Actor5e extends Actor {
     }
 
     // Obtain a reference to the original actor
-    const original = game.actors.get(this.getFlag('dnd5e', 'originalActor'));
+    const original = game.actors.get(this.getFlag('kryx_rpg', 'originalActor'));
     if ( !original ) return;
 
     // Get the Tokens which represent this actor
@@ -1167,20 +1167,20 @@ export default class Actor5e extends Actor {
   /* -------------------------------------------- */
 
   /**
-   * Add additional system-specific sidebar directory context menu options for D&D5e Actor entities
+   * Add additional system-specific sidebar directory context menu options for Kryx RPG Actor entities
    * @param {jQuery} html         The sidebar HTML
    * @param {Array} entryOptions  The default array of context menu options
    */
   static addDirectoryContextOptions(html, entryOptions) {
     entryOptions.push({
-      name: 'DND5E.PolymorphRestoreTransformation',
+      name: 'KRYX_RPG.PolymorphRestoreTransformation',
       icon: '<i class="fas fa-backward"></i>',
       callback: li => {
         const actor = game.actors.get(li.data('entityId'));
         return actor.revertOriginalForm();
       },
       condition: li => {
-        const allowed = game.settings.get("dnd5e", "allowPolymorphing");
+        const allowed = game.settings.get("kryx_rpg", "allowPolymorphing");
         if ( !allowed && !game.user.isGM ) return false;
         const actor = game.actors.get(li.data('entityId'));
         return actor && actor.isPolymorphed;

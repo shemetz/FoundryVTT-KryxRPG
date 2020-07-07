@@ -6,7 +6,7 @@
 
         <div class="header-details flexrow">
             <h1 class="charname">
-                <input name="name" type="text" value="{{item.name}}" placeholder="{{ localize 'DND5E.ItemName' }}"/>
+                <input name="name" type="text" value="{{item.name}}" placeholder="{{ localize 'KRYX_RPG.ItemName' }}"/>
             </h1>
 
             <div class="item-subtitle">
@@ -19,10 +19,10 @@
                     {{lookup config.equipmentTypes data.armor.type }}
                 </li>
                 <li>
-                    <input type="text" name="data.rarity" value="{{data.rarity}}" placeholder="{{ localize 'DND5E.Rarity' }}"/>
+                    <input type="text" name="data.rarity" value="{{data.rarity}}" placeholder="{{ localize 'KRYX_RPG.Rarity' }}"/>
                 </li>
                 <li>
-                    <input type="text" name="data.source" value="{{data.source}}" placeholder="{{ localize 'DND5E.Source' }}"/>
+                    <input type="text" name="data.source" value="{{data.source}}" placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
                 </li>
             </ul>
         </div>
@@ -30,23 +30,23 @@
 
     {{!-- Item Sheet Navigation --}}
     <nav class="sheet-navigation tabs" data-group="primary">
-        <a class="item active" data-tab="description">{{ localize "DND5E.Description" }}</a>
-        <a class="item" data-tab="details">{{ localize "DND5E.Details" }}</a>
+        <a class="item active" data-tab="description">{{ localize "KRYX_RPG.Description" }}</a>
+        <a class="item" data-tab="details">{{ localize "KRYX_RPG.Details" }}</a>
     </nav>
 
     {{!-- Item Sheet Body --}}
     <section class="sheet-body">
 
         {{!-- Description Tab --}}
-        {{> "systems/dnd5e/templates/items/parts/item-description.html"}}
+        {{> "systems/kryx_rpg/templates/items/parts/item-description.html"}}
 
         {{!-- Details Tab --}}
         <div class="tab details" data-group="primary" data-tab="details">
-            <h3 class="form-header">{{ localize "DND5E.ItemEquipmentDetails" }}</h3>
+            <h3 class="form-header">{{ localize "KRYX_RPG.ItemEquipmentDetails" }}</h3>
 
             {{!-- Equipment Type --}}
             <div class="form-group">
-                <label>{{ localize "DND5E.ItemEquipmentType" }}</label>
+                <label>{{ localize "KRYX_RPG.ItemEquipmentType" }}</label>
                 <select name="data.armor.type">
                     {{#select data.armor.type}}
                     <option value=""></option>
@@ -59,24 +59,24 @@
 
             {{!-- Equipment Status --}}
             <div class="form-group stacked">
-                <label>{{ localize "DND5E.ItemEquipmentStatus" }}</label>
+                <label>{{ localize "KRYX_RPG.ItemEquipmentStatus" }}</label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.proficient" {{checked data.proficient}}/> {{ localize "DND5E.Proficient" }}
+                    <input type="checkbox" name="data.proficient" {{checked data.proficient}}/> {{ localize "KRYX_RPG.Proficient" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.equipped" {{checked data.equipped}}/> {{ localize "DND5E.Equipped" }}
+                    <input type="checkbox" name="data.equipped" {{checked data.equipped}}/> {{ localize "KRYX_RPG.Equipped" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.identified" {{checked data.identified}}/> {{ localize "DND5E.Identified" }}
+                    <input type="checkbox" name="data.identified" {{checked data.identified}}/> {{ localize "KRYX_RPG.Identified" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.attuned" {{checked data.attuned}}/> {{ localize "DND5E.Attuned" }}
+                    <input type="checkbox" name="data.attuned" {{checked data.attuned}}/> {{ localize "KRYX_RPG.Attuned" }}
                 </label>
             </div>
 
             {{!-- Armor Class --}}
             <div class="form-group">
-                <label>{{ localize "DND5E.ArmorClass" }}</label>
+                <label>{{ localize "KRYX_RPG.ArmorClass" }}</label>
                 <div class="form-fields">
                    <input type="text" name="data.armor.value" value="{{data.armor.value}}" data-dtype="Number"/>
                 </div>
@@ -84,35 +84,35 @@
 
             {{!-- Dexterity Modifier --}}
             <div class="form-group">
-                <label>{{ localize "DND5E.ItemEquipmentDexMod" }}</label>
+                <label>{{ localize "KRYX_RPG.ItemEquipmentDexMod" }}</label>
                 <div class="form-fields">
-                   <input type="text" name="data.armor.dex" value="{{data.armor.dex}}" data-dtype="Number" placeholder="{{ localize 'DND5E.Unlimited' }}"/>
+                   <input type="text" name="data.armor.dex" value="{{data.armor.dex}}" data-dtype="Number" placeholder="{{ localize 'KRYX_RPG.Unlimited' }}"/>
                 </div>
             </div>
 
             {{!-- Required Strength --}}
             <div class="form-group">
-                <label>{{ localize "DND5E.ItemRequiredStr" }}</label>
+                <label>{{ localize "KRYX_RPG.ItemRequiredStr" }}</label>
                 <div class="form-fields">
-                   <input type="text" name="data.strength" value="{{data.strength}}" data-dtype="Number" placeholder="{{ localize 'DND5E.None' }}"/>
+                   <input type="text" name="data.strength" value="{{data.strength}}" data-dtype="Number" placeholder="{{ localize 'KRYX_RPG.None' }}"/>
                 </div>
             </div>
 
             {{!-- Stealth Disadvantage --}}
             <div class="form-group">
-                <label>{{ localize "DND5E.ItemEquipmentStealthDisav" }}</label>
+                <label>{{ localize "KRYX_RPG.ItemEquipmentStealthDisav" }}</label>
                 <input type="checkbox" name="data.stealth" value="1" {{checked data.stealth}}/>
             </div>
 
-            <h3 class="form-header">{{ localize "DND5E.ItemEquipmentUsage" }}</h3>
+            <h3 class="form-header">{{ localize "KRYX_RPG.ItemEquipmentUsage" }}</h3>
 
             {{!-- Item Activation Template --}}
-            {{> "systems/dnd5e/templates/items/parts/item-activation.html"}}
+            {{> "systems/kryx_rpg/templates/items/parts/item-activation.html"}}
 
-            <h3 class="form-header">{{ localize "DND5E.ItemEquipmentAction" }}</h3>
+            <h3 class="form-header">{{ localize "KRYX_RPG.ItemEquipmentAction" }}</h3>
 
             {{!-- Item Action Template --}}
-            {{> "systems/dnd5e/templates/items/parts/item-action.html"}}
+            {{> "systems/kryx_rpg/templates/items/parts/item-action.html"}}
         </div>
     </section>
 </form>

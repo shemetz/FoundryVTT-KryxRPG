@@ -7,8 +7,8 @@ export default class ActorSheetFlags extends BaseEntitySheet {
     const options = super.defaultOptions;
     return mergeObject(options, {
       id: "actor-flags",
-	    classes: ["dnd5e"],
-      template: "systems/dnd5e/templates/apps/actor-flags.html",
+	    classes: ["kryx_rpg"],
+      template: "systems/kryx_rpg/templates/apps/actor-flags.html",
       width: 500,
       closeOnSubmit: true
     });
@@ -21,7 +21,7 @@ export default class ActorSheetFlags extends BaseEntitySheet {
    * @type {String}
    */
   get title() {
-    return `${game.i18n.localize('DND5E.FlagsTitle')}: ${this.object.name}`;
+    return `${game.i18n.localize('KRYX_RPG.FlagsTitle')}: ${this.object.name}`;
   }
 
   /* -------------------------------------------- */
@@ -47,14 +47,14 @@ export default class ActorSheetFlags extends BaseEntitySheet {
    */
   _getFlags() {
     const flags = {};
-    for ( let [k, v] of Object.entries(CONFIG.DND5E.characterFlags) ) {
+    for ( let [k, v] of Object.entries(CONFIG.KRYX_RPG.characterFlags) ) {
       if ( !flags.hasOwnProperty(v.section) ) flags[v.section] = {};
       let flag = duplicate(v);
       flag.type = v.type.name;
       flag.isCheckbox = v.type === Boolean;
       flag.isSelect = v.hasOwnProperty('choices');
-      flag.value = this.entity.getFlag("dnd5e", k);
-      flags[v.section][`flags.dnd5e.${k}`] = flag;
+      flag.value = this.entity.getFlag("kryx_rpg", k);
+      flags[v.section][`flags.kryx_rpg.${k}`] = flag;
     }
     return flags;
   }
@@ -68,18 +68,18 @@ export default class ActorSheetFlags extends BaseEntitySheet {
    */
   _getBonuses() {
     const bonuses = [
-      {name: "data.bonuses.mwak.attack", label: "DND5E.BonusMWAttack"},
-      {name: "data.bonuses.mwak.damage", label: "DND5E.BonusMWDamage"},
-      {name: "data.bonuses.rwak.attack", label: "DND5E.BonusRWAttack"},
-      {name: "data.bonuses.rwak.damage", label: "DND5E.BonusRWDamage"},
-      {name: "data.bonuses.msak.attack", label: "DND5E.BonusMSAttack"},
-      {name: "data.bonuses.msak.damage", label: "DND5E.BonusMSDamage"},
-      {name: "data.bonuses.rsak.attack", label: "DND5E.BonusRSAttack"},
-      {name: "data.bonuses.rsak.damage", label: "DND5E.BonusRSDamage"},
-      {name: "data.bonuses.abilities.check", label: "DND5E.BonusAbilityCheck"},
-      {name: "data.bonuses.abilities.save", label: "DND5E.BonusAbilitySave"},
-      {name: "data.bonuses.abilities.skill", label: "DND5E.BonusAbilitySkill"},
-      {name: "data.bonuses.spell.dc", label: "DND5E.BonusSpellDC"}
+      {name: "data.bonuses.mwak.attack", label: "KRYX_RPG.BonusMWAttack"},
+      {name: "data.bonuses.mwak.damage", label: "KRYX_RPG.BonusMWDamage"},
+      {name: "data.bonuses.rwak.attack", label: "KRYX_RPG.BonusRWAttack"},
+      {name: "data.bonuses.rwak.damage", label: "KRYX_RPG.BonusRWDamage"},
+      {name: "data.bonuses.msak.attack", label: "KRYX_RPG.BonusMSAttack"},
+      {name: "data.bonuses.msak.damage", label: "KRYX_RPG.BonusMSDamage"},
+      {name: "data.bonuses.rsak.attack", label: "KRYX_RPG.BonusRSAttack"},
+      {name: "data.bonuses.rsak.damage", label: "KRYX_RPG.BonusRSDamage"},
+      {name: "data.bonuses.abilities.check", label: "KRYX_RPG.BonusAbilityCheck"},
+      {name: "data.bonuses.abilities.save", label: "KRYX_RPG.BonusAbilitySave"},
+      {name: "data.bonuses.abilities.skill", label: "KRYX_RPG.BonusAbilitySkill"},
+      {name: "data.bonuses.spell.dc", label: "KRYX_RPG.BonusSpellDC"}
     ];
     for ( let b of bonuses ) {
       b.value = getProperty(this.object.data, b.name) || "";
@@ -99,11 +99,11 @@ export default class ActorSheetFlags extends BaseEntitySheet {
 
     // Unset any flags which are "false"
     let unset = false;
-    const flags = updateData.flags.dnd5e;
+    const flags = updateData.flags.kryx_rpg;
     for ( let [k, v] of Object.entries(flags) ) {
       if ( [undefined, null, "", false, 0].includes(v) ) {
         delete flags[k];
-        if ( hasProperty(actor.data.flags, `dnd5e.${k}`) ) {
+        if ( hasProperty(actor.data.flags, `kryx_rpg.${k}`) ) {
           unset = true;
           flags[`-=${k}`] = null;
         }

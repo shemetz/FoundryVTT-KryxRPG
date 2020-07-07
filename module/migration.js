@@ -3,7 +3,7 @@
  * @return {Promise}      A Promise which resolves once the migration is completed
  */
 export const migrateWorld = async function() {
-  ui.notifications.info(`Applying D&D5E System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, {permanent: true});
+  ui.notifications.info(`Applying Kryx RPG System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, {permanent: true});
 
   // Migrate World Actors
   for ( let a of game.actors.entities ) {
@@ -53,8 +53,8 @@ export const migrateWorld = async function() {
   }
 
   // Set the migration as complete
-  game.settings.set("dnd5e", "systemMigrationVersion", game.system.data.version);
-  ui.notifications.info(`D&D5E System Migration to version ${game.system.data.version} completed!`, {permanent: true});
+  game.settings.set("kryx_rpg", "systemMigrationVersion", game.system.data.version);
+  ui.notifications.info(`Kryx RPG System Migration to version ${game.system.data.version} completed!`, {permanent: true});
 };
 
 /* -------------------------------------------- */
@@ -151,12 +151,12 @@ function cleanActorData(actorData) {
   actorData.data = filterObject(actorData.data, model);
 
   // Scrub system flags
-  const allowedFlags = CONFIG.DND5E.allowedActorFlags.reduce((obj, f) => {
+  const allowedFlags = CONFIG.KRYX_RPG.allowedActorFlags.reduce((obj, f) => {
     obj[f] = null;
     return obj;
   }, {});
-  if ( actorData.flags.dnd5e ) {
-    actorData.flags.dnd5e = filterObject(actorData.flags.dnd5e, allowedFlags);
+  if ( actorData.flags.kryx_rpg ) {
+    actorData.flags.kryx_rpg = filterObject(actorData.flags.kryx_rpg, allowedFlags);
   }
 
   // Return the scrubbed data

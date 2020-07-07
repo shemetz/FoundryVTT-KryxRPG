@@ -1,6 +1,6 @@
 {{!-- Activation Cost --}}
 <div class="form-group input-select">
-    <label>{{ localize "DND5E.ItemActivationCost" }}</label>
+    <label>{{ localize "KRYX_RPG.ItemActivationCost" }}</label>
     <div class="form-fields">
         <input type="text" name="data.activation.cost" value="{{data.activation.cost}}" data-dtype="Number" placeholder="-"/>
         <select name="data.activation.type">
@@ -17,7 +17,7 @@
 
 {{!-- Activation Condition --}}
 <div class="form-group">
-    <label>{{ localize "DND5E.ItemActivationCondition" }}</label>
+    <label>{{ localize "KRYX_RPG.ItemActivationCondition" }}</label>
     <div class="form-fields">
         <input type="text" name="data.activation.condition" value="{{data.activation.condition}}"/>
     </div>
@@ -26,7 +26,7 @@
 
 {{!-- Ability Target --}}
 <div class="form-group input-select-select">
-    <label>{{ localize "DND5E.Target" }}</label>
+    <label>{{ localize "KRYX_RPG.Target" }}</label>
     <div class="form-fields">
         <input type="text" name="data.target.value" value="{{data.target.value}}" data-dtype="Number" placeholder="-"/>
         <select name="data.target.units">
@@ -50,11 +50,11 @@
 
 {{!-- Ability Range --}}
 <div class="form-group input-select">
-    <label>{{ localize "DND5E.Range" }}</label>
+    <label>{{ localize "KRYX_RPG.Range" }}</label>
     <div class="form-fields">
-        <input type="text" name="data.range.value" value="{{data.range.value}}" data-dtype="Number" placeholder="{{ localize 'DND5E.Normal' }}"/>
+        <input type="text" name="data.range.value" value="{{data.range.value}}" data-dtype="Number" placeholder="{{ localize 'KRYX_RPG.Normal' }}"/>
         <span class="sep">/</span>
-        <input type="text" name="data.range.long" value="{{data.range.long}}" data-dtype="Number" placeholder="{{ localize 'DND5E.Max' }}"/>
+        <input type="text" name="data.range.long" value="{{data.range.long}}" data-dtype="Number" placeholder="{{ localize 'KRYX_RPG.Max' }}"/>
         <select name="data.range.units">
             {{#select data.range.units}}
             <option value=""></option>
@@ -68,7 +68,7 @@
 
 {{!-- Effect Duration --}}
 <div class="form-group input-select">
-    <label>{{ localize "DND5E.Duration" }}</label>
+    <label>{{ localize "KRYX_RPG.Duration" }}</label>
     <div class="form-fields">
         <input type="text" name="data.duration.value" value="{{data.duration.value}}" data-dtype="Number" placeholder="-"/>
         <select name="data.duration.units">
@@ -84,10 +84,10 @@
 
 {{!-- Limited Uses --}}
 <div class="form-group uses-per">
-    <label>{{ localize "DND5E.LimitedUses" }}</label>
+    <label>{{ localize "KRYX_RPG.LimitedUses" }}</label>
     <div class="form-fields">
         <input type="text" name="data.uses.value" value="{{data.uses.value}}" data-dtype="Number"/>
-        <span class="sep"> {{ localize "DND5E.of" }} </span>
+        <span class="sep"> {{ localize "KRYX_RPG.of" }} </span>
         <input type="text" name="data.uses.max" value="{{data.uses.max}}" data-dtype="Number"/>
         <select name="data.uses.per">
             {{#select data.uses.per}}
@@ -102,7 +102,7 @@
 
 {{!-- Consumption --}}
 <div class="form-group uses-per">
-    <label>{{ localize "DND5E.ConsumeTitle" }}</label>
+    <label>{{ localize "KRYX_RPG.ConsumeTitle" }}</label>
     <div class="form-fields">
         <select name="data.consume.type">
             {{#select data.consume.type}}

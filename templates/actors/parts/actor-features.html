@@ -1,8 +1,8 @@
 <div class="inventory-filters flexrow">
     <ul class="filter-list flexrow" data-filter="features">
-        <li class="filter-item" data-filter="action">{{localize "DND5E.Action"}}</li>
-        <li class="filter-item" data-filter="bonus">{{localize "DND5E.BonusAction"}}</li>
-        <li class="filter-item" data-filter="reaction">{{localize "DND5E.Reaction"}}</li>
+        <li class="filter-item" data-filter="action">{{localize "KRYX_RPG.Action"}}</li>
+        <li class="filter-item" data-filter="bonus">{{localize "KRYX_RPG.BonusAction"}}</li>
+        <li class="filter-item" data-filter="reaction">{{localize "KRYX_RPG.Reaction"}}</li>
     </ul>
 </div>
 
@@ -12,14 +12,14 @@
         <h3 class="item-name flexrow">{{localize section.label}}</h3>
 
         {{#if section.hasActions}}
-        <div class="item-detail item-uses">{{localize "DND5E.Uses"}}</div>
-        <div class="item-detail item-action">{{localize "DND5E.Usage"}}</div>
+        <div class="item-detail item-uses">{{localize "KRYX_RPG.Uses"}}</div>
+        <div class="item-detail item-action">{{localize "KRYX_RPG.Usage"}}</div>
         {{/if}}
 
         {{#if ../owner}}
         <div class="item-controls">
-            <a class="item-control item-create" title="{{localize 'DND5E.FeatureAdd'}}" {{#each section.dataset as |v k|}}data-{{k}}="{{v}}"{{/each}}>
-                <i class="fas fa-plus"></i> {{localize "DND5E.Add"}}
+            <a class="item-control item-create" title="{{localize 'KRYX_RPG.FeatureAdd'}}" {{#each section.dataset as |v k|}}data-{{k}}="{{v}}"{{/each}}>
+                <i class="fas fa-plus"></i> {{localize "KRYX_RPG.Add"}}
             </a>
         </div>
         {{/if}}
@@ -38,7 +38,7 @@
                 {{#if item.isOnCooldown}}
                 <a class="item-recharge rollable">{{item.labels.recharge}}</a>
                 {{else if item.data.recharge.value}}
-                {{localize "DND5E.Charged"}}
+                {{localize "KRYX_RPG.Charged"}}
 
                 {{else if item.hasUses}}
                 <input type="text" value="{{item.data.uses.value}}" placeholder="0"/>/ {{item.data.uses.max}}

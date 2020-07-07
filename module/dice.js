@@ -1,5 +1,5 @@
 /**
- * A standardized helper function for managing core 5e "d20 rolls"
+ * A standardized helper function for managing core Kryx RPG "d20 rolls"
  *
  * Holding SHIFT, ALT, or CTRL when the attack is rolled will "fast-forward".
  * This chooses the default options of a normal attack with no bonus, Advantage, or Disadvantage respectively
@@ -48,14 +48,14 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
     // Handle advantage
     if ( adv === 1 ) {
       nd = elvenAccuracy ? 3 : 2;
-      flavor += ` (${game.i18n.localize("DND5E.Advantage")})`;
+      flavor += ` (${game.i18n.localize("KRYX_RPG.Advantage")})`;
       mods += "kh";
     }
 
     // Handle disadvantage
     else if ( adv === -1 ) {
       nd = 2;
-      flavor += ` (${game.i18n.localize("DND5E.Disadvantage")})`;
+      flavor += ` (${game.i18n.localize("KRYX_RPG.Disadvantage")})`;
       mods += "kl";
     }
 
@@ -75,7 +75,7 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
       const abl = data.abilities[data.ability];
       if ( abl ) {
         data.mod = abl.mod;
-        flavor += ` (${CONFIG.DND5E.abilities[data.ability]})`;
+        flavor += ` (${CONFIG.KRYX_RPG.abilities[data.ability]})`;
       }
     }
 
@@ -93,7 +93,7 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
 
     // If reliable talent was applied, add it to the flavor text
     if ( reliableTalent && roll.dice[0].total < 10 ) {
-      flavor += ` (${game.i18n.localize("DND5E.FlagsReliableTalent")})`;
+      flavor += ` (${game.i18n.localize("KRYX_RPG.FlagsReliableTalent")})`;
     }
 
     // Convert the roll to a chat message and return the roll
@@ -119,13 +119,13 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
   }
 
   // Render modal dialog
-  template = template || "systems/dnd5e/templates/chat/roll-dialog.html";
+  template = template || "systems/kryx_rpg/templates/chat/roll-dialog.html";
   let dialogData = {
     formula: parts.join(" + "),
     data: data,
     rollMode: rollMode,
     rollModes: CONFIG.Dice.rollModes,
-    config: CONFIG.DND5E
+    config: CONFIG.KRYX_RPG
   };
   const html = await renderTemplate(template, dialogData);
 
@@ -137,15 +137,15 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
       content: html,
       buttons: {
         advantage: {
-          label: game.i18n.localize("DND5E.Advantage"),
+          label: game.i18n.localize("KRYX_RPG.Advantage"),
           callback: html => roll = _roll(parts, 1, html[0].querySelector("form"))
         },
         normal: {
-          label: game.i18n.localize("DND5E.Normal"),
+          label: game.i18n.localize("KRYX_RPG.Normal"),
           callback: html => roll = _roll(parts, 0, html[0].querySelector("form"))
         },
         disadvantage: {
-          label: game.i18n.localize("DND5E.Disadvantage"),
+          label: game.i18n.localize("KRYX_RPG.Disadvantage"),
           callback: html => roll = _roll(parts, -1, html[0].querySelector("form"))
         }
       },
@@ -161,7 +161,7 @@ export async function d20Roll({parts=[], data={}, event={}, rollMode=null, templ
 /* -------------------------------------------- */
 
 /**
- * A standardized helper function for managing core 5e "d20 rolls"
+ * A standardized helper function for managing core Kryx RPG "d20 rolls"
  *
  * Holding SHIFT, ALT, or CTRL when the attack is rolled will "fast-forward".
  * This chooses the default options of a normal attack with no bonus, Critical, or no bonus respectively
@@ -199,10 +199,10 @@ export async function damageRoll({parts, actor, data, event={}, rollMode=null, t
 
     // Modify the damage formula for critical hits
     if ( crit === true ) {
-      let add = (actor && actor.getFlag("dnd5e", "savageAttacks")) ? 1 : 0;
+      let add = (actor && actor.getFlag("kryx_rpg", "savageAttacks")) ? 1 : 0;
       let mult = 2;
       roll.alter(add, mult);
-      flavor = `${flavor} (${game.i18n.localize("DND5E.Critical")})`;
+      flavor = `${flavor} (${game.i18n.localize("KRYX_RPG.Critical")})`;
     }
 
     // Convert the roll to a chat message
@@ -225,7 +225,7 @@ export async function damageRoll({parts, actor, data, event={}, rollMode=null, t
   else parts = parts.concat(["@bonus"]);
 
   // Render modal dialog
-  template = template || "systems/dnd5e/templates/chat/roll-dialog.html";
+  template = template || "systems/kryx_rpg/templates/chat/roll-dialog.html";
   let dialogData = {
     formula: parts.join(" + "),
     data: data,
@@ -243,11 +243,11 @@ export async function damageRoll({parts, actor, data, event={}, rollMode=null, t
       buttons: {
         critical: {
           condition: allowCritical,
-          label: game.i18n.localize("DND5E.CriticalHit"),
+          label: game.i18n.localize("KRYX_RPG.CriticalHit"),
           callback: html => roll = _roll(parts, true, html[0].querySelector("form"))
         },
         normal: {
-          label: game.i18n.localize(allowCritical ? "DND5E.Normal" : "DND5E.Roll"),
+          label: game.i18n.localize(allowCritical ? "KRYX_RPG.Normal" : "KRYX_RPG.Roll"),
           callback: html => roll = _roll(parts, false, html[0].querySelector("form"))
         },
       },

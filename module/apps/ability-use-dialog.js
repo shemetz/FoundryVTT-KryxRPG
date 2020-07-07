@@ -5,11 +5,11 @@
 export default class AbilityUseDialog extends Dialog {
   constructor(item, dialogData={}, options={}) {
     super(dialogData, options);
-    this.options.classes = ["dnd5e", "dialog"];
+    this.options.classes = ["kryx_rpg", "dialog"];
 
     /**
      * Store a reference to the Item entity being used
-     * @type {Item5e}
+     * @type {ItemKryx}
      */
     this.item = item;
   }
@@ -21,7 +21,7 @@ export default class AbilityUseDialog extends Dialog {
   /**
    * A constructor function which displays the Spell Cast Dialog app for a given Actor and Item.
    * Returns a Promise which resolves to the dialog FormData once the workflow has been completed.
-   * @param {Item5e} item
+   * @param {ItemKryx} item
    * @return {Promise}
    */
   static async create(item) {
@@ -33,9 +33,9 @@ export default class AbilityUseDialog extends Dialog {
     const recharges = !!recharge.value;
 
     // Render the ability usage template
-    const html = await renderTemplate("systems/dnd5e/templates/apps/ability-use.html", {
+    const html = await renderTemplate("systems/kryx_rpg/templates/apps/ability-use.html", {
       item: item.data,
-      title: game.i18n.format("DND5E.AbilityUseHint", item.data),
+      title: game.i18n.format("KRYX_RPG.AbilityUseHint", item.data),
       note: this._getAbilityUseNote(item.data, uses, recharge),
       canUse: recharges ? recharge.charged : (quantity > 0 && !uses.value) || uses.value > 0,
       hasPlaceableTemplate: game.user.can("TEMPLATE_CREATE") && item.hasAreaTarget,
@@ -67,11 +67,11 @@ export default class AbilityUseDialog extends Dialog {
 
     // Zero quantity
     const quantity = item.data.quantity;
-    if ( quantity <= 0 ) return game.i18n.localize("DND5E.AbilityUseUnavailableHint");
+    if ( quantity <= 0 ) return game.i18n.localize("KRYX_RPG.AbilityUseUnavailableHint");
 
     // Abilities which use Recharge
     if ( !!recharge.value ) {
-      return game.i18n.format(recharge.charged ? "DND5E.AbilityUseChargedHint" : "DND5E.AbilityUseRechargeHint", {
+      return game.i18n.format(recharge.charged ? "KRYX_RPG.AbilityUseChargedHint" : "KRYX_RPG.AbilityUseRechargeHint", {
         type: item.type,
       })
     }
@@ -81,10 +81,10 @@ export default class AbilityUseDialog extends Dialog {
 
     // Consumables
     if ( item.type === "consumable" ) {
-      let str = "DND5E.AbilityUseNormalHint";
-      if ( uses.value > 1 ) str = "DND5E.AbilityUseConsumableChargeHint";
-      else if ( item.data.quantity === 1 && uses.autoDestroy ) str = "DND5E.AbilityUseConsumableDestroyHint";
-      else if ( item.data.quantity > 1 ) str = "DND5E.AbilityUseConsumableQuantityHint";
+      let str = "KRYX_RPG.AbilityUseNormalHint";
+      if ( uses.value > 1 ) str = "KRYX_RPG.AbilityUseConsumableChargeHint";
+      else if ( item.data.quantity === 1 && uses.autoDestroy ) str = "KRYX_RPG.AbilityUseConsumableDestroyHint";
+      else if ( item.data.quantity > 1 ) str = "KRYX_RPG.AbilityUseConsumableQuantityHint";
       return game.i18n.format(str, {
         type: item.data.consumableType,
         value: uses.value,
@@ -94,11 +94,11 @@ export default class AbilityUseDialog extends Dialog {
 
     // Other Items
     else {
-      return game.i18n.format("DND5E.AbilityUseNormalHint", {
+      return game.i18n.format("KRYX_RPG.AbilityUseNormalHint", {
         type: item.type,
         value: uses.value,
         max: uses.max,
-        per: CONFIG.DND5E.limitedUsePeriods[uses.per]
+        per: CONFIG.KRYX_RPG.limitedUsePeriods[uses.per]
       });
     }
   }
