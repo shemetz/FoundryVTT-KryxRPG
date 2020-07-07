@@ -398,6 +398,9 @@
   /*  Statuses                                 */
   /* ----------------------------------------- */
   /* ----------------------------------------- */
+  /*  Resting                                  */
+  /* ----------------------------------------- */
+  /* ----------------------------------------- */
   /*  Traits                                   */
   /* ----------------------------------------- */
   /* ----------------------------------------- */
@@ -405,7 +408,7 @@
   /* ----------------------------------------- */
   /* Inventory List Filters */
   /* ----------------------------------------- */
-  /*  Arsenal                                  */
+  /*  Arsenal                                */
   /* ----------------------------------------- */
   /* ----------------------------------------- */
   /*  TinyMCE                                  */
@@ -603,12 +606,12 @@
   flex: 0 0 26px;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill .skill-mod {
-  text-align: right;
   flex: 0 0 20px;
+  text-align: right;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill .skill-passive {
   flex: 0 0 26px;
-  text-align: center;
+  text-align: right;
   color: #7a7971;
 }
 .kryx_rpg.sheet.actor .counters {
@@ -628,19 +631,6 @@
   font-weight: bold;
   color: #4b4a44;
 }
-.kryx_rpg.sheet.actor .resting {
-  flex: none;
-  padding: 5px 0;
-  margin: 0;
-  border-bottom: 2px groove #eeede0;
-}
-.kryx_rpg.sheet.actor .resting .restingRow h4 {
-  flex: auto;
-  margin: 0;
-  font-size: 13px;
-  font-weight: bold;
-  color: #4b4a44;
-}
 .kryx_rpg.sheet.actor .counters .counter .counter-value {
   flex: none;
   text-align: right;
@@ -649,7 +639,7 @@
   display: inline;
 }
 .kryx_rpg.sheet.actor .counters .counter .minor-counter-value {
-  flex: 1;
+  flex: none;
   text-align: left;
 }
 .kryx_rpg.sheet.actor .counters .counter .minor-counter-value > * {
@@ -671,6 +661,23 @@
 }
 .kryx_rpg.sheet.actor .counters .counter span.sep {
   font-size: 12px;
+}
+.kryx_rpg.sheet.actor .resting {
+  flex: none;
+  padding: 5px 0;
+  margin: 0;
+  border-bottom: 2px groove #eeede0;
+}
+.kryx_rpg.sheet.actor .resting .restingRow {
+  height: 20px;
+  line-height: 20px;
+}
+.kryx_rpg.sheet.actor .resting .restingRow h4 {
+  flex: auto;
+  margin: 0;
+  font-size: 13px;
+  font-weight: bold;
+  color: #4b4a44;
 }
 .kryx_rpg.sheet.actor .center-pane {
   height: 100%;
