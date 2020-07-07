@@ -1,4 +1,5 @@
 import ActorSheetKryx from "./base.js";
+import {KRYX_RPG} from "../../config.js";
 
 /**
  * An Actor sheet for player character type actors in the Kryx RPG system.
@@ -46,7 +47,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     if (hp.temp === 0) delete hp.temp;
     if (hp.tempmax === 0) delete hp.tempmax;
 
-    // Resources
+    // Resources (not mana/stamina)
     sheetData["resources"] = ["primary", "secondary", "tertiary"].reduce((arr, r) => {
       const res = sheetData.data.resources[r] || {};
       res.name = r;
@@ -58,7 +59,9 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
     // Experience Tracking
     sheetData["disableExperience"] = game.settings.get("kryx_rpg", "disableExperienceTracking");
-    sheetData["classLabels"] = this.actor.itemTypes.class.map(c => c.name).join(", ");
+
+    // Class name (will be archetype, e.g. "Paladin" instead of "Acolyte")
+    sheetData["className"] = this.actor.data.data.class.archetype
 
     // Return data for rendering
     return sheetData;
@@ -72,7 +75,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
    */
   _prepareItems(data) {
 
-    // Categorize items as inventory, spellbook, features, and classes
+    // Categorize items as inventory, superpowers, feats/features. TODO - maybe split feats and features?
     const inventory = {
       weapon: {label: "KRYX_RPG.ItemTypeWeaponPl", items: [], dataset: {type: "weapon"}},
       equipment: {label: "KRYX_RPG.ItemTypeEquipmentPl", items: [], dataset: {type: "equipment"}},
@@ -83,7 +86,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     };
 
     // Partition items by category
-    let [items, spells, feats, classes] = data.items.reduce((arr, item) => {
+    let [inventoryItems, superpowers, feats] = data.items.reduce((arr, item) => {
 
       // Item details
       item.img = item.img || DEFAULT_TOKEN;
@@ -99,27 +102,24 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
       this._prepareItemToggleState(item);
 
       // Classify items into types
-      if (item.type === "spell") arr[1].push(item);
-      else if (item.type === "feat") arr[2].push(item);
-      else if (item.type === "class") arr[3].push(item);
+      if (item.type === "superpower") arr[1].push(item);
+      else if (item.type === "feat" || item.type === "feature") arr[2].push(item);
       else if (Object.keys(inventory).includes(item.type)) arr[0].push(item);
+      else console.error("KryxRPG | Unfamiliar item type: " + item.type)
       return arr;
     }, [[], [], [], []]);
 
     // Apply active item filters
-    items = this._filterItems(items, this._filters.inventory);
-    spells = this._filterItems(spells, this._filters.spellbook);
+    inventoryItems = this._filterItems(inventoryItems, this._filters.inventory);
+    superpowers = this._filterItems(superpowers, this._filters.arsenal);
     feats = this._filterItems(feats, this._filters.features);
 
-    // Organize Spellbook and count the number of prepared spells (excluding always, at will, etc...)
-    const spellbook = this._prepareSpellbook(data, spells);
-    const nPrepared = spells.filter(s => {
-      return (s.data.level > 0) && (s.data.preparation.mode === "prepared") && s.data.preparation.prepared;
-    }).length;
+    // Organize Arsenal (available superpowers)
+    const arsenal = this._prepareArsenalTab(data, superpowers);
 
     // Organize Inventory
     let totalWeight = 0;
-    for (let i of items) {
+    for (let i of inventoryItems) {
       i.data.quantity = i.data.quantity || 0;
       i.data.weight = i.data.weight || 0;
       i.totalWeight = Math.round(i.data.quantity * i.data.weight * 10) / 10;
@@ -130,13 +130,6 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
     // Organize Features
     const features = {
-      classes: {
-        label: "KRYX_RPG.ItemTypeClassPl",
-        items: [],
-        hasActions: false,
-        dataset: {type: "class"},
-        isClass: true
-      },
       active: {
         label: "KRYX_RPG.FeatureActive",
         items: [],
@@ -149,13 +142,10 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
       if (f.data.activation.type) features.active.items.push(f);
       else features.passive.items.push(f);
     }
-    classes.sort((a, b) => b.levels - a.levels);
-    features.classes.items = classes;
 
     // Assign and return
     data.inventory = Object.values(inventory);
-    data.spellbook = spellbook;
-    data.preparedSpells = nPrepared;
+    data.arsenal = arsenal;
     data.features = Object.values(features);
   }
 
@@ -167,14 +157,9 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
    * @private
    */
   _prepareItemToggleState(item) {
-    if (item.type === "spell") {
-      const isAlways = getProperty(item.data, "preparation.mode") === "always";
-      const isPrepared = getProperty(item.data, "preparation.prepared");
-      item.toggleClass = isPrepared ? "active" : "";
-      if (isAlways) item.toggleClass = "fixed";
-      if (isAlways) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.always;
-      else if (isPrepared) item.toggleTitle = CONFIG.KRYX_RPG.spellPreparationModes.prepared;
-      else item.toggleTitle = game.i18n.localize("KRYX_RPG.SpellUnprepared");
+    if (item.type === "superpower") {
+      item.toggleClass = item.data.availability !== "spellbook" ? "fixed" : "";
+      item.toggleTitle = game.i18n.localize(KRYX_RPG.superpowerAvailability[item.data.availability]);
     } else {
       const isActive = getProperty(item.data, "equipped");
       item.toggleClass = isActive ? "active" : "";
@@ -207,19 +192,19 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
       grg: 8
     }[actorData.data.traits.size] || 1;
 
-    // Apply Powerful Build feat
-    if (this.actor.getFlag("kryx_rpg", "powerfulBuild")) mod = Math.min(mod * 2, 8);
+    const carryingCapacityMultiplier = this.actor.getFlag("kryx_rpg", "carryingCapacityMultiplier")
+    if (carryingCapacityMultiplier) mod *= carryingCapacityMultiplier
 
     // Add Currency Weight
     if (game.settings.get("kryx_rpg", "currencyWeight")) {
       const currency = actorData.data.currency;
       const numCoins = Object.values(currency).reduce((val, denom) => val += denom, 0);
-      totalWeight += numCoins / CONFIG.KRYX_RPG.encumbrance.currencyPerWeight;
+      totalWeight += numCoins / KRYX_RPG.encumbrance.currencyPerWeight;
     }
 
     // Compute Encumbrance percentage
     const enc = {
-      max: actorData.data.abilities.str.value * CONFIG.KRYX_RPG.encumbrance.strMultiplier * mod,
+      max: actorData.data.abilities.str.value * KRYX_RPG.encumbrance.strMultiplier * mod,
       value: Math.round(totalWeight * 10) / 10,
     };
     enc.pct = Math.min(enc.value * 100 / enc.max, 99);
@@ -247,6 +232,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     html.find('.item-toggle').click(this._onToggleItem.bind(this));
 
     // Short and Long Rest
+    html.find('.second-wind').click(this._onSecondWind.bind(this));
     html.find('.short-rest').click(this._onShortRest.bind(this));
     html.find('.long-rest').click(this._onLongRest.bind(this));
 
@@ -278,8 +264,21 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     event.preventDefault();
     const itemId = event.currentTarget.closest(".item").dataset.itemId;
     const item = this.actor.getOwnedItem(itemId);
-    const attr = item.data.type === "spell" ? "data.preparation.prepared" : "data.equipped";
+    const attr = item.data.type === "superpower" ? "data.preparation.prepared" : "data.equipped";
     return item.update({[attr]: !getProperty(item.data, attr)});
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Use a second wind, calling the relevant function on the Actor instance
+   * @param {Event} event   The triggering click event
+   * @private
+   */
+  async _onSecondWind(event) {
+    event.preventDefault();
+    await this._onSubmit(event);
+    return this.actor.secondWind();
   }
 
   /* -------------------------------------------- */
