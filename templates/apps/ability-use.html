@@ -1,0 +1,12 @@
+<form id="ability-use-form">
+    <p>{{ title }}</p>
+    <p class="notes">{{note}}</p>
+    <div class="form-group">
+        <label class="checkbox">{{ localize "DND5E.AbilityUseConsume" }} <input type="checkbox" name="consume" checked/></label>
+        {{#if hasPlaceableTemplate}}
+        <label class="checkbox">{{ localize "DND5E.PlaceTemplate" }}
+            <input type="checkbox" name="placeTemplate" checked/>
+        </label>
+        {{/if}}
+    </div>
+</form>
