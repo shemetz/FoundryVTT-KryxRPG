@@ -2,7 +2,7 @@
  * A specialized Dialog subclass for casting a spell item at a certain level
  * @extends {Dialog}
  */
-export default class SpellCastDialog extends Dialog {
+export default class SuperpowerUseDialog extends Dialog {
   constructor(actor, item, dialogData = {}, options = {}) {
     super(dialogData, options);
     this.options.classes = ["kryx_rpg", "dialog"];
@@ -73,7 +73,7 @@ export default class SpellCastDialog extends Dialog {
     const canCast = spellLevels.some(l => l.hasSlots);
 
     // Render the Spell casting template
-    const html = await renderTemplate("systems/kryx_rpg/templates/apps/spell-cast.html", {
+    const html = await renderTemplate("systems/kryx_rpg/templates/apps/superpower-use.html", {
       item: item.data,
       canCast: canCast,
       canUpcast: canUpcast,

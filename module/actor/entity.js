@@ -1,7 +1,7 @@
 import {d20Roll, damageRoll} from "../dice.js";
 import ShortRestDialog from "../apps/short-rest.js";
 import LongRestDialog from "../apps/long-rest.js";
-import SpellCastDialog from "../apps/spell-cast-dialog.js";
+import SuperpowerUseDialog from "../apps/superpower-use-dialog.js";
 import AbilityTemplate from "../pixi/ability-template.js";
 import {KRYX_RPG} from '../config.js';
 
@@ -356,7 +356,7 @@ export default class ActorKryx extends Actor {
 
     // Configure spell slot consumption and measured template placement from the form
     if (configureDialog && (usesSlots || item.hasAreaTarget || limitedUses)) {
-      const spellFormData = await SpellCastDialog.create(this, item);
+      const spellFormData = await SuperpowerUseDialog.create(this, item);
       const lvl = parseInt(spellFormData.get("level"));
       if (Boolean(spellFormData.get("consume"))) {
         consume = `spell${lvl}`;

@@ -12,7 +12,7 @@ export const preloadHandlebarsTemplates = async function () {
     "systems/kryx_rpg/templates/actors/parts/actor-traits.html",
     "systems/kryx_rpg/templates/actors/parts/actor-inventory.html",
     "systems/kryx_rpg/templates/actors/parts/actor-features.html",
-    "systems/kryx_rpg/templates/actors/parts/actor-spellbook.html",
+    "systems/kryx_rpg/templates/actors/parts/actor-arsenal.html",
 
     // Item Sheet Partials
     "systems/kryx_rpg/templates/items/parts/item-action.html",

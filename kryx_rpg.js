@@ -26,7 +26,7 @@ import ActorSheetKryxCharacter from "./module/actor/sheets/character.js";
 import ActorSheetKryxNPC from "./module/actor/sheets/npc.js";
 import ItemSheetKryx from "./module/item/sheet.js";
 import ShortRestDialog from "./module/apps/short-rest.js";
-import SpellCastDialog from "./module/apps/spell-cast-dialog.js";
+import SuperpowerUseDialog from "./module/apps/superpower-use-dialog.js";
 import TraitSelector from "./module/apps/trait-selector.js";
 
 // Import Helpers
@@ -50,7 +50,7 @@ Hooks.once("init", function () {
       ActorSheetKryxNPC,
       ItemSheetKryx,
       ShortRestDialog,
-      SpellCastDialog,
+      SuperpowerUseDialog,
       TraitSelector
     },
     canvas: {
