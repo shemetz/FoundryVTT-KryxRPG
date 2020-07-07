@@ -29,7 +29,7 @@ export default class ItemKryx extends Item {
 
       // Spells - Use Actor spellcasting modifier
       if (this.data.type === "superpower") {
-        if (this.data.kind === "spell")
+        if (this.data.data.type === "spell")
           return actorData.attributes.spellcastingAbility
         else
           return actorData.attributes.maneuverAbility
@@ -156,18 +156,18 @@ export default class ItemKryx extends Item {
     super.prepareData();
 
     // Get the Item's data
-    const itemData = this.data;
+    const itemType = this.data.type;
     const actorData = this.actor ? this.actor.data : {};
-    const data = itemData.data;
+    const data = this.data.data;
     const C = CONFIG.KRYX_RPG;
     const labels = {};
 
     // Superpower - components
-    if (itemData.type === "superpower") {
+    if (itemType === "superpower") {
       labels.components = Object.entries(data.components).reduce((arr, c) => {
         if (c[1] !== true) return arr;
         let letter = c[0].titleCase().slice(0, 1)
-        if (itemData.type === "spell"
+        if (data.type === "spell"
           && this.actor.data.mainResources.mana.nameOfEffect === "catalyst"
           && letter === "C")
           letter = "U" // unstable concoction
@@ -177,7 +177,7 @@ export default class ItemKryx extends Item {
     }
 
     // Feat and Feature Items
-    else if (itemData.type === "feat" || itemData.type === "feature") {
+    else if (itemType === "feat" || itemType === "feature") {
       const act = data.activation;
       if (act && (act.type === C.abilityActivationTypes.legendary)) labels.featType = "Legendary Action";
       else if (act && (act.type === C.abilityActivationTypes.lair)) labels.featType = "Lair Action";
@@ -186,7 +186,7 @@ export default class ItemKryx extends Item {
     }
 
     // Equipment Items
-    else if (itemData.type === "equipment") {
+    else if (itemType === "equipment") {
       labels.armor = data.armor.value ? `${data.armor.value} AC` : "";
     }
 
@@ -332,8 +332,7 @@ export default class ItemKryx extends Item {
    * @private
    */
   async _handleResourceConsumption({isCard = false, isAttack = false} = {}) {
-    const itemData = this.data.data;
-    const consume = itemData.consume || {};
+    const consume = this.data.data.consume || {};
     if (!consume.type) return true;
     const actor = this.actor;
     const typeLabel = CONFIG.KRYX_RPG.abilityConsumptionTypes[consume.type];

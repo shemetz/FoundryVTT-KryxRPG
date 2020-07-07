@@ -432,7 +432,7 @@ export default class ActorSheetKryx extends ActorSheet {
     if (sameActor) return this._onSortItem(event, itemData);
 
     // Create a spell scroll from a spell item
-    if ((itemData.type === "spell") && (this._tabs[0].active === "inventory")) {
+    if ((itemData.type === "superpower" && itemData.data.type === "spell") && (this._tabs[0].active === "inventory")) {
       const scroll = await ItemKryx.createScrollFromSpell(itemData);
       itemData = scroll.data;
     }

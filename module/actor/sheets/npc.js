@@ -60,24 +60,24 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     };
 
     // Start by classifying items into groups for rendering
-    let [spells, other] = data.items.reduce((arr, item) => {
+    let [superpowers, other] = data.items.reduce((arr, item) => {
       item.img = item.img || DEFAULT_TOKEN;
       item.isStack = item.data.quantity ? item.data.quantity > 1 : false;
       item.hasUses = item.data.uses && (item.data.uses.max > 0);
       item.isOnCooldown = item.data.recharge && !!item.data.recharge.value && (item.data.recharge.charged === false);
       item.isDepleted = item.isOnCooldown && (item.data.uses.per && (item.data.uses.value > 0));
       item.hasTarget = !!item.data.target && !(["none", ""].includes(item.data.target.type));
-      if (item.type === "spell") arr[0].push(item);
+      if (item.type === "superpower") arr[0].push(item);
       else arr[1].push(item);
       return arr;
     }, [[], []]);
 
     // Apply item filters
-    spells = this._filterItems(spells, this._filters.spellbook);
+    superpowers = this._filterItems(spells, this._filters.arsenal);
     other = this._filterItems(other, this._filters.features);
 
-    // Organize Spellbook
-    const spellbook = this._prepareSpellbook(data, spells);
+    // Organize Arsenal
+    const arsenal = this._prepareArsenal(data, superpowers);
 
     // Organize Features
     for (let item of other) {
@@ -90,7 +90,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
     // Assign and return
     data.features = Object.values(features);
-    data.spellbook = spellbook;
+    data.arsenal = arsenal;
   }
 
 
