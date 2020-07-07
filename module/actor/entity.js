@@ -4,6 +4,7 @@ import LongRestDialog from "../apps/long-rest.js";
 import SuperpowerUseDialog from "../apps/superpower-use-dialog.js";
 import AbilityTemplate from "../pixi/ability-template.js";
 import {KRYX_RPG} from '../config.js';
+import SecondWindDialog from '../apps/second-wind.js';
 
 /**
  * Extend the base Actor class to implement additional logic specialized for Kryx RPG.

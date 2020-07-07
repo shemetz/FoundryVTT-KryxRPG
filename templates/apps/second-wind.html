@@ -1,0 +1,24 @@
+<form id="second-wind-hd" class="dialog-content" onsubmit="event.preventDefault();">
+    <p>{{ localize "KRYX_RPG.SecondWindHint" }}</p>
+    <div class="form-group">
+        <label>{{ localize "KRYX_RPG.SecondWindSelect" }}</label>
+        <div class="form-fields">
+            <text>{{hitDiceSize}} ({{hitDiceAmount}} {{ localize "KRYX_RPG.available" }})</text>
+            <button id="roll-hd" {{#unless canRoll}}disabled{{/unless}}>
+                <i class="fas fa-dice-d20"></i> {{ localize "Roll" }}
+            </button>
+        </div>
+        {{#unless canRoll}}
+        <p class="notes">{{ localize "KRYX_RPG.SecondWindNoHD" }}</p>
+        {{/unless}}
+    </div>
+
+    <div class="dialog-buttons">
+        {{#each buttons as |button id|}}
+        <button class="dialog-button" data-button="{{id}}">
+            {{{button.icon}}}
+            {{{button.label}}}
+        </button>
+        {{/each}}
+    </div>
+</form>
