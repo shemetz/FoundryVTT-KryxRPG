@@ -488,7 +488,7 @@ KRYX_RPG.conditionTypes = {
   "charmed": "KRYX_RPG.ConCharmed",
   "deafened": "KRYX_RPG.ConDeafened",
   "diseased": "KRYX_RPG.ConDiseased",
-  "exhaustion": "KRYX_RPG.ConExhaustion",
+  "exhaustion": "KRYX_RPG.ConExhausted",
   "frightened": "KRYX_RPG.ConFrightened",
   "grappled": "KRYX_RPG.ConGrappled",
   "incapacitated": "KRYX_RPG.ConIncapacitated",
