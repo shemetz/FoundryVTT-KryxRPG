@@ -650,50 +650,80 @@ KRYX_RPG.allowedActorFlags = Object.keys(KRYX_RPG.characterFlags)
 KRYX_RPG.systemData = {
   classes: {
     "Acolyte": {
-      "Priest": {"hitDice": "d6", "progressionChoiceType": "caster"},
-      "Paladin": {"hitDice": "d10", "progressionChoiceType": "gish"},
-      "Avenger": {"hitDice": "d8", "progressionChoiceType": "gish"},
-      "Sacred Fist": {"hitDice": "d8", "progressionChoiceType": "gish"},
+      "archetypes": {
+        "Priest": {"hitDice": "d6", "progressionChoiceType": "caster"},
+        "Paladin": {"hitDice": "d10", "progressionChoiceType": "gish"},
+        "Avenger": {"hitDice": "d8", "progressionChoiceType": "gish"},
+        "Sacred Fist": {"hitDice": "d8", "progressionChoiceType": "gish"},
+      },
+      "subclassName": "Divine Domain",
     },
     "Alchemist": {
-      "Chemist": {"hitDice": "d6", "progressionChoiceType": "caster"},
-      "Mutant": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+      "archetypes": {
+        "Chemist": {"hitDice": "d6", "progressionChoiceType": "caster"},
+        "Mutant": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+      },
+      "subclassName": "Alchemical Discipline",
     },
     "Mage": {
-      "Wizard": {"hitDice": "d6", "progressionChoiceType": "caster"},
-      "Magus": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+      "archetypes": {
+        "Wizard": {"hitDice": "d6", "progressionChoiceType": "caster"},
+        "Magus": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+      },
+      "subclassName": "Arcane Tradition",
     },
     "Naturalist": {
-      "Druid": {"hitDice": "d6", "progressionChoiceType": "caster"},
-      "Ranger": {"hitDice": "d8", "progressionChoiceType": "gish"},
-      "Warden": {"hitDice": "d10", "progressionChoiceType": "gish"},
+      "archetypes": {
+        "Druid": {"hitDice": "d6", "progressionChoiceType": "caster"},
+        "Ranger": {"hitDice": "d8", "progressionChoiceType": "gish"},
+        "Warden": {"hitDice": "d10", "progressionChoiceType": "gish"},
+      },
+      "subclassName": "Circle",
     },
     "Occultist": {
-      "Warlock/Witch": {"hitDice": "d6", "progressionChoiceType": "caster"},
-      "Hexblade": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+      "archetypes": {
+        "Warlock/Witch": {"hitDice": "d6", "progressionChoiceType": "caster"},
+        "Hexblade": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+      },
+      "subclassName": "Otherworldly Patron",
     },
     "Psionicist": {
-      "Psion": {"hitDice": "d6", "progressionChoiceType": "caster"},
-      "Soulknife": {"hitDice": "d10", "progressionChoiceType": "psiongish"},
-      "Monk": {"hitDice": "d8", "progressionChoiceType": "psiongish"},
+      "archetypes": {
+        "Psion": {"hitDice": "d6", "progressionChoiceType": "caster"},
+        "Soulknife": {"hitDice": "d10", "progressionChoiceType": "psiongish"},
+        "Monk": {"hitDice": "d8", "progressionChoiceType": "psiongish"},
+      },
+      "subclassName": "Psychic Order",
     },
     "Rogue": {
-      "Infiltrator": {"hitDice": "d8", "progressionChoiceType": "gish"},
-      "Spellthief": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
-      "Blood Hunter": {"hitDice": "d8", "progressionChoiceType": "gish"},
+      "archetypes": {
+        "Infiltrator": {"hitDice": "d8", "progressionChoiceType": "gish"},
+        "Spellthief": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+        "Blood Hunter": {"hitDice": "d8", "progressionChoiceType": "gish"},
+      },
+      "subclassName": "Roguish Subclass",
     },
     "Suffused": {
-      "Sorcerer": {"hitDice": "d6", "progressionChoiceType": "martial"},
-      "Bloodrager": {"hitDice": "d10", "progressionChoiceType": "spellgish"},
+      "archetypes": {
+        "Sorcerer": {"hitDice": "d6", "progressionChoiceType": "martial"},
+        "Bloodrager": {"hitDice": "d10", "progressionChoiceType": "spellgish"},
+      },
+      "subclassName": "Origin",
     },
     "Warrior": {
-      "Battlemaster": {"hitDice": "d10", "progressionChoiceType": "martial"},
-      "Berserker": {"hitDice": "d10", "progressionChoiceType": "martial"},
-      "Dervish": {"hitDice": "d10", "progressionChoiceType": "martial"},
+      "archetypes": {
+        "Battlemaster": {"hitDice": "d10", "progressionChoiceType": "martial"},
+        "Berserker": {"hitDice": "d10", "progressionChoiceType": "martial"},
+        "Dervish": {"hitDice": "d10", "progressionChoiceType": "martial"},
+      },
+      "subclassName": "Martial Specialization",
     },
     "Minstrel": {
-      "Bard": {"hitDice": "d6", "progressionChoiceType": "caster"},
-      "Skald": {"hitDice": "d10", "progressionChoiceType": "gish"},
+      "archetypes": {
+        "Bard": {"hitDice": "d6", "progressionChoiceType": "caster"},
+        "Skald": {"hitDice": "d10", "progressionChoiceType": "gish"},
+      },
+      "subclassName": "College",
     },
   },
   classProgressionChoiceTypes: {

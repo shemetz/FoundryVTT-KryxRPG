@@ -14,7 +14,6 @@ export async function showUpdateClassDialog(actor) {
   // Render modal dialog
   const template = "systems/kryx_rpg/templates/apps/update-class.html";
   let dialogData = {
-    classes: KRYX_RPG.systemData.classes,
     classProgressions: CONFIG.KRYX_RPG.resourceProgression,
     data: actor.data.data,
     config: CONFIG.KRYX_RPG, // I guess this is for localization?
@@ -54,7 +53,7 @@ export async function showUpdateClassDialog(actor) {
               "data.class.subclass": $html.find("[name=classSubclass]")[0].value,
               "data.class.progression": $html.find("[name=classProgression]")[0].value,
               "data.class.level": $html.find("[name=classLevel]")[0].value,
-              "data.class.hitDice": KRYX_RPG.systemData.classes[className][classArchetype]["hitDice"],
+              "data.class.hitDice": KRYX_RPG.systemData.classes[className].archetypes[classArchetype]["hitDice"],
               "data.attributes.spellcastingAbility": $html.find("[name=spellcastingAbility]")[0].value,
               "data.attributes.maneuverAbility": $html.find("[name=maneuverAbility]")[0].value,
             })
@@ -78,7 +77,7 @@ function onMainClassUpdated(className) {
   // Delete subclass (because it's probably irrelevant)
   $(`input[name=classSubclass]`)[0].value = ""
   // Limit archetype by class
-  const allowedArchetypes = Object.keys(KRYX_RPG.systemData.classes[className])
+  const allowedArchetypes = Object.keys(KRYX_RPG.systemData.classes[className].archetypes)
   let firstAvailableArchetypeChoice = ""
   $(`select[name=classArchetype] > option`).each((i, option) => {
     if (allowedArchetypes.includes(option.value)) {
@@ -93,18 +92,19 @@ function onMainClassUpdated(className) {
     $(`select[name=classArchetype]`)[0].value = firstAvailableArchetypeChoice
     onArchetypeUpdated(firstAvailableArchetypeChoice)
   }
+  $(`label.subclassLabel`)[0].textContent = KRYX_RPG.systemData.classes[className].subclassName
 }
 
 function onArchetypeUpdated(archetype) {
   // reverse-find class name by archetype (because I couldn't be bothered with sending class name as a parameter)
   let className;
   for (const possibleClassName in KRYX_RPG.systemData.classes)
-    if (KRYX_RPG.systemData.classes[possibleClassName][archetype]) {
+    if (KRYX_RPG.systemData.classes[possibleClassName].archetypes[archetype]) {
       className = possibleClassName
       break
     }
   // Limit progression by archetype
-  const progressionChoiceType = KRYX_RPG.systemData.classes[className][archetype]["progressionChoiceType"]
+  const progressionChoiceType = KRYX_RPG.systemData.classes[className].archetypes[archetype]["progressionChoiceType"]
   const allowedProgressions = KRYX_RPG.systemData.classProgressionChoiceTypes[progressionChoiceType]
   const classProgressionSelection = $(`select[name=classProgression]`)
   if (allowedProgressions.length === 1) {
