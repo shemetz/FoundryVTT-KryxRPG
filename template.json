@@ -375,6 +375,7 @@
       "armor": {
         "type": "light",
         "value": 10,
+        "dr": 0,
         "dex": null
       },
       "strength": 0,

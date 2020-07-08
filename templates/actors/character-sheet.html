@@ -94,6 +94,11 @@
                         <input name="data.attributes.ac.value" type="text" value="{{data.attributes.ac.value}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
+                    {{#if data.attributes.ac.dr}}
+                    <footer class="attribute-footer">
+                        <span>DR: {{data.attributes.ac.dr}}</span>
+                    </footer>
+                    {{/if}}
                 </li>
 
                 <li class="attribute">

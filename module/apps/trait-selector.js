@@ -2,6 +2,8 @@
  * A specialized form used to select from a checklist of attributes, traits, or properties
  * @extends {FormApplication}
  */
+import {KRYX_RPG} from '../config.js';
+
 export default class TraitSelector extends FormApplication {
 
   /** @override */
@@ -41,17 +43,27 @@ export default class TraitSelector extends FormApplication {
 
     // Populate choices
     const choices = duplicate(this.options.choices);
+    const choices_ordered = {}
     for (let [k, v] of Object.entries(choices)) {
-      choices[k] = {
-        label: v,
-        chosen: attr ? attr.value.includes(k) : false
+      let order = k
+      const ordering = KRYX_RPG[this.attribute + ".ordering"]
+      if (ordering) {
+        // special workaround so that armors can be shown in order (grep data.traits.armorProf)
+        order = ordering[k]
+      }
+      choices_ordered[order] = {
+        key: k,
+        choice: {
+          label: v,
+          chosen: attr ? attr.value.includes(k) : false
+        }
       }
     }
 
     // Return data
     return {
       allowCustom: this.options.allowCustom,
-      choices: choices,
+      choices_ordered: choices_ordered,
       custom: attr ? attr.custom : ""
     }
   }

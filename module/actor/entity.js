@@ -59,6 +59,16 @@ export default class ActorKryx extends Actor {
     init.total = init.mod + init.prof + init.bonus;
     data.attributes.init = init
 
+    // Update DR from items
+    // NOTE: not calculating AC. This is left for other modules, like DynamicEffects.
+    let damageReduction = 0
+    for (const item of this.data.items) {
+      const itemData = item.data
+      if (item.type !== "equipment" || !itemData.armor || !itemData.equipped || !itemData.armor.dr) continue
+      damageReduction += itemData.armor.dr
+    }
+    data.attributes.ac.dr = damageReduction
+
     if (this.items) {
       this._computeResourceProgression();
     }

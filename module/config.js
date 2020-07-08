@@ -190,6 +190,16 @@ KRYX_RPG.armorProficiencies = {
   "shield": KRYX_RPG.equipmentTypes.shield,
 };
 
+// special workaround so that armors can be shown in order
+KRYX_RPG["data.traits.armorProf.ordering"] = {
+  "leather": 1,
+  "hide": 2,
+  "chain": 3,
+  "scale": 4,
+  "plate": 5,
+  "shield": 6,
+};
+
 /* -------------------------------------------- */
 
 /**

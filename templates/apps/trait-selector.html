@@ -1,10 +1,10 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
     <ol class="trait-list">
-        {{#each choices as |choice key|}}
+        {{#each choices_ordered as |choice_ordered order|}}
         <li>
             <label class="checkbox">
-                <input type="checkbox" name="{{key}}" data-dtype="Boolean" {{checked choice.chosen}}>
-                {{choice.label}}
+                <input type="checkbox" name="{{choice_ordered.key}}" data-dtype="Boolean" {{checked choice_ordered.choice.chosen}}>
+                {{choice_ordered.choice.label}}
             </label>
         </li>
         {{/each}}
