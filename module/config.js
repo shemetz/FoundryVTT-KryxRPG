@@ -62,7 +62,6 @@ KRYX_RPG.timePeriods = {
   "minute": "KRYX_RPG.TimeMinute",
   "hour": "KRYX_RPG.TimeHour",
   "day": "KRYX_RPG.TimeDay",
-  "month": "KRYX_RPG.TimeMonth",
   "year": "KRYX_RPG.TimeYear",
   "perm": "KRYX_RPG.TimePerm",
   "spec": "KRYX_RPG.Special"
@@ -342,10 +341,10 @@ KRYX_RPG.hitDieTypes = ["d6", "d8", "d10", "d12"];
  * @type {Object}
  */
 KRYX_RPG.senses = {
-  "bs": "KRYX_RPG.SenseBS",
-  "dv": "KRYX_RPG.SenseDV",
-  "ts": "KRYX_RPG.SenseTS",
-  "tr": "KRYX_RPG.SenseTR"
+  "blindsight": "KRYX_RPG.SenseBlindsight",
+  "darkvision": "KRYX_RPG.SenseDarkvision",
+  "truesight": "KRYX_RPG.SenseTruesight",
+  "tremorsense": "KRYX_RPG.SenseTremorsense"
 };
 
 
@@ -413,13 +412,9 @@ KRYX_RPG.weaponProperties = {
   "amm": "KRYX_RPG.WeaponPropertiesAmm",
   "hvy": "KRYX_RPG.WeaponPropertiesHvy",
   "fin": "KRYX_RPG.WeaponPropertiesFin",
-  "fir": "KRYX_RPG.WeaponPropertiesFir",
-  "foc": "KRYX_RPG.WeaponPropertiesFoc",
   "lgt": "KRYX_RPG.WeaponPropertiesLgt",
   "lod": "KRYX_RPG.WeaponPropertiesLod",
   "rch": "KRYX_RPG.WeaponPropertiesRch",
-  "rel": "KRYX_RPG.WeaponPropertiesRel",
-  "ret": "KRYX_RPG.WeaponPropertiesRet",
   "spc": "KRYX_RPG.WeaponPropertiesSpc",
   "thr": "KRYX_RPG.WeaponPropertiesThr",
   "two": "KRYX_RPG.WeaponPropertiesTwo",
@@ -629,9 +624,15 @@ KRYX_RPG.characterFlags = {
     section: "Feats & Features",
     type: Boolean
   },
+  "earForDeceit": {
+    name: "KRYX_RPG.FlagsEarForDeceit",
+    hint: "KRYX_RPG.FlagsEarForDeceitHint",
+    section: "Feats & Features",
+    type: Boolean
+  },
   "carryingCapacityMultiplier": {
     name: "KRYX_RPG.FlagsCarryingCapacityMultiplier",
-    hint: "KRYX_RPG.FlagsCarryingCapacityMultiplier",
+    hint: "KRYX_RPG.FlagsCarryingCapacityMultiplierHint",
     section: "Miscellaneous",
     type: Number,
     placeholder: 1
