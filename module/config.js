@@ -653,6 +653,7 @@ KRYX_RPG.systemData = {
       "Priest": {"hitDice": "d6", "progressionChoiceType": "caster"},
       "Paladin": {"hitDice": "d10", "progressionChoiceType": "gish"},
       "Avenger": {"hitDice": "d8", "progressionChoiceType": "gish"},
+      "Sacred Fist": {"hitDice": "d8", "progressionChoiceType": "gish"},
     },
     "Alchemist": {
       "Chemist": {"hitDice": "d6", "progressionChoiceType": "caster"},
@@ -677,7 +678,7 @@ KRYX_RPG.systemData = {
       "Monk": {"hitDice": "d8", "progressionChoiceType": "psiongish"},
     },
     "Rogue": {
-      "Infiltrator": {"hitDice": "d8", "progressionChoiceType": "martial"},
+      "Infiltrator": {"hitDice": "d8", "progressionChoiceType": "gish"},
       "Spellthief": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
       "Blood Hunter": {"hitDice": "d8", "progressionChoiceType": "gish"},
     },
@@ -704,7 +705,7 @@ KRYX_RPG.systemData = {
     "gish": ["gishSpells", "gishHalfHalf", "gishManeuvers"],
     "spellgish": ["gishSpells", "gishHalfHalf"],
   },
-  archetypesThatHaveConcoctions: ["Chemist", "Mutant", "Blood Hunter"],
+  archetypesThatHaveConcoctions: ["Chemist", "Mutant", "Infiltrator", "Blood Hunter"],
   spellcastingAbilities: ["int", "wis", "cha"],
   maneuverAbilities: ["str", "dex"],
   skillAbilities: {
