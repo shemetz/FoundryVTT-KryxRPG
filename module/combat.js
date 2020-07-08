@@ -8,7 +8,7 @@ export const _getInitiativeFormula = function (combatant) {
   const actor = combatant.actor;
   if (!actor) return "1d20";
   const init = actor.data.data.attributes.init;
-  const initBonus = actor.data.data.traits.bonuses.initiative || null
+  const initBonus = actor.data.data.bonuses.initiative || null
   const parts = ["1d20", init.mod, (init.prof !== 0) ? init.prof : null, initBonus];
   if (actor.getFlag("kryx_rpg", "initiativeAdv")) parts[0] = "2d20kh";
   if (CONFIG.Combat.initiative.tiebreaker) parts.push(actor.data.data.abilities.dex.value / 100);
