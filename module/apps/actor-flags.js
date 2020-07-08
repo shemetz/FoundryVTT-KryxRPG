@@ -68,6 +68,7 @@ export default class ActorSheetFlags extends BaseEntitySheet {
    */
   _getBonuses() {
     const bonuses = [
+      {name: "data.bonuses.initiative", label: "KRYX_RPG.BonusInitiative"},
       {name: "data.bonuses.mwak.attack", label: "KRYX_RPG.BonusMWAttack"},
       {name: "data.bonuses.mwak.damage", label: "KRYX_RPG.BonusMWDamage"},
       {name: "data.bonuses.rwak.attack", label: "KRYX_RPG.BonusRWAttack"},
@@ -79,7 +80,8 @@ export default class ActorSheetFlags extends BaseEntitySheet {
       {name: "data.bonuses.abilities.check", label: "KRYX_RPG.BonusAbilityCheck"},
       {name: "data.bonuses.abilities.save", label: "KRYX_RPG.BonusAbilitySave"},
       {name: "data.bonuses.abilities.skill", label: "KRYX_RPG.BonusAbilitySkill"},
-      {name: "data.bonuses.spell.dc", label: "KRYX_RPG.BonusSpellDC"}
+      {name: "data.bonuses.spell_dc", label: "KRYX_RPG.BonusSpellDC"},
+      {name: "data.bonuses.maneuver_dc", label: "KRYX_RPG.BonusManeuverDC"},
     ];
     for (let b of bonuses) {
       b.value = getProperty(this.object.data, b.name) || "";

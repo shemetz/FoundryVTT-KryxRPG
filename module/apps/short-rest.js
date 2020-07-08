@@ -13,12 +13,6 @@ export default class ShortRestDialog extends Dialog {
      * @type {Actor}
      */
     this.actor = actor;
-
-    /**
-     * Track the most recently used HD denomination for re-rendering the form
-     * @type {string}
-     */
-    this._denom = null;
   }
 
   /* -------------------------------------------- */
@@ -38,17 +32,9 @@ export default class ShortRestDialog extends Dialog {
     const data = super.getData();
 
     // Determine Hit Dice
-    data.availableHD = this.actor.data.items.reduce((hd, item) => {
-      if (item.type === "class") {
-        const d = item.data;
-        const denom = d.hitDice || "d6";
-        const available = parseInt(d.levels || 1) - parseInt(d.hitDiceUsed || 0);
-        hd[denom] = denom in hd ? hd[denom] + available : available;
-      }
-      return hd;
-    }, {});
-    data.canRoll = this.actor.data.data.attributes.hd > 0;
-    data.denomination = this._denom;
+    data.hitDiceSize = this.actor.data.data.class.hitDice
+    data.hitDiceAmount = this.actor.data.data.class.level - this.actor.data.data.class.hitDiceUsed
+    data.canRoll = data.hitDiceAmount > 0;
 
     // Determine rest type
     const variant = game.settings.get("kryx_rpg", "restVariant");
@@ -77,9 +63,7 @@ export default class ShortRestDialog extends Dialog {
    */
   async _onRollHitDie(event) {
     event.preventDefault();
-    const btn = event.currentTarget;
-    this._denom = btn.form.hd.value;
-    await this.actor.rollHitDie(this._denom);
+    await this.actor.rollHitDie(this.actor.data.data.class.hitDice);
     this.render();
   }
 
@@ -116,19 +100,5 @@ export default class ShortRestDialog extends Dialog {
       });
       dlg.render(true);
     });
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * A helper constructor function which displays the Long Rest confirmation dialog and returns a Promise once it's
-   * workflow has been resolved.
-   * @deprecated
-   * @param {ActorKryx} actor
-   * @return {Promise}
-   */
-  static async longRestDialog({actor} = {}) {
-    console.warn("WARNING! ShortRestDialog.longRestDialog has been deprecated, use LongRestDialog.longRestDialog instead.");
-    return LongRestDialog.longRestDialog(...arguments);
   }
 }

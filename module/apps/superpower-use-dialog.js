@@ -72,8 +72,8 @@ export default class SuperpowerUseDialog extends Dialog {
     }
     const canCast = spellLevels.some(l => l.hasSlots);
 
-    // Render the Spell casting template
-    const html = await renderTemplate("systems/kryx_rpg/templates/apps/superpower-use.html", {
+    // Render the superpower use template
+    const html = await renderTemplate("systems/kryx_rpg/templates/apps/superpower-use-dialog.html", {
       item: item.data,
       canCast: canCast,
       canUpcast: canUpcast,

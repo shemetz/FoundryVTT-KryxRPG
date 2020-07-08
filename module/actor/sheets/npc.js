@@ -41,7 +41,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
    */
   _prepareItems(data) {
 
-    // Categorize Items as Features and Spells
+    // Categorize Items as Features and Superpowers
     const features = {
       weapons: {
         label: game.i18n.localize("KRYX_RPG.AttackPl"),
@@ -73,11 +73,11 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     }, [[], []]);
 
     // Apply item filters
-    superpowers = this._filterItems(spells, this._filters.arsenal);
+    superpowers = this._filterItems(superpowers, this._filters.arsenal);
     other = this._filterItems(other, this._filters.features);
 
     // Organize Arsenal
-    const arsenal = this._prepareArsenal(data, superpowers);
+    const arsenal = this._prepareArsenalTab(data, superpowers);
 
     // Organize Features
     for (let item of other) {

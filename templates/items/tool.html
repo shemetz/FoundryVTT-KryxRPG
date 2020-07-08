@@ -41,19 +41,6 @@
 
         {{!-- Details Tab --}}
         <div class="tab details" data-group="primary" data-tab="details">
-
-            {{!-- Tool Proficiency --}}
-            <div class="form-group">
-                <label>{{ localize "KRYX_RPG.ItemToolProficiency" }}</label>
-                <select name="data.proficient" data-dtype="Number">
-                    {{#select data.proficient}}
-                    {{#each config.proficiencyLevels as |label p|}}
-                    <option value="{{p}}">{{label}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
-            </div>
-
             {{!-- Ability Check --}}
             <div class="form-group">
                 <label>{{ localize "KRYX_RPG.DefaultAbilityCheck" }}</label>

@@ -6,7 +6,8 @@
 
         <div class="header-details flexrow">
             <h1 class="charname">
-                <input name="name" type="text" value="{{item.name}}" placeholder="{{ localize 'KRYX_RPG.SpellName' }}"/>
+                <input name="name" type="text" value="{{item.name}}"
+                       placeholder="{{ localize 'KRYX_RPG.SuperpowerName' }}"/>
             </h1>
 
             <div class="item-subtitle">
@@ -16,10 +17,10 @@
 
             <ul class="summary flexrow">
                 <li>
-                    {{labels.level}}
+                    {{labels.cost}}
                 </li>
                 <li>
-                    {{labels.school}}
+                    {{labels.theme}}
                 </li>
                 <li>
                     <input type="text" name="data.source" value="{{data.source}}"
@@ -43,11 +44,11 @@
 
         {{!-- Details Tab --}}
         <div class="tab details" data-group="primary" data-tab="details">
-            <h3 class="form-header">{{ localize "KRYX_RPG.SpellDetails" }}</h3>
+            <h3 class="form-header">{{ localize "KRYX_RPG.SuperpowerDetails" }}</h3>
 
-            {{!-- Spell Level --}}
+            {{!-- Base Cost --}}
             <div class="form-group">
-                <label>{{ localize "KRYX_RPG.SpellLevel" }}</label>
+                <label>{{ localize "KRYX_RPG.SuperpowerBaseCost" }}</label>
                 <select name="data.level" data-dtype="Number">
                     {{#select data.level}}
                     {{#each config.spellLevels as |name lvl|}}
@@ -57,9 +58,9 @@
                 </select>
             </div>
 
-            {{!-- Spell School --}}
+            {{!-- Superpower Theme --}}
             <div class="form-group">
-                <label>{{ localize "KRYX_RPG.SpellSchool" }}</label>
+                <label>{{ localize "KRYX_RPG.Theme" }}</label>
                 <select name="data.school">
                     {{#select data.school}}
                     {{#each config.spellSchools as |name sch|}}
@@ -73,8 +74,8 @@
             <div class="spell-components form-group stacked">
                 <label>{{ localize "KRYX_RPG.SpellComponents" }}</label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.vocal" {{checked data.components.vocal}}/> {{ localize
-                    "KRYX_RPG.ComponentVerbal" }}
+                    <input type="checkbox" name="data.components.verbal" {{checked data.components.verbal}}/> {{
+                    localize "KRYX_RPG.ComponentVerbal" }}
                 </label>
                 <label class="checkbox">
                     <input type="checkbox" name="data.components.somatic" {{checked data.components.somatic}}/> {{
@@ -94,36 +95,13 @@
                 </label>
             </div>
 
-            {{!-- Material Components --}}
-            <div class="form-group stacked">
-                <label>{{ localize "KRYX_RPG.SpellMaterials" }}</label>
-                <input class="materials" type="text" name="data.materials.value" value="{{data.materials.value}}"/>
-                {{#if data.materials.value}}
-                <div class="spell-materials flexrow">
-                    <label>{{ localize "KRYX_RPG.Supply" }}</label>
-                    <input type="text" name="data.materials.supply" value="{{data.materials.supply}}"
-                           data-dtype="Number" Placeholder="0"/>
-                    <label>{{ localize "KRYX_RPG.CostGP" }}</label>
-                    <input type="text" name="data.materials.cost" value="{{data.materials.cost}}" data-dtype="Number"
-                           Placeholder="-"/>
-                    <label>{{ localize "KRYX_RPG.Consumed" }}</label>
-                    <input type="checkbox" name="data.materials.consumed" {{checked data.materials.consumed}}/>
-                </div>
-                {{/if}}
-            </div>
-
             {{!-- Preparation Mode --}}
             <div class="form-group input-select">
-                <label>{{ localize "KRYX_RPG.SpellPreparationMode" }}</label>
+                <label>{{ localize "KRYX_RPG.SuperpowerAvailability" }}</label>
                 <div class="form-fields">
-                    <label class="checkbox prepared">
-                        {{ localize "KRYX_RPG.SpellPrepared" }} <input type="checkbox" name="data.preparation.prepared"
-                                                                       {{checked data.preparation.prepared}}/>
-                    </label>
-                    <select name="data.preparation.mode">
-                        {{#select data.preparation.mode}}
-                        <option value=""></option>
-                        {{#each config.spellPreparationModes as |name key|}}
+                    <select name="data.availability">
+                        {{#select data.availability}}
+                        {{#each config.superpowerAvailability as |name key|}}
                         <option value="{{key}}">{{name}}</option>
                         {{/each}}
                         {{/select}}
@@ -136,7 +114,7 @@
             {{!-- Item Activation Template --}}
             {{> "systems/kryx_rpg/templates/items/parts/item-activation.html"}}
 
-            <h3 class="form-header">{{ localize "KRYX_RPG.SpellEffects" }}</h3>
+            <h3 class="form-header">{{ localize "KRYX_RPG.SuperpowerEffects" }}</h3>
 
             {{!-- Item Action Template --}}
             {{> "systems/kryx_rpg/templates/items/parts/item-action.html"}}

@@ -526,19 +526,6 @@ export default class ItemKryx extends Item {
    * Prepare chat card data for tool type items
    * @private
    */
-  _toolChatData(data, labels, props) {
-    props.push(
-      CONFIG.KRYX_RPG.abilities[data.ability] || null,
-      CONFIG.KRYX_RPG.proficiencyLevels[data.proficient || 0]
-    );
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Prepare chat card data for tool type items
-   * @private
-   */
   _lootChatData(data, labels, props) {
     props.push(
       "Loot",
@@ -968,7 +955,7 @@ export default class ItemKryx extends Item {
     // Saving Throws for card targets
     else if (action === "save") {
       for (let t of targets) {
-        await t.rollAbilitySave(button.dataset.ability, {event});
+        await t.rollSavingThrow(button.dataset.save, {event});
       }
     }
 
@@ -1055,6 +1042,7 @@ export default class ItemKryx extends Item {
    * @private
    */
   static async createScrollFromSpell(spell) {
+    //TODO rewrite some of this
 
     // Get spell data
     const itemData = spell instanceof ItemKryx ? spell.data : spell;

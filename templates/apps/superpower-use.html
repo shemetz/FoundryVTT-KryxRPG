@@ -1,19 +1,22 @@
 <form id="spell-config-form">
-    <p>{{ localize "KRYX_RPG.SpellCastHint" }} <strong>{{item.name}}</strong> {{ localize "KRYX_RPG.spell" }}.</p>
+    <!--    TODO make it "to cast the fireball spell", "to use the grapple maneuver", etc - probably through JS-->
+    <p>{{ localize "KRYX_RPG.SuperpowerCastHint" }} <strong>{{item.name}}</strong> {{ localize "KRYX_RPG.spell" }}.</p>
 
     {{#unless canCast}}
-    <p class="notification error">{{ localize "KRYX_RPG.SpellCastNoSlots" }}</p>
+    <!--    TODO different behavior for maneuvers, psi...-->
+    <p class="notification error">{{ localize "KRYX_RPG.SuperpowerCastSpellNoResources" }}</p>
     {{/unless}}
 
     <div class="form-group">
-        <label>{{ localize "KRYX_RPG.SpellCastUpcast" }}</label>
+        <label>{{ localize "KRYX_RPG.SuperpowerCastUpcast" }}</label>
         <div class="form-fields">
-            <select name="level">
+            <select name="cost">
                 {{#select item.data.level}}
-                {{#each spellLevels as |l|}}
-                <option value="{{l.level}}" {{#unless l.canCast}}disabled{{
-                /unless}}>{{l.label}}</option>
-                {{/each}}
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
                 {{/select}}
             </select>
         </div>
@@ -21,8 +24,8 @@
 
     <div class="form-group">
         {{#if canUpcast}}
-        <label class="checkbox">{{ localize "KRYX_RPG.SpellCastConsume" }} <input type="checkbox" name="consume"
-                                                                                  {{checked canCast}}/></label>
+        <label class="checkbox">{{ localize "KRYX_RPG.SuperpowerCastConsume" }} <input type="checkbox" name="consume"
+                                                                                       {{checked canCast}}/></label>
         {{/if}}
 
         {{#if hasPlaceableTemplate}}
