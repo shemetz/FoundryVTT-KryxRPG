@@ -140,12 +140,14 @@ export default class ActorKryx extends Actor {
     let staminaMax = Math.round(progression.stamina * level)
     let manaLimit = Math.ceil(progression.manaLimit * level)
     let staminaLimit = Math.ceil(progression.staminaLimit * level)
-    let manaName = data.mainResources.mana.name
+    let manaName = game.i18n.localize("KRYX_RPG.MainResourceMana")
     const staminaName = game.i18n.localize("KRYX_RPG.MainResourceStamina")
-    let manaEffectName = data.mainResources.mana.nameOfEffect
+    let manaEffectName = game.i18n.localize("KRYX_RPG.MainResourceManaEffect")
     const staminaEffectName = game.i18n.localize("KRYX_RPG.MainResourceStaminaEffect")
     let manaNameSingular = manaName
     const staminaNameSingular = staminaName
+    let manaUseName = game.i18n.localize("KRYX_RPG.MainResourceManaUse")
+    const staminaUseName = game.i18n.localize("KRYX_RPG.MainResourceStaminaUse")
 
     // EXCEPTION: half-half gish at level 1
     if (level === 1 && classData.progression === "gishHalfHalf") {
@@ -166,6 +168,7 @@ export default class ActorKryx extends Actor {
       manaName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalysts")
       manaNameSingular = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalystsSingular")
       manaEffectName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalystsEffect")
+      manaUseName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalystsUse")
     }
 
     data.mainResources = {
@@ -177,6 +180,7 @@ export default class ActorKryx extends Actor {
         name: manaName,
         nameSingular: manaNameSingular,
         nameOfEffect: manaEffectName,
+        nameOfUse: manaUseName,
       },
       stamina: {
         remaining: this.data.data.mainResources.stamina.remaining,
@@ -186,6 +190,7 @@ export default class ActorKryx extends Actor {
         name: staminaName,
         nameSingular: staminaNameSingular,
         nameOfEffect: staminaEffectName,
+        nameOfUse: staminaUseName,
       }
     }
   }
@@ -365,53 +370,47 @@ export default class ActorKryx extends Actor {
   /**
    * Cast a Spell, consuming a spell slot of a certain level
    * @param {ItemKryx} item   The spell being cast by the actor
-   * @param {Event} event   The originating user interaction which triggered the cast
+   * @param {boolean} configureDialog   whether or not to show the configure dialog, e.g. for augmenting a spell
    */
   async useSuperpower(item, {configureDialog = true} = {}) {
-    //TODO rewrite all of this
     if (item.data.type !== "superpower") throw new Error(`Wrong Item type - ${item.data.name} is ${item.data.type}`);
     const itemData = item.data.data;
 
-    // Configure spellcasting data
-    let lvl = itemData.level;
-    const usesSlots = (lvl > 0) && CONFIG.KRYX_RPG.spellUpcastModes.includes(itemData.preparation.mode);
     const limitedUses = !!itemData.uses.per;
-    let consume = `spell${lvl}`;
-    let placeTemplate = false;
 
-    // Configure spell slot consumption and measured template placement from the form
-    if (configureDialog && (usesSlots || item.hasAreaTarget || limitedUses)) {
+    let shouldPlaceTemplate = false;
+    let paidCost = itemData.cost
+    let shouldConsumeResources = true
+    // Show a dialog (for configuring measured template, augment/enhance, and how many resources to spend)
+    const hasReasonToConfigureDialog = item.hasAreaTarget || ["augment", "enhance"].includes(itemData.scaling.mode)
+    if (configureDialog && hasReasonToConfigureDialog) {
       const spellFormData = await SuperpowerUseDialog.create(this, item);
-      const lvl = parseInt(spellFormData.get("level"));
-      if (Boolean(spellFormData.get("consume"))) {
-        consume = `spell${lvl}`;
-      } else {
-        consume = false;
+      if (spellFormData === null) {
+        // user clicked X on the dialog, canceling the superpower usage.
+        return
       }
-      placeTemplate = Boolean(spellFormData.get("placeTemplate"));
-
-      // Create a temporary owned item to approximate the spell at a higher level
-      if (lvl !== item.data.data.level) {
-        item = item.constructor.createOwned(mergeObject(item.data, {"data.level": lvl}, {inplace: false}), this);
-      }
+      paidCost = parseInt(spellFormData.get("paidCost"));
+      shouldConsumeResources = parseInt(spellFormData.get("shouldConsumeResources"));
+      shouldPlaceTemplate = Boolean(spellFormData.get("shouldPlaceTemplate"));
     }
 
     // Update Actor data
-    if (usesSlots && consume && (lvl > 0)) {
+    if (shouldConsumeResources && paidCost) {
+      const resource = itemData.type === "spell" ? "mana" : "stamina"
       await this.update({
-        [`data.spells.${consume}.value`]: Math.max(parseInt(this.data.data.spells[consume].value) - 1, 0)
+        [`data.mainResources.${resource}.remaining`]: Math.max(this.data.data.mainResources[resource].remaining - paidCost, 0)
       });
     }
 
     // Update Item data
-    if (limitedUses) {
+    if (shouldConsumeResources && limitedUses) {
       const uses = parseInt(itemData.uses.value || 0);
       if (uses <= 0) ui.notifications.warn(game.i18n.format("KRYX_RPG.ItemNoUses", {name: item.name}));
       await item.update({"data.uses.value": Math.max(parseInt(item.data.data.uses.value || 0) - 1, 0)})
     }
 
     // Initiate ability template placement workflow if selected
-    if (placeTemplate && item.hasAreaTarget) {
+    if (shouldPlaceTemplate && item.hasAreaTarget) {
       const template = AbilityTemplate.fromItem(item);
       if (template) template.drawPreview(event);
       if (this.sheet.rendered) this.sheet.minimize();

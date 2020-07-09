@@ -1,23 +1,23 @@
 /**
- * A specialized Dialog subclass for casting a spell item at a certain level
+ * A specialized Dialog subclass for configuring how you cast a spell, use a maneuver, or create/use a concoction
  * @extends {Dialog}
  */
 export default class SuperpowerUseDialog extends Dialog {
-  constructor(actor, item, dialogData = {}, options = {}) {
+  constructor(actor, superpowerItem, dialogData = {}, options = {}) {
     super(dialogData, options);
     this.options.classes = ["kryx_rpg", "dialog"];
 
     /**
-     * Store a reference to the Actor entity which is casting the spell
+     * Store a reference to the Actor entity which is using the superpower
      * @type {ActorKryx}
      */
     this.actor = actor;
 
     /**
-     * Store a reference to the Item entity which is the spell being cast
+     * Store a reference to the Item entity which is the superpower being used
      * @type {ItemKryx}
      */
-    this.item = item;
+    this.superpower = superpowerItem;
   }
 
   /* -------------------------------------------- */
@@ -26,77 +26,76 @@ export default class SuperpowerUseDialog extends Dialog {
   /* -------------------------------------------- */
 
   /**
-   * A constructor function which displays the Spell Cast Dialog app for a given Actor and Item.
+   * A constructor function which displays the Superpower Use Dialog app for a given Actor and Item (superpower).
    * Returns a Promise which resolves to the dialog FormData once the workflow has been completed.
    * @param {ActorKryx} actor
-   * @param {ItemKryx} item
+   * @param {ItemKryx} superpower
    * @return {Promise}
    */
-  static async create(actor, item) {
-    const ad = actor.data.data;
-    const id = item.data.data;
+  static async create(actor, superpower) {
+    const actorData = actor.data.data;
+    const superpowerData = superpower.data.data;
 
-    // Determine whether the spell may be upcast
-    const lvl = id.level;
-    const canUpcast = (lvl > 0) && CONFIG.KRYX_RPG.spellUpcastModes.includes(id.preparation.mode);
-
-    // Determine the levels which are feasible
-    let lmax = 0;
-    const spellLevels = Array.fromRange(10).reduce((arr, i) => {
-      if (i < lvl) return arr;
-      const l = ad.spells["spell" + i] || {max: 0, override: null};
-      let max = parseInt(l.override || l.max || 0);
-      let slots = Math.clamped(parseInt(l.value || 0), 0, max);
-      if (max > 0) lmax = i;
-      arr.push({
-        level: i,
-        label: i > 0 ? `${CONFIG.KRYX_RPG.spellLevels[i]} (${slots} Slots)` : CONFIG.KRYX_RPG.spellLevels[i],
-        canCast: canUpcast && (max > 0),
-        hasSlots: slots > 0
-      });
-      return arr;
-    }, []).filter(sl => sl.level <= lmax);
-
-    const pact = ad.spells.pact;
-    if (pact.level >= lvl) {
-      // If this character has pact slots, present them as an option for
-      // casting the spell.
-      spellLevels.push({
-        level: 'pact',
-        label: game.i18n.localize('KRYX_RPG.SpellLevelPact')
-          + ` (${game.i18n.localize('KRYX_RPG.Level')} ${pact.level}) `
-          + `(${pact.value} ${game.i18n.localize('KRYX_RPG.Slots')})`,
-        canCast: canUpcast,
-        hasSlots: pact.value > 0
-      });
+    const isSpell = superpowerData.type === "spell"
+    const canAugment = (superpowerData.cost > 0) && ["augment", "enhance"].includes(superpowerData.scaling.mode)
+    const resource = isSpell ? actorData.mainResources.mana : actorData.mainResources.stamina
+    const hasPlaceableTemplate = superpower.hasAreaTarget && game.user.can("TEMPLATE_CREATE")
+    const icon = isSpell ? (
+      actorData.mainResources.mana.name === "catalysts"
+        ? '<i class="fas fa-flask"></i>' // vial also looks nice
+        : '<i class="fas fa-magic"></i>'
+    )
+      : '<i class="fas fa-fist-raised"></i>'
+    const canCast = superpowerData.cost > 0 && superpowerData.cost <= resource.remaining
+    const hintText1 = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastHint1", resource)
+    const superpowerName = superpower.data.name
+    const hintText2 = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastHint2", resource)
+    let castConsumeText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastConsume", resource)
+    let spendHowMuchText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastSpendHowMuch", resource)
+    let noAvailableResourceText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastNoResourcesSpell", resource)
+    if (isSpell && resource.name === "catalyst" && superpowerData.cost > 1) {
+      castConsumeText = castConsumeText.replace("catalyst", "catalysts")
+      spendHowMuchText = spendHowMuchText.replace("much catalyst", "many catalysts")
+      noAvailableResourceText = noAvailableResourceText.replace("catalyst", "catalysts")
     }
-    const canCast = spellLevels.some(l => l.hasSlots);
 
     // Render the superpower use template
     const html = await renderTemplate("systems/kryx_rpg/templates/apps/superpower-use-dialog.html", {
-      item: item.data,
-      canCast: canCast,
-      canUpcast: canUpcast,
-      spellLevels,
-      hasPlaceableTemplate: game.user.can("TEMPLATE_CREATE") && item.hasAreaTarget
+      superpowerData,
+      canCast,
+      canAugment,
+      hasPlaceableTemplate,
+      hintText1,
+      superpowerName,
+      hintText2,
+      castConsumeText,
+      spendHowMuchText,
+      noAvailableResourceText,
     });
 
     // Create the Dialog and return as a Promise
-    return new Promise((resolve, reject) => {
-      const dlg = new this(actor, item, {
-        title: `${item.name}: Spell Configuration`,
+    return new Promise((resolve) => {
+      const dlg = new this(actor, superpower, {
+        title: `${superpower.name}: ${resource.nameOfEffect.capitalize()} Configuration`,
         content: html,
         buttons: {
-          cast: {
-            icon: '<i class="fas fa-magic"></i>',
-            label: "Cast",
+          use: {
+            icon: icon,
+            label: resource.nameOfUse.capitalize(),
             callback: html => resolve(new FormData(html[0].querySelector("#spell-config-form")))
           }
         },
-        default: "cast",
-        close: reject
+        default: "use",
+        close: () => resolve(null)
       });
       dlg.render(true);
     });
+  }
+
+  static replaceTerms(stringId, resource) {
+    return game.i18n.localize(stringId)
+      .replace("MANA", resource.name)
+      .replace("CAST", resource.nameOfUse)
+      .replace("SPELL", resource.nameOfEffect)
   }
 }

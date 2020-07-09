@@ -167,9 +167,7 @@
         },
         "mainResources": {
           "mana": {
-            "remaining": 0,
-            "name": "mana",
-            "nameOfEffect": "spell"
+            "remaining": 0
           },
           "stamina": {
             "remaining": 0
@@ -252,7 +250,8 @@
       "mainResources": {
         "mana": {
           "max": 0,
-          "limit": 0
+          "limit": 0,
+          "name": "mana"
         },
         "stamina": {
           "max": 0,

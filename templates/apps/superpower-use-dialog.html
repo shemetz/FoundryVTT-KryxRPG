@@ -1,0 +1,36 @@
+<form id="spell-config-form">
+    <p>{{ hintText1 }}<strong>{{ superpowerName }}</strong>{{ hintText2 }}</p>
+
+
+    {{#if canAugment}}
+    <div class="form-group">
+        <label class="text">{{ localize "KRYX_RPG.SuperpowerBaseCost" }}: {{ superpowerData.cost }}</label>
+    </div>
+    <div class="form-group">
+        <label class="text">{{ spendHowMuchText }}
+            <input type="number" data-dtype="Number"
+                   value="{{ superpowerData.cost }}" name="paidCost" style="width: 30px"/>
+        </label>
+    </div>
+    {{/if}}
+
+    {{#unless canCast}}
+    <p class="notification error">{{ noAvailableResourceText }}</p>
+    {{/unless}}
+
+    <div class="form-group">
+        {{#if canAugment}}
+        <label class="checkbox">{{ castConsumeText }}
+            <input type="checkbox" name="shouldConsumeResources" {{ checked canCast }}/>
+        </label>
+        {{/if}}
+
+        {{#if hasPlaceableTemplate}}
+        <div class="form-group">
+            <label class="checkbox">{{ localize "KRYX_RPG.PlaceTemplate" }}
+                <input type="checkbox" name="shouldPlaceTemplate" checked/>
+            </label>
+        </div>
+        {{/if}}
+    </div>
+</form>
