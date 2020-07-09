@@ -187,7 +187,10 @@ export default class ItemKryx extends Item {
 
     // Equipment Items
     else if (itemType === "equipment") {
-      labels.armor = data.armor.value ? `${data.armor.value} AC` : "";
+      const armorText = []
+      if (data.armor.value) armorText.push(`${data.armor.value} AC`)
+      if (data.armor.dr) armorText.push(`${data.armor.dr} DR`)
+      labels.armor = armorText.join(", ")
     }
 
     // Activated Items

@@ -227,14 +227,14 @@ export default class ActorKryx extends Actor {
   getSpellDC() {
     return this.getSuperpowerDC(
       this.data.data.attributes.spellcastingAbility,
-      parseInt(this.data.data.bonuses.spell_dc)
+      parseInt(this.data.data.bonuses.spell_dc) || 0
     )
   }
 
   getManeuverDC() {
     return this.getSuperpowerDC(
       this.data.data.attributes.maneuverAbility,
-      parseInt(this.data.data.bonuses.maneuver_dc)
+      parseInt(this.data.data.bonuses.maneuver_dc) || 0
     )
   }
 
