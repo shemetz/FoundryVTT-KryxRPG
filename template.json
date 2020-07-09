@@ -407,7 +407,7 @@
       "chatFlavor": ""
     },
     "weapon": {
-      "templates": ["itemDescription", "physicalItem" ,"activatedEffect", "action"],
+      "templates": ["itemDescription", "physicalItem", "activatedEffect", "action"],
       "weaponType": "simpleM",
       "properties": {},
       "proficient": true
