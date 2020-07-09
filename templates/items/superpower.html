@@ -90,7 +90,7 @@
                 </label>
             </div>
 
-            <h3 class="form-header">{{ localize "KRYX_RPG.SpellCastingHeader" }}</h3>
+            <h3 class="form-header">{{ localize "KRYX_RPG.SuperpowerActivationHeader" }}</h3>
 
             {{!-- Item Activation Template --}}
             {{> "systems/kryx_rpg/templates/items/parts/item-activation.html"}}
@@ -102,13 +102,14 @@
 
             {{!-- Spell Level Scaling --}}
             <div class="form-group">
-                <label>{{ localize "KRYX_RPG.LevelScaling" }}</label>
+                <label>{{ localize "KRYX_RPG.Scaling" }}</label>
                 <div class="form-fields">
                     <select name="data.scaling.mode">
                         {{#select data.scaling.mode}}
-                        {{#each config.spellScalingModes as |name key|}}
-                        <option value="{{key}}">{{name}}</option>
-                        {{/each}}
+                        <option value="none">{{localize "KRYX_RPG.ScalingNone"}}</option>
+                        <option value="cantrip">{{localize "KRYX_RPG.ScalingCantrip"}}</option>
+                        <option value="augment">{{localize "KRYX_RPG.ScalingAugment"}}</option>
+                        <option value="enhance">{{localize "KRYX_RPG.ScalingEnhance"}}</option>
                         {{/select}}
                     </select>
                     <input type="text" name="data.scaling.formula" value="{{data.scaling.formula}}"

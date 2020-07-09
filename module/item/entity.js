@@ -463,7 +463,7 @@ export default class ItemKryx extends Item {
       "spell": this._spellChatData,
       "feat": this._featChatData,
       "feature": this._featureChatData,
-    }[this.data.type]
+    }[this.data.data.type]
     if (!fn) console.error(`unexpected item data type: ${this.data.type}`)
     if (fn) fn.bind(this)(data, labels, props);
 
@@ -659,15 +659,24 @@ export default class ItemKryx extends Item {
     }
     const rollData = this.getRollData();
     rollData.item.effectiveCost = augmentedCost || rollData.item.cost
+    let fastForward = false
 
     // Define Roll parts
     const parts = itemData.damage.parts.map(d => d[0]);
     if (versatile && itemData.damage.versatile) parts[0] = itemData.damage.versatile;
-    if ((this.data.type === "superpower")) {
-      if ((itemData.scaling.mode === "cantrip")) {
+    if (this.data.type === "superpower") {
+      if (!itemData.attack) fastForward = true
+      const scalingMode = itemData.scaling.mode
+      if (scalingMode === "none") {
+        // do nothing
+      } else if (scalingMode === "cantrip") {
         this._scaleCantripDamage(parts, actorData.class.level, itemData.scaling.formula);
-      } else if (spellLevel && (itemData.scaling.mode === "level") && itemData.scaling.formula) {
-        this._scaleSpellDamage(parts, itemData.cost, rollData.item.effectiveCost, itemData.scaling.formula);
+      } else if (scalingMode === "augment" || scalingMode === "enhance") {
+        if (augmentedCost !== null && augmentedCost !== itemData.cost) {
+          this._scaleSpellDamage(parts, itemData.cost, rollData.item.effectiveCost, itemData.scaling.formula);
+        }
+      } else {
+        ui.notifications.error(`Unexpected scaling mode: ${scalingMode}`)
       }
     }
 
@@ -689,6 +698,7 @@ export default class ItemKryx extends Item {
       title: title,
       flavor: flavor,
       speaker: ChatMessage.getSpeaker({actor: this.actor}),
+      fastForward: fastForward,
       dialogOptions: {
         width: 400,
         top: event ? event.clientY - 80 : null,
@@ -941,8 +951,8 @@ export default class ItemKryx extends Item {
     const action = button.dataset.action;
 
     // Validate permission to proceed with the roll
-    const isTargetted = action === "save";
-    if (!(isTargetted || game.user.isGM || message.isAuthor)) return;
+    const isTargeted = action === "save";
+    if (!(isTargeted || game.user.isGM || message.isAuthor)) return;
 
     // Get the Actor from a synthetic Token
     const actor = this._getChatCardActor(card);
@@ -956,11 +966,11 @@ export default class ItemKryx extends Item {
     if (!(item instanceof ItemKryx)) {
       return ui.notifications.error(`Item ${card.dataset.itemId} should be an ItemKryx`)
     }
-    const spellLevel = parseInt(card.dataset.spellLevel) || null;
+    const augmentedCost = parseInt(card.dataset.cost) || null;
 
     // Get card targets
     let targets = [];
-    if (isTargetted) {
+    if (isTargeted) {
       targets = this._getChatCardTargets(card);
       if (!targets.length) {
         ui.notifications.warn(`You must have one or more controlled Tokens in order to use this option.`);
@@ -970,8 +980,7 @@ export default class ItemKryx extends Item {
 
     // Attack and Damage Rolls
     if (action === "attack") await item.rollAttack({event});
-    else if (action === "damage") await item.rollDamage({event, spellLevel});
-    else if (action === "versatile") await item.rollDamage({event, spellLevel, versatile: true});
+    else if (action === "damage") await item.rollDamage({event, augmentedCost});
     else if (action === "formula") await item.rollFormula();
 
     // Saving Throws for card targets

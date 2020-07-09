@@ -210,8 +210,22 @@ export default class ItemSheetKryx extends ItemSheet {
     html.find(".damage-control").click(this._onDamageControl.bind(this));
 
     // Activate any Trait Selectors
-    html.find('.trait-selector.themes').click(this._onOpenThemesPicker.bind(this));
     html.find('.summary-themes').click(this._onOpenThemesPicker.bind(this));
+
+    this.limitScalingToPossibilities(html)
+  }
+
+  /* -------------------------------------------- */
+
+  limitScalingToPossibilities(html) {
+    const allowedOptions = this.item.data.data.type === "spell" ? ["none", "cantrip", "augment"] : ["none", "enhance"]
+    html.find(`select[name="data.scaling.mode"] option`).each((i, option) => {
+      if (allowedOptions.includes(option.value)) {
+        $(option).show()
+      } else {
+        $(option).hide()
+      }
+    })
   }
 
   /* -------------------------------------------- */

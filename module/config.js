@@ -387,6 +387,19 @@ KRYX_RPG.superpowerAvailability = {
 
 /* -------------------------------------------- */
 
+/**
+ * The available choices for how superpower damage scaling may be computed
+ * @type {Object}
+ */
+KRYX_RPG.superpowerScalingModes = {
+  "none": "KRYX_RPG.ScalingNone", // does not scale
+  "cantrip": "KRYX_RPG.ScalingCantrip", // scales at levels 5, 9, 13, 17
+  "augment": "KRYX_RPG.ScalingAugment", // scales when augmented
+  "enhance": "KRYX_RPG.ScalingEnhance", // scales when enhanced (identical to augment)
+};
+
+/* -------------------------------------------- */
+
 
 /**
  * Define the set of types which a weapon item can take
