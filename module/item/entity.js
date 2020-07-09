@@ -230,7 +230,7 @@ export default class ItemKryx extends Item {
 
       // Save DC
       let save = data.save || {};
-      if (!save.ability) save.dc = null;
+      if (!save.type) save.dc = null;
       else if (this.isOwned) { // Actor owned items
         if (save.scaling === "spell_dc") save.dc = this.actor.getSpellDC();
         if (save.scaling === "alchemical_dc") save.dc = this.actor.getSpellDC();
@@ -239,7 +239,7 @@ export default class ItemKryx extends Item {
       } else { // Un-owned items
         if (save.scaling !== "flat_dc") save.dc = null;
       }
-      labels.save = save.ability ? `DC ${save.dc || ""} ${C.abilities[save.ability]}` : "";
+      labels.save = save.type ? `DC ${save.dc || ""} ${C.saves[save.type]}` : "";
 
       // Damage
       let dam = data.damage || {};

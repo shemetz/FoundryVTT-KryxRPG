@@ -44,7 +44,7 @@
 <ol class="damage-parts form-group">
     {{#each data.damage.parts as |part i| }}
     <li class="damage-part flexrow" data-damage-part="{{i}}">
-        <input type="text" name="data.damage.parts.{{i}}.0" value="{{lookup this "0"}}"/>
+        <input type="text" name="data.damage.parts.{{i}}.0" value="{{lookup this " 0"}}"/>
         <select name="data.damage.parts.{{i}}.1">
             {{#select (lookup this "1") }}
             <option value="">{{ localize "KRYX_RPG.None" }}</option>
@@ -85,11 +85,11 @@
 <div class="form-group input-select">
     <label>{{ localize "KRYX_RPG.ActionSave" }}</label>
     <div class="form-fields">
-        <select name="data.save.ability">
-            {{#select data.save.ability}}
+        <select name="data.save.type">
+            {{#select data.save.type}}
             <option value=""></option>
-            {{#each config.abilities as |ability a|}}
-            <option value="{{a}}">{{ability}}</option>
+            {{#each config.saves as |save s|}}
+            <option value="{{s}}">{{save}}</option>
             {{/each}}
             {{/select}}
         </select>
@@ -102,8 +102,8 @@
             <option value="maneuver_dc">{{ localize "KRYX_RPG.ManeuverDC" }}</option>
             <option value="alchemical_dc">{{ localize "KRYX_RPG.AlchemicalDC" }}</option>
             <option value="flat_dc">{{ localize "KRYX_RPG.Flat" }}</option>
-            {{#each config.abilities as |ability a|}}
-            <option value="{{a}}">{{ability}}</option>
+            {{#each config.saves as |save s|}}
+            <option value="{{s}}">{{save}}</option>
             {{/each}}
             {{/select}}
         </select>
