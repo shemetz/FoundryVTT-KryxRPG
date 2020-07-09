@@ -643,6 +643,12 @@ KRYX_RPG.characterFlags = {
     section: "Miscellaneous",
     type: Boolean
   },
+  "preventPickingUnknownThemes": {
+    name: "KRYX_RPG.FlagsPreventPickingUnknownThemes",
+    hint: "KRYX_RPG.FlagsPreventPickingUnknownThemesHint",
+    section: "Miscellaneous",
+    type: Boolean
+  },
 };
 
 // Configure allowed status flags
