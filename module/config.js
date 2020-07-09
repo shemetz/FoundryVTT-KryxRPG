@@ -472,7 +472,6 @@ KRYX_RPG.themes = {
   "Skirmish": "KRYX_RPG.ThemeSkirmish",
   "Spirit": "KRYX_RPG.ThemeSpirit",
   "Storm": "KRYX_RPG.ThemeStorm",
-  "Survival": "KRYX_RPG.ThemeSurvival",
   "Telekinesis": "KRYX_RPG.ThemeTelekinesis",
   "Teleportation": "KRYX_RPG.ThemeTeleportation",
   "Time": "KRYX_RPG.ThemeTime",
