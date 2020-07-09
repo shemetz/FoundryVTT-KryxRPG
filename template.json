@@ -64,7 +64,7 @@
             "special": ""
           },
           "spellcastingAbility": "int",
-          "maneuversAbility": "str",
+          "maneuverAbility": "str",
           "exhausted": 0,
           "wounded": 0,
           "dying": 0
@@ -282,7 +282,9 @@
         "identified": true
       },
       "themed": {
-        "themes": []
+        "themes": {
+          "value": []
+        }
       },
       "activatedEffect": {
         "activation": {
