@@ -164,16 +164,26 @@ export default class ItemKryx extends Item {
 
     // Superpower - components
     if (itemType === "superpower") {
+      const resource = data.type === "spell" ? actorData.data.mainResources.mana : actorData.data.mainResources.stamina
+      labels.cost = data.cost
+      labels.isConcoction = actorData.data.mainResources.mana.nameOfEffect
+        === game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalysts")
+      labels.themes = data.themes.value.join(", ") || "(Theme?)"
       labels.components = Object.entries(data.components).reduce((arr, c) => {
         if (c[1] !== true) return arr;
         let letter = c[0].titleCase().slice(0, 1)
         if (data.type === "spell"
-          && this.actor.data.mainResources.mana.nameOfEffect === "catalyst"
+          && labels.isConcoction
           && letter === "C")
           letter = "U" // unstable concoction
         arr.push(letter);
         return arr;
       }, []);
+      labels.typeNameCapitalized = resource.nameOfEffect.capitalize()
+      labels.concentration = game.i18n.localize(
+        labels.isConcoction ? "KRYX_RPG.ConcentrationConcoction" : "KRYX_RPG.ConcentrationSpell"
+      )
+      labels.costNameCapitalized = data.cost === 1 ? resource.nameSingular.capitalize() : resource.name.capitalize()
     }
 
     // Feat and Feature Items

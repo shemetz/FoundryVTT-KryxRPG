@@ -11,16 +11,20 @@
             </h1>
 
             <div class="item-subtitle">
-                <h4 class="item-type">{{itemType}}</h4>
+                <h4 class="item-type">{{labels.typeNameCapitalized}}</h4>
                 <span class="item-status">{{itemStatus}}</span>
             </div>
 
             <ul class="summary flexrow">
-                <li>
-                    {{labels.cost}}
+                <li style="flex: 0.1">
+                    <input type="text" name="data.cost" value="{{data.cost}}"
+                           placeholder="{{ localize 'KRYX_RPG.SuperpowerBaseCost' }}"/>
                 </li>
-                <li>
-                    {{labels.theme}}
+                <li style="flex: 0.4; margin-left: 5px">
+                    <label>{{ labels.costNameCapitalized }}</label>
+                </li>
+                <li style="margin-left: 5px">
+                    <a class="summary-themes" disallow-custom>{{labels.themes}}</a>
                 </li>
                 <li>
                     <input type="text" name="data.source" value="{{data.source}}"
@@ -46,29 +50,20 @@
         <div class="tab details" data-group="primary" data-tab="details">
             <h3 class="form-header">{{ localize "KRYX_RPG.SuperpowerDetails" }}</h3>
 
-            {{!-- Base Cost --}}
-            <div class="form-group">
-                <label>{{ localize "KRYX_RPG.SuperpowerBaseCost" }}</label>
-                <select name="data.level" data-dtype="Number">
-                    {{#select data.level}}
-                    {{#each config.spellLevels as |name lvl|}}
-                    <option value="{{lvl}}">{{name}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
+            {{!-- Availability --}}
+            <div class="form-group input-select">
+                <label>{{ localize "KRYX_RPG.SuperpowerAvailability" }}</label>
+                <div class="form-fields">
+                    <select name="data.availability">
+                        {{#select data.availability}}
+                        {{#each config.superpowerAvailability as |name key|}}
+                        <option value="{{key}}">{{name}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                </div>
             </div>
 
-            {{!-- Superpower Theme --}}
-            <div class="form-group">
-                <label>{{ localize "KRYX_RPG.Theme" }}</label>
-                <select name="data.school">
-                    {{#select data.school}}
-                    {{#each config.spellSchools as |name sch|}}
-                    <option value="{{sch}}">{{name}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
-            </div>
 
             {{!-- Spell Components --}}
             <div class="spell-components form-group stacked">
@@ -87,26 +82,12 @@
                 </label>
                 <label class="checkbox">
                     <input type="checkbox" name="data.components.concentration" {{checked
-                           data.components.concentration}}/> {{ localize "KRYX_RPG.Concentration" }}
+                           data.components.concentration}}/> {{ labels.concentration }}
                 </label>
                 <label class="checkbox">
                     <input type="checkbox" name="data.components.ritual" {{checked data.components.ritual}}/> {{
                     localize "KRYX_RPG.Ritual" }}
                 </label>
-            </div>
-
-            {{!-- Preparation Mode --}}
-            <div class="form-group input-select">
-                <label>{{ localize "KRYX_RPG.SuperpowerAvailability" }}</label>
-                <div class="form-fields">
-                    <select name="data.availability">
-                        {{#select data.availability}}
-                        {{#each config.superpowerAvailability as |name key|}}
-                        <option value="{{key}}">{{name}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
-                </div>
             </div>
 
             <h3 class="form-header">{{ localize "KRYX_RPG.SpellCastingHeader" }}</h3>

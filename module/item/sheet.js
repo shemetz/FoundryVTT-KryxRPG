@@ -1,4 +1,5 @@
 import TraitSelector from "../apps/trait-selector.js";
+import {KRYX_RPG} from "../config.js";
 
 /**
  * Override and extend the core ItemSheet implementation to handle Kryx RPG specific item types
@@ -142,9 +143,10 @@ export default class ItemSheetKryx extends ItemSheet {
         .map(e => CONFIG.KRYX_RPG.weaponProperties[e[0]]));
     } else if (item.type === "superpower") {
       props.push(
-        labels.components,
-        labels.materials,
-        item.data.components.concentration ? "Concentration" : null,
+        item.data.cost === 0 ? "Cantrip" : null,
+        item.data.themes.value.length ? item.data.themes.value.join(", ") : "No theme",
+        labels.components.length ? labels.components : null,
+        item.data.components.concentration ? labels.concentration : null,
         item.data.components.ritual ? "Ritual" : null
       )
     } else if (item.type === "equipment") {
@@ -208,7 +210,8 @@ export default class ItemSheetKryx extends ItemSheet {
     html.find(".damage-control").click(this._onDamageControl.bind(this));
 
     // Activate any Trait Selectors
-    html.find('.trait-selector.class-skills').click(this._onConfigureClassSkills.bind(this));
+    html.find('.trait-selector.themes').click(this._onOpenThemesPicker.bind(this));
+    html.find('.summary-themes').click(this._onOpenThemesPicker.bind(this));
   }
 
   /* -------------------------------------------- */
@@ -247,23 +250,26 @@ export default class ItemSheetKryx extends ItemSheet {
    * @param {Event} event   The click event which originated the selection
    * @private
    */
-  _onConfigureClassSkills(event) {
+  _onOpenThemesPicker(event) {
     event.preventDefault();
-    const skills = this.item.data.data.skills;
-    const choices = skills.choices && skills.choices.length ? skills.choices : Object.keys(CONFIG.KRYX_RPG.skills);
-    const a = event.currentTarget;
-    const label = a.parentElement;
+    let possibleThemes;
+    const allThemes = Object.keys(KRYX_RPG.themes)
+    const actor = this.item.actor
+    if (!actor || !actor.getFlag("kryx_rpg", "preventPickingUnknownThemes")) {
+      possibleThemes = allThemes
+    } else {
+      possibleThemes = actor.data.data.traits.themes.value
+    }
 
     // Render the Trait Selector dialog
     new TraitSelector(this.item, {
-      name: a.dataset.edit,
-      title: label.innerText,
-      choices: Object.entries(CONFIG.KRYX_RPG.skills).reduce((obj, e) => {
-        if (choices.includes(e[0])) obj[e[0]] = e[1];
+      name: "data.themes",
+      title: game.i18n.localize("KRYX_RPG.ThemesPl"),
+      choices: Object.entries(KRYX_RPG.themes).reduce((obj, e) => {
+        if (possibleThemes.includes(e[0])) obj[e[0]] = e[1];
         return obj;
       }, {}),
-      minimum: skills.number,
-      maximum: skills.number
+      allowCustom: false,
     }).render(true)
   }
 }

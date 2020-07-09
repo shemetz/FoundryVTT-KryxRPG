@@ -144,6 +144,8 @@ export default class ActorKryx extends Actor {
     const staminaName = game.i18n.localize("KRYX_RPG.MainResourceStamina")
     let manaEffectName = data.mainResources.mana.nameOfEffect
     const staminaEffectName = game.i18n.localize("KRYX_RPG.MainResourceStaminaEffect")
+    let manaNameSingular = manaName
+    const staminaNameSingular = staminaName
 
     // EXCEPTION: half-half gish at level 1
     if (level === 1 && classData.progression === "gishHalfHalf") {
@@ -162,6 +164,7 @@ export default class ActorKryx extends Actor {
     // EXCEPTION: alchemy
     if (isAlchemist) {
       manaName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalysts")
+      manaNameSingular = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalystsSingular")
       manaEffectName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalystsEffect")
     }
 
@@ -172,6 +175,7 @@ export default class ActorKryx extends Actor {
         limit: manaLimit,
         dc: this.getSpellDC(),
         name: manaName,
+        nameSingular: manaNameSingular,
         nameOfEffect: manaEffectName,
       },
       stamina: {
@@ -180,6 +184,7 @@ export default class ActorKryx extends Actor {
         limit: staminaLimit,
         dc: this.getManeuverDC(),
         name: staminaName,
+        nameSingular: staminaNameSingular,
         nameOfEffect: staminaEffectName,
       }
     }

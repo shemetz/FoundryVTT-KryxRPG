@@ -153,7 +153,7 @@ export default class ActorSheetKryx extends ActorSheet {
       const mainResources = data.actor.data.mainResources
       const resource = superpowerType === "spell" ? mainResources.mana : mainResources.stamina
       const superpowerTypesName = resource.nameOfEffect.capitalize() + "s" // e.g. "Spells", "Concoctions"
-      const superpowerResourceName = resource.name.capitalize() // e.g. "Mana", "Psi"
+      const superpowerResourceName = resource.nameSingular.capitalize() // e.g. "Mana", "Psi", "Catalyst"
       const label = CONFIG.KRYX_RPG.superpowerAvailability[availability] + " " + superpowerTypesName
       catalog[key] = {
         order: order,
@@ -682,7 +682,8 @@ export default class ActorSheetKryx extends ActorSheet {
     const options = {
       name: a.dataset.target,
       title: label.innerText,
-      choices: CONFIG.KRYX_RPG[a.dataset.options]
+      choices: CONFIG.KRYX_RPG[a.dataset.options],
+      allowCustom: !a.dataset.hasOwnProperty("disallow-custom"),
     };
     new TraitSelector(this.actor, options).render(true)
   }
