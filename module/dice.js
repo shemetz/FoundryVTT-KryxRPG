@@ -30,7 +30,7 @@ export async function d20Roll({
                                 parts = [], data = {}, event = {}, rollMode = null, template = null, title = null, speaker = null,
                                 flavor = null, fastForward = null, onClose, dialogOptions,
                                 advantage = null, disadvantage = null, critical = 20, fumble = 1, targetValue = null,
-                                elvenAccuracy = false, halflingLucky = false, reliableTalent = false
+                                halflingLucky = false, reliableTalent = false
                               } = {}) {
 
   // Handle input arguments
@@ -49,7 +49,7 @@ export async function d20Roll({
 
     // Handle advantage
     if (adv === 1) {
-      nd = elvenAccuracy ? 3 : 2;
+      nd = 2;
       flavor += ` (${game.i18n.localize("KRYX_RPG.Advantage")})`;
       mods += "kh";
     }

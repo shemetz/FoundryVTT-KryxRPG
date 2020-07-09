@@ -521,7 +521,7 @@ export default class ActorSheetKryx extends ActorSheet {
     event.preventDefault();
     const itemId = event.currentTarget.closest(".item").dataset.itemId;
     const item = this.actor.getOwnedItem(itemId);
-    return item.rollRecharge();
+    item.rollRecharge();
   };
 
   /* -------------------------------------------- */

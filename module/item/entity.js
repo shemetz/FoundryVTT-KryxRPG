@@ -133,18 +133,6 @@ export default class ItemKryx extends Item {
   }
 
   /* -------------------------------------------- */
-
-  /**
-   * A flag for whether this Item is limited in it's ability to be used by charges or by recharge.
-   * @type {boolean}
-   */
-  get hasLimitedUses() {
-    let chg = this.data.data.recharge || {};
-    let uses = this.data.data.uses || {};
-    return !!chg.value || (!!uses.per && (uses.max > 0));
-  }
-
-  /* -------------------------------------------- */
   /*	Data Preparation														*/
 
   /* -------------------------------------------- */
@@ -380,7 +368,7 @@ export default class ItemKryx extends Item {
     }
 
     // Verify that the consumed resource is available
-    if ([null, undefined].includes(consumed)) {
+    if (consumed === null || typeof consumed === "undefined") {
       ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoSource", {name: this.name, type: typeLabel}));
       return false;
     }
@@ -458,7 +446,7 @@ export default class ItemKryx extends Item {
    * @param {Object} htmlOptions    Options used by the TextEditor.enrichHTML function
    * @return {Object}               An object of chat data to render
    */
-  getChatData(htmlOptions) {
+  getChatData(htmlOptions = undefined) {
     const data = duplicate(this.data.data);
     const labels = this.labels;
 
@@ -467,7 +455,16 @@ export default class ItemKryx extends Item {
 
     // Item type specific properties
     const props = [];
-    const fn = this[`_${this.data.type}ChatData`];
+    let fn = {
+      "equipment": this._equipmentChatData,
+      "weapon": this._weaponChatData,
+      "consumable": this._consumableChatData,
+      "loot": this._lootChatData,
+      "spell": this._spellChatData,
+      "feat": this._featChatData,
+      "feature": this._featureChatData,
+    }[this.data.type]
+    if (!fn) console.error(`unexpected item data type: ${this.data.type}`)
     if (fn) fn.bind(this)(data, labels, props);
 
     // General equipment properties
@@ -568,6 +565,15 @@ export default class ItemKryx extends Item {
    */
   _featChatData(data, labels, props) {
     props.push(data.requirements);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Prepare chat card data for items of the "Feature" type
+   * @private
+   */
+  _featureChatData(data, labels, props) {
   }
 
   /* -------------------------------------------- */
@@ -733,7 +739,7 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  async rollFormula(options = {}) {
+  async rollFormula() {
     if (!this.data.data.formula) {
       throw new Error("This Item does not have a formula to roll!");
     }
@@ -828,9 +834,9 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  async rollRecharge(options = {}) {
+  async rollRecharge() {
     const data = this.data.data;
-    if (!data.recharge.value) return;
+    if (!data.recharge.value) return Promise.reject("No recharge value for this item");
 
     // Roll the check
     const roll = new Roll("1d6").roll();
@@ -947,6 +953,9 @@ export default class ItemKryx extends Item {
     if (!item) {
       return ui.notifications.error(`The requested item ${card.dataset.itemId} no longer exists on Actor ${actor.name}`)
     }
+    if (!(item instanceof ItemKryx)) {
+      return ui.notifications.error(`Item ${card.dataset.itemId} should be an ItemKryx`)
+    }
     const spellLevel = parseInt(card.dataset.spellLevel) || null;
 
     // Get card targets
@@ -963,7 +972,7 @@ export default class ItemKryx extends Item {
     if (action === "attack") await item.rollAttack({event});
     else if (action === "damage") await item.rollDamage({event, spellLevel});
     else if (action === "versatile") await item.rollDamage({event, spellLevel, versatile: true});
-    else if (action === "formula") await item.rollFormula({event});
+    else if (action === "formula") await item.rollFormula();
 
     // Saving Throws for card targets
     else if (action === "save") {
