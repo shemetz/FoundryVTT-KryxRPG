@@ -139,23 +139,24 @@
         <div class="tab attributes flexrow" data-group="primary" data-tab="attributes">
 
             {{!-- Ability Scores --}}
-            <ul class="ability-scores flexrow">
+            <ul class="ability-scores-and-saves flexrow">
                 {{#each data.abilities as |ability id|}}
                 <li class="ability" data-ability="{{id}}">
                     <h4 class="ability-name box-title rollable">{{ability.label}}</h4>
-                    <input class="ability-score" name="data.abilities.{{id}}.value" type="text"
+                    <input class="ability-value" name="data.abilities.{{id}}.value" type="text"
                            value="{{ability.signedValue}}" data-dtype="Number" placeholder="0"/>
                 </li>
                 {{/each}}
                 {{#each data.saves as |save id|}}
-                <li class="save {{#if save.proficient}}proficient{{/if}}" data-save="{{id}}">
+                <li class="save {{#if save.proficiency}}proficient{{/if}}" data-save="{{id}}">
                     <h4 class="save-name box-title rollable">{{save.label}}</h4>
-                    <input class="save-score" name="data.save.{{id}}.value" type="text" value="{{save.signedValue}}"
-                           data-dtype="Number" placeholder="0"/>
-                    <div class="ability-modifiers flexrow">
+                    <div class="below-abilities flexrow">
                         <input type="hidden" name="data.saves.{{id}}.proficiency" value="{{save.proficiency}}"
                                data-dtype="Number"/>
-                        <a class="proficiency-toggle save-proficiency" title="{{ localize 'KRYX_RPG.Proficiency' }}">{{{save.icon}}}</a>
+                        <a class="proficiency-toggle save-proficiency"
+                           title="{{ localize 'KRYX_RPG.Proficiency' }}">{{{save.icon}}}</a>
+                        <input class="save-value" type="text" value="{{save.signedValue}}"
+                               data-dtype="Number" placeholder="0" disabled/>
                     </div>
                 </li>
                 {{/each}}

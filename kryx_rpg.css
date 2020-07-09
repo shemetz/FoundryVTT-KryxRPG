@@ -389,7 +389,7 @@
   /*  Attributes                               */
   /* ----------------------------------------- */
   /* ----------------------------------------- */
-  /*  Ability Scores                           */
+  /*  Ability Scores and Saving Throws         */
   /* ----------------------------------------- */
   /* ----------------------------------------- */
   /*  Skills                                   */
@@ -516,7 +516,7 @@
   font-family: "Signika", "Palatino Linotype", serif;
   font-size: 12px;
 }
-.kryx_rpg.sheet.actor .ability-scores {
+.kryx_rpg.sheet.actor .ability-scores-and-saves {
   flex: 0 0 100px;
   height: 440px;
   list-style: none;
@@ -527,42 +527,36 @@
   border: 2px groove #eeede0;
   border-radius: 3px;
 }
-.kryx_rpg.sheet.actor .ability-scores .ability {
+.kryx_rpg.sheet.actor .ability-scores-and-saves .save,
+.kryx_rpg.sheet.actor .ability-scores-and-saves .ability {
   height: 50px;
   text-align: center;
   border-bottom: 2px groove #eeede0;
 }
-.kryx_rpg.sheet.actor .ability-scores .ability:last-child {
+.kryx_rpg.sheet.actor .ability-scores-and-saves .save:last-child,
+.kryx_rpg.sheet.actor .ability-scores-and-saves .ability:last-child {
   border-bottom: none;
   margin-bottom: -3px;
 }
-.kryx_rpg.sheet.actor .ability-scores .ability input.ability-score {
+.kryx_rpg.sheet.actor .ability-scores-and-saves .save input.save-value,
+.kryx_rpg.sheet.actor .ability-scores-and-saves .ability input.save-value,
+.kryx_rpg.sheet.actor .ability-scores-and-saves .save input.ability-value,
+.kryx_rpg.sheet.actor .ability-scores-and-saves .ability input.ability-value {
   height: 30px;
   width: 36px;
   margin: 0 auto;
   line-height: 32px;
   font-size: 24px;
 }
-.kryx_rpg.sheet.actor .ability-scores .ability .ability-modifiers {
+.kryx_rpg.sheet.actor .ability-scores-and-saves .save .below-abilities,
+.kryx_rpg.sheet.actor .ability-scores-and-saves .ability .below-abilities {
   height: 24px;
   margin: -8px 0 0;
+  display: inline-flex;
 }
-.kryx_rpg.sheet.actor .ability-scores .ability .ability-modifiers span.ability-mod,
-.kryx_rpg.sheet.actor .ability-scores .ability .ability-modifiers span.ability-save {
-  flex: 0 0 24px;
-  height: 22px;
-  line-height: 22px;
-  font-size: 16px;
-  border-top: 2px groove #eeede0;
-}
-.kryx_rpg.sheet.actor .ability-scores .ability .ability-modifiers span.ability-mod {
-  border-right: 2px groove #eeede0;
-}
-.kryx_rpg.sheet.actor .ability-scores .ability .ability-modifiers .ability-proficiency {
+.kryx_rpg.sheet.actor .ability-scores-and-saves .save .below-abilities .save-proficiency,
+.kryx_rpg.sheet.actor .ability-scores-and-saves .ability .below-abilities .save-proficiency {
   line-height: 30px;
-}
-.kryx_rpg.sheet.actor .ability-scores .ability .ability-modifiers span.ability-save {
-  border-left: 2px groove #eeede0;
 }
 .kryx_rpg.sheet.actor .proficiency-toggle {
   color: #b5b3a4;

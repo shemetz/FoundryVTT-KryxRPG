@@ -32,6 +32,9 @@ export default class ActorKryx extends Actor {
     if (actorData.type === "character") this._prepareCharacterData(actorData);
     else if (actorData.type === "npc") this._prepareNPCData(actorData);
 
+    // Prepare saves
+    this._prepareSaves(actorData)
+
     // Adding signed values
     for (const [id, abl] of Object.entries(data.abilities)) {
       abl.signedValue = ActorKryx.signedValue(abl.value)
@@ -72,6 +75,22 @@ export default class ActorKryx extends Actor {
     if (this.items) {
       this._computeResourceProgression();
     }
+  }
+
+  /* -------------------------------------------- */
+
+  _prepareSaves(actorData) {
+    const data = actorData.data
+    const prof = data.attributes.prof
+    const a = {}
+    Object.entries(actorData.data.abilities).forEach(([abl, ability]) => {
+      a[abl] = ability.value
+    })
+    data.saves.fortitude.value = prof * data.saves.fortitude.proficiency + a["con"]
+    data.saves.reflex.value = prof * data.saves.reflex.proficiency + Math.floor((a["str"] + a["dex"])/2)
+    data.saves.will.value = prof * data.saves.will.proficiency + Math.floor(
+      ((a["int"] + a["cha"] + a["wis"]) - Math.min(a["int"], a["cha"], a["wis"]))/2
+    )
   }
 
   /* -------------------------------------------- */

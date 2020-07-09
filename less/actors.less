@@ -145,10 +145,10 @@
   }
 
   /* ----------------------------------------- */
-  /*  Ability Scores                           */
+  /*  Ability Scores and Saving Throws         */
   /* ----------------------------------------- */
 
-  .ability-scores {
+  .ability-scores-and-saves {
     flex: 0 0 100px;
     height: 440px;
     list-style: none;
@@ -158,6 +158,7 @@
     border: @borderGroove;
     border-radius: 3px;
 
+    .save,
     .ability {
       height: 50px;
       text-align: center;
@@ -168,7 +169,8 @@
         margin-bottom: -3px;
       }
 
-      input.ability-score {
+      input.save-value,
+      input.ability-value {
         height: 30px;
         width: 36px;
         margin: 0 auto;
@@ -176,29 +178,13 @@
         font-size: 24px;
       }
 
-      .ability-modifiers {
+      .below-abilities {
         height: 24px;
         margin: -8px 0 0;
+        display: inline-flex;
 
-        span.ability-mod,
-        span.ability-save {
-          flex: 0 0 24px;
-          height: 22px;
-          line-height: 22px;
-          font-size: 16px;
-          border-top: @borderGroove;
-        }
-
-        span.ability-mod {
-          border-right: @borderGroove;
-        }
-
-        .ability-proficiency {
+        .save-proficiency {
           line-height: 30px;
-        }
-
-        span.ability-save {
-          border-left: @borderGroove;
         }
       }
     }

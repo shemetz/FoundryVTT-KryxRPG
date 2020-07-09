@@ -247,6 +247,9 @@
     },
     "npc": {
       "templates": ["common"],
+      "attributes": {
+        "prof": 0
+      },
       "mainResources": {
         "mana": {
           "max": 0,

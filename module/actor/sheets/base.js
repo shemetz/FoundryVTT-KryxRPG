@@ -274,7 +274,7 @@ export default class ActorSheetKryx extends ActorSheet {
       inputs.find('input[data-dtype="Number"]').change(this._onChangeInputDelta.bind(this));
 
       // Save Proficiency
-      html.find('.save-proficiency').click(this._onToggleSaveProficiency.bind(this));
+      html.find('.save-proficiency').on("click contextmenu", this._onToggleSaveProficiency.bind(this));
 
       // Toggle Skill Proficiency
       html.find('.skill-proficiency').on("click contextmenu", this._onCycleSkillProficiency.bind(this));
@@ -647,8 +647,10 @@ export default class ActorSheetKryx extends ActorSheet {
   _onToggleSaveProficiency(event) {
     event.preventDefault();
     const field = event.currentTarget.previousElementSibling;
-    console.warn("TODO - save proficiency. field = " + field)
-    // this.actor.update({[field.name]: 1 - parseInt(field.value)});
+    // + if left-click, - if right-click
+    const delta = event.type === "click" ? 0.5 : event.type === "contextmenu" ? 1.5 : 0
+    let nextValue = (parseFloat(field.value) + delta) % 2.0
+    this.actor.update({[field.name]: nextValue});
   }
 
   /* -------------------------------------------- */
