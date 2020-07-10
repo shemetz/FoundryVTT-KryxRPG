@@ -41,7 +41,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
    */
   _prepareItems(data) {
 
-    // Categorize Items as Features and Superpowers
+    // Categorize Items as Feats/Features and Superpowers
     const features = {
       weapons: {
         label: game.i18n.localize("KRYX_RPG.AttackPl"),
@@ -53,9 +53,9 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
         label: game.i18n.localize("KRYX_RPG.ActionPl"),
         items: [],
         hasActions: true,
-        dataset: {type: "feat", "activation.type": "action"}
+        dataset: {type: "feat_or_feature", "activation.type": "action"}
       },
-      passive: {label: game.i18n.localize("KRYX_RPG.Features"), items: [], dataset: {type: "feat"}},
+      passive: {label: game.i18n.localize("KRYX_RPG.Features"), items: [], dataset: {type: "feat_or_feature"}},
       equipment: {label: game.i18n.localize("KRYX_RPG.Inventory"), items: [], dataset: {type: "loot"}}
     };
 
@@ -79,10 +79,10 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     // Organize Arsenal
     const arsenal = this._prepareArsenalTab(data, superpowers);
 
-    // Organize Features
+    // Organize Feats/Features
     for (let item of other) {
       if (item.type === "weapon") features.weapons.items.push(item);
-      else if (item.type === "feat") {
+      else if (item.type === "feat_or_feature") {
         if (item.data.activation.type) features.actions.items.push(item);
         else features.passive.items.push(item);
       } else features.equipment.items.push(item);

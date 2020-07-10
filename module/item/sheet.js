@@ -152,8 +152,8 @@ export default class ItemSheetKryx extends ItemSheet {
     } else if (item.type === "equipment") {
       props.push(CONFIG.KRYX_RPG.equipmentTypes[item.data.armor.type]);
       props.push(labels.armor);
-    } else if (item.type === "feat" || item.type === "feature") {
-      props.push(labels.featType);
+    } else if (item.type === "feat_or_feature") {
+      props.push(labels.featureType);
     }
 
     // Action type

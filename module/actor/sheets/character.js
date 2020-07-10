@@ -87,7 +87,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     };
 
     // Partition items by category
-    let [inventoryItems, superpowers, feats] = data.items.reduce((arr, item) => {
+    let [inventoryItems, superpowers, feats_and_features] = data.items.reduce((arr, item) => {
 
       // Item details
       item.img = item.img || DEFAULT_TOKEN;
@@ -104,7 +104,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
       // Classify items into types
       if (item.type === "superpower") arr[1].push(item);
-      else if (item.type === "feat" || item.type === "feature") arr[2].push(item);
+      else if (item.type === "feat_or_feature") arr[2].push(item);
       else if (Object.keys(inventory).includes(item.type)) arr[0].push(item);
       else console.error("KryxRPG | Unfamiliar item type: " + item.type)
       return arr;
@@ -113,7 +113,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     // Apply active item filters
     inventoryItems = this._filterItems(inventoryItems, this._filters.inventory);
     superpowers = this._filterItems(superpowers, this._filters.arsenal);
-    feats = this._filterItems(feats, this._filters.features);
+    const features = this._filterItems(feats_and_features, this._filters.features);
 
     // Organize Arsenal (available superpowers)
     const arsenal = this._prepareArsenalTab(data, superpowers);
@@ -130,24 +130,24 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     data.data.attributes.encumbrance = this._computeEncumbrance(totalWeight, data);
 
     // Organize Features
-    const features = {
+    const features_tab = {
       active: {
         label: "KRYX_RPG.FeatureActive",
         items: [],
         hasActions: true,
-        dataset: {type: "feat", "activation.type": "action"}
+        dataset: {type: "feat_or_feature", "activation.type": "action"}
       },
-      passive: {label: "KRYX_RPG.FeaturePassive", items: [], hasActions: false, dataset: {type: "feat"}}
+      passive: {label: "KRYX_RPG.FeaturePassive", items: [], hasActions: false, dataset: {type: "feat_or_feature"}}
     };
-    for (let f of feats) {
-      if (f.data.activation.type) features.active.items.push(f);
-      else features.passive.items.push(f);
+    for (let f of features) {
+      if (f.data.activation.type) features_tab.active.items.push(f);
+      else features_tab.passive.items.push(f);
     }
 
     // Assign and return
     data.inventory = Object.values(inventory);
     data.arsenal = arsenal;
-    data.features = Object.values(features);
+    data.features = Object.values(features_tab);
   }
 
   /* -------------------------------------------- */

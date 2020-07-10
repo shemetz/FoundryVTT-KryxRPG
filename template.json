@@ -273,7 +273,7 @@
     }
   },
   "Item": {
-    "types": ["superpower", "feat", "feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"],
+    "types": ["superpower", "feat_or_feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"],
     "templates": {
       "itemDescription": {
         "description": {
@@ -395,16 +395,8 @@
       "stealth": false,
       "proficient": true
     },
-    "feat": {
+    "feat_or_feature": {
       "templates": ["itemDescription", "activatedEffect", "action", "themed"],
-      "requirements": "",
-      "recharge": {
-        "value": null,
-        "charged": false
-      }
-    },
-    "feature": {
-      "templates": ["itemDescription", "activatedEffect", "action"],
       "recharge": {
         "value": null,
         "charged": false

@@ -175,12 +175,12 @@ export default class ItemKryx extends Item {
     }
 
     // Feat and Feature Items
-    else if (itemType === "feat" || itemType === "feature") {
+    else if (itemType === "feat_or_feature") {
       const act = data.activation;
-      if (act && (act.type === C.abilityActivationTypes.legendary)) labels.featType = "Legendary Action";
-      else if (act && (act.type === C.abilityActivationTypes.lair)) labels.featType = "Lair Action";
-      else if (act && act.type) labels.featType = data.damage.length ? "Attack" : "Action";
-      else labels.featType = "Passive";
+      if (act && (act.type === C.abilityActivationTypes.legendary)) labels.featureType = "Legendary Action";
+      else if (act && (act.type === C.abilityActivationTypes.lair)) labels.featureType = "Lair Action";
+      else if (act && act.type) labels.featureType = data.damage.length ? "Attack" : "Action";
+      else labels.featureType = "Passive";
     }
 
     // Equipment Items
@@ -278,9 +278,9 @@ export default class ItemKryx extends Item {
       hasAreaTarget: this.hasAreaTarget
     };
 
-    // For feature items, optionally show an ability usage dialog
-    if (this.data.type === "feat") {
-      let configured = await this._rollFeat(configureDialog);
+    // For feat/feature items, optionally show an ability usage dialog
+    if (this.data.type === "feat_or_feature") {
+      let configured = await this._rollFeature(configureDialog);
       if (configured === false) return;
     } else if (this.data.type === "consumable") {
       let configured = await this._rollConsumable(configureDialog);
@@ -396,12 +396,12 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Additional rolling steps when rolling a feat-type item
+   * Additional rolling steps when rolling a feat or feature item
    * @private
    * @return {boolean} whether the roll should be prevented
    */
-  async _rollFeat(configureDialog) {
-    if (this.data.type !== "feat") throw new Error("Wrong Item type");
+  async _rollFeature(configureDialog) {
+    if (this.data.type !== "feat_or_feature") throw new Error("Wrong Item type");
 
     // Configure whether to consume a limited use or to place a template
     const usesRecharge = !!this.data.data.recharge.value;
@@ -461,8 +461,7 @@ export default class ItemKryx extends Item {
       "consumable": this._consumableChatData,
       "loot": this._lootChatData,
       "spell": this._spellChatData,
-      "feat": this._featChatData,
-      "feature": this._featureChatData,
+      "feat_or_feature": this._featureChatData,
     }[this.data.data.type]
     if (!fn) console.error(`unexpected item data type: ${this.data.type}`)
     if (fn) fn.bind(this)(data, labels, props);
@@ -563,17 +562,11 @@ export default class ItemKryx extends Item {
    * Prepare chat card data for items of the "Feat" type
    * @private
    */
-  _featChatData(data, labels, props) {
-    props.push(data.requirements);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Prepare chat card data for items of the "Feature" type
-   * @private
-   */
   _featureChatData(data, labels, props) {
+    props.push(
+      data.source || null,
+      data.themes.value.join(", ") || null
+    );
   }
 
   /* -------------------------------------------- */
