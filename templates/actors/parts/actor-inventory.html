@@ -1,16 +1,16 @@
 <div class="inventory-filters flexrow">
 
     {{#if isCharacter}}
-    <ol class="currency flexrow">
-        <h3>
-            {{localize "KRYX_RPG.Currency"}}
-            <a class="currency-convert" title="Convert Currency"><i class="fas fa-coins"></i></a>
-        </h3>
-        {{#each data.currency as |v k|}}
-        <label class="denomination {{k}}">{{ lookup ../config.currencies k }}</label>
-        <input type="text" name="data.currency.{{k}}" value="{{v}}" data-dtype="Number"/>
-        {{/each}}
-    </ol>
+        <ol class="currency flexrow">
+            <h3>
+                {{localize "KRYX_RPG.Currency"}}
+                <a class="currency-convert" title="Convert Currency"><i class="fas fa-coins"></i></a>
+            </h3>
+            {{#each data.currency as |v k|}}
+                <label class="denomination {{k}}">{{ lookup ../config.currencies k }}</label>
+                <input type="text" name="data.currency.{{k}}" value="{{v}}" data-dtype="Number"/>
+            {{/each}}
+        </ol>
     {{/if}}
 
     <ul class="filter-list flexrow" data-filter="inventory">
@@ -24,88 +24,93 @@
 
 <ol class="inventory-list">
     {{#each sections as |section sid|}}
-    <li class="inventory-header flexrow">
-        <h3 class="item-name flexrow">{{localize section.label}}</h3>
+        <li class="inventory-header flexrow">
+            <h3 class="item-name flexrow">{{localize section.label}}</h3>
 
-        {{#if ../isCharacter}}
-        <div class="item-detail item-weight">{{localize "KRYX_RPG.Weight"}}</div>
-        {{/if}}
-
-        <div class="item-detail item-uses">{{localize "KRYX_RPG.Charges"}}</div>
-        <div class="item-detail item-action">{{localize "KRYX_RPG.Usage"}}</div>
-
-        {{#if ../owner}}
-        <div class="item-controls">
-            <a class="item-control item-create" title='{{localize "KRYX_RPG.ItemCreate"}}' {{#each section.dataset as |v
-               k|}}data-{{k}}="{{v}}" {{/each}}>
-            <i class="fas fa-plus"></i> {{localize "KRYX_RPG.Add"}}
-            </a>
-        </div>
-        {{/if}}
-    </li>
-
-    <ol class="item-list">
-        {{#each section.items as |item iid|}}
-        <li class="item flexrow" data-item-id="{{item._id}}">
-            <div class="item-name flexrow rollable">
-                <div class="item-image" style="background-image: url({{item.img}})"></div>
-                <h4>
-                    {{item.name~}}
-                    {{~#if item.isStack}} ({{item.data.quantity}}){{/if}}
-                    {{~#if item.data.attuned}} <i class="fas fa-sun attuned" title={{localize "KRYX_RPG.Attuned"}}></i>
-                    {{/if}}
-                </h4>
-            </div>
-
-            {{#if ../../isCharacter}}
-            <div class="item-detail item-weight">
-                {{#if item.totalWeight}}
-                <div class="item-detail">
-                    {{ item.totalWeight }} {{localize "KRYX_RPG.AbbreviationLbs"}}
-                </div>
-                {{/if}}
-            </div>
+            {{#if ../isCharacter}}
+                <div class="item-detail item-weight">{{localize "KRYX_RPG.Weight"}}</div>
             {{/if}}
 
-            <div class="item-detail item-uses">
-                {{#if item.hasUses }}
-                <input type="text" value="{{item.data.uses.value}}" placeholder="0"/>
-                / {{item.data.uses.max}}
-                {{/if}}
-            </div>
+            <div class="item-detail item-uses">{{localize "KRYX_RPG.Charges"}}</div>
+            <div class="item-detail item-action">{{localize "KRYX_RPG.Usage"}}</div>
 
-            <div class="item-detail item-action">
-                {{#if item.data.activation.type }}
-                {{item.labels.activation}}
-                {{/if}}
-            </div>
-
-            {{#if ../../owner}}
-            <div class="item-controls">
-                <a class="item-control item-toggle {{item.toggleClass}}" title='{{item.toggleTitle}}'><i
-                        class="fas fa-shield-alt"></i></a>
-                <a class="item-control item-edit" title='{{localize "KRYX_RPG.ItemEdit"}}'><i
-                        class="fas fa-edit"></i></a>
-                <a class="item-control item-delete" title='{{localize "KRYX_RPG.ItemDelete"}}'><i
-                        class="fas fa-trash"></i></a>
-            </div>
+            {{#if ../owner}}
+                <div class="item-controls">
+                    <a class="item-control item-create" title='{{localize "KRYX_RPG.ItemCreate"}}' {{#each
+                            section.dataset as |v
+                    k|}}data-{{k}}="{{v}}" {{/each}}>
+                        <i class="fas fa-plus"></i> {{localize "KRYX_RPG.Add"}}
+                    </a>
+                </div>
             {{/if}}
         </li>
-        {{/each}}
-    </ol>
+
+        <ol class="item-list">
+            {{#each section.items as |item iid|}}
+                <li class="item flexrow" data-item-id="{{item._id}}">
+                    <div class="item-name flexrow rollable">
+                        <div class="item-image" style="background-image: url({{item.img}})"></div>
+                        <h4>
+                            {{item.name~}}
+                            {{~#if item.isStack}} ({{item.data.quantity}}){{/if}}
+                            {{~#if item.data.attuned}}
+                                <i class="fas fa-sun attuned" title={{localize "KRYX_RPG.Attuned"}}></i>
+                            {{/if}}
+                        </h4>
+                    </div>
+
+                    {{#if ../../isCharacter}}
+                        <div class="item-detail item-weight">
+                            {{#if item.totalWeight}}
+                                <div class="item-detail">
+                                    {{ item.totalWeight }} {{localize "KRYX_RPG.AbbreviationLbs"}}
+                                </div>
+                            {{/if}}
+                        </div>
+                    {{/if}}
+
+                    <div class="item-detail item-uses">
+                        {{#if item.hasUses }}
+                            <input type="text" value="{{item.data.uses.value}}" placeholder="0"/>
+                            / {{item.data.uses.max}}
+                        {{/if}}
+                    </div>
+
+                    <div class="item-detail item-action">
+                        {{#if item.data.activation.type }}
+                            {{item.labels.activation}}
+                        {{/if}}
+                    </div>
+
+                    {{#if ../../owner}}
+                        <div class="item-controls">
+                            <a class="item-control item-toggle {{item.toggleClass}}" title='{{item.toggleTitle}}'>
+                                <i class="fas fa-shield-alt"></i>
+                            </a>
+                            <a class="item-control item-edit" title='{{localize "KRYX_RPG.ItemEdit"}}'>
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="item-control item-delete" title='{{localize "KRYX_RPG.ItemDelete"}}'>
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    {{/if}}
+                </li>
+            {{/each}}
+        </ol>
     {{/each}}
 </ol>
 
 
 {{#if isCharacter }}
-{{#with data.attributes.encumbrance}}
-<div class="encumbrance {{#if encumbered}}encumbered{{/if}}">
-    <span class="encumbrance-bar" style="width:{{pct}}%"></span>
-    <span class="encumbrance-label">{{value}} / {{max}}</span>
-    <i class="encumbrance-breakpoint encumbrance-33 arrow-up"></i>
-    <i class="encumbrance-breakpoint encumbrance-33 arrow-down"></i>
-    <i class="encumbrance-breakpoint encumbrance-66 arrow-up"></i>
-    <i class="encumbrance-breakpoint encumbrance-66 arrow-down"></i>
-</div>
-{{/with}}
+    {{#with data.attributes.encumbrance}}
+        <div class="encumbrance {{#if encumbered}}encumbered{{/if}}">
+            <span class="encumbrance-bar" style="width:{{pct}}%"></span>
+            <span class="encumbrance-label">{{value}} / {{max}}</span>
+            <i class="encumbrance-breakpoint encumbrance-33 arrow-up"></i>
+            <i class="encumbrance-breakpoint encumbrance-33 arrow-down"></i>
+            <i class="encumbrance-breakpoint encumbrance-66 arrow-up"></i>
+            <i class="encumbrance-breakpoint encumbrance-66 arrow-down"></i>
+        </div>
+    {{/with}}
 {{/if}}

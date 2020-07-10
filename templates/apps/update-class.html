@@ -3,9 +3,9 @@
         <label>{{ localize "KRYX_RPG.Class" }}</label>
         <select name="className">
             {{#select className}}
-            {{#each config.systemData.classes as |classData className|}}
-            <option value="{{className}}">{{className}}</option>
-            {{/each}}
+                {{#each config.systemData.classes as |classData className|}}
+                    <option value="{{className}}">{{className}}</option>
+                {{/each}}
             {{/select}}
         </select>
     </div>
@@ -13,11 +13,11 @@
         <label>{{ localize "KRYX_RPG.ClassArchetype" }}</label>
         <select name="classArchetype">
             {{#select classArchetype}}
-            {{#each config.systemData.classes as |classData className|}}
-            {{#each classData.archetypes as |details classArchetype|}}
-            <option value="{{classArchetype}}">{{classArchetype}}</option>
-            {{/each}}
-            {{/each}}
+                {{#each config.systemData.classes as |classData className|}}
+                    {{#each classData.archetypes as |details classArchetype|}}
+                        <option value="{{classArchetype}}">{{classArchetype}}</option>
+                    {{/each}}
+                {{/each}}
             {{/select}}
         </select>
     </div>
@@ -30,9 +30,9 @@
         <label>{{ localize "KRYX_RPG.ClassProgression" }}</label>
         <select name="classProgression">
             {{#select classProgression}}
-            {{#each config.resourceProgression as |label progression|}}
-            <option value="{{progression}}">{{label}}</option>
-            {{/each}}
+                {{#each config.resourceProgression as |label progression|}}
+                    <option value="{{progression}}">{{label}}</option>
+                {{/each}}
             {{/select}}
         </select>
     </div>
@@ -41,9 +41,9 @@
         <label class="alchemical-ability-label">{{localize "KRYX_RPG.AlchemicalAbility"}}</label>
         <select name="spellcastingAbility" data-type="String">
             {{#select data.attributes.spellcastingAbility}}
-            {{#each data.abilities as |abl a|}}
-            <option value="{{a}}">{{abl.label}}</option>
-            {{/each}}
+                {{#each data.abilities as |abl a|}}
+                    <option value="{{a}}">{{abl.label}}</option>
+                {{/each}}
             {{/select}}
         </select>
     </div>
@@ -51,9 +51,9 @@
         <label>{{localize "KRYX_RPG.ManeuverAbility"}}</label>
         <select name="maneuverAbility" data-type="String">
             {{#select data.attributes.maneuverAbility}}
-            {{#each data.abilities as |abl a|}}
-            <option value="{{a}}">{{abl.label}}</option>
-            {{/each}}
+                {{#each data.abilities as |abl a|}}
+                    <option value="{{a}}">{{abl.label}}</option>
+                {{/each}}
             {{/select}}
         </select>
     </div>

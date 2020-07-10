@@ -56,9 +56,9 @@
                 <label>{{localize 'KRYX_RPG.ItemContainerCapacityType'}}</label>
                 <select name="data.capacity.type">
                     {{#select data.capacity.type}}
-                    {{#each config.itemCapacityTypes}}
-                    <option value="{{@key}}">{{localize this}}</option>
-                    {{/each}}
+                        {{#each config.itemCapacityTypes}}
+                            <option value="{{@key}}">{{localize this}}</option>
+                        {{/each}}
                     {{/select}}
                 </select>
             </div>

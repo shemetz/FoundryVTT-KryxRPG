@@ -5,20 +5,20 @@
         <div class="form-fields">
             <text>{{hitDiceSize}} ({{hitDiceAmount}} {{ localize "KRYX_RPG.LowercaseAvailable" }})</text>
             <button id="roll-hd" {{#unless canRoll}} disabled {{/unless}}>
-            <i class="fas fa-dice-d20"></i> {{ localize "Roll" }}
+                <i class="fas fa-dice-d20"></i> {{ localize "Roll" }}
             </button>
         </div>
         {{#unless canRoll}}
-        <p class="notes">{{ localize "KRYX_RPG.SecondWindNoHD" }}</p>
+            <p class="notes">{{ localize "KRYX_RPG.SecondWindNoHD" }}</p>
         {{/unless}}
     </div>
 
     <div class="dialog-buttons">
         {{#each buttons as |button id|}}
-        <button class="dialog-button" data-button="{{id}}">
-            {{{button.icon}}}
-            {{{button.label}}}
-        </button>
+            <button class="dialog-button" data-button="{{id}}">
+                {{{button.icon}}}
+                {{{button.label}}}
+            </button>
         {{/each}}
     </div>
 </form>

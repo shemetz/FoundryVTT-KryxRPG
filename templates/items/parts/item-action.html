@@ -3,116 +3,117 @@
     <label>{{ localize "KRYX_RPG.ItemActionType" }}</label>
     <select name="data.actionType">
         {{#select data.actionType}}
-        <option value=""></option>
-        {{#each config.itemActionTypes as |name type|}}
-        <option value="{{type}}">{{name}}</option>
-        {{/each}}
+            <option value=""></option>
+            {{#each config.itemActionTypes as |name type|}}
+                <option value="{{type}}">{{name}}</option>
+            {{/each}}
         {{/select}}
     </select>
 </div>
 {{#if data.actionType}}
 
 {{!-- Ability Modifier --}}
-<div class="form-group select">
-    <label>{{ localize "KRYX_RPG.AbilityModifier" }}</label>
-    <select name="data.ability">
-        {{#select data.ability}}
-        <option value="">{{ localize "KRYX_RPG.Default" }}</option>
-        {{#each config.abilities as |ability a|}}
-        <option value="{{a}}">{{ability}}</option>
-        {{/each}}
-        {{/select}}
-    </select>
-</div>
-
-{{!-- Attack Roll Bonus --}}
-{{#if hasAttackRoll }}
-<div class="form-group">
-    <label>{{ localize "KRYX_RPG.ItemAttackBonus" }}</label>
-    <div class="form-fields">
-        <input type="text" name="data.attackBonus" value="{{data.attackBonus}}" data-dtype="Number"/>
+    <div class="form-group select">
+        <label>{{ localize "KRYX_RPG.AbilityModifier" }}</label>
+        <select name="data.ability">
+            {{#select data.ability}}
+                <option value="">{{ localize "KRYX_RPG.Default" }}</option>
+                {{#each config.abilities as |ability a|}}
+                    <option value="{{a}}">{{ability}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
     </div>
-</div>
-{{/if}}
 
-{{!-- Damage Formula --}}
-<h4 class="damage-header">
-    {{#unless isHealing }}{{ localize "KRYX_RPG.Damage" }}{{ else }}{{ localize "KRYX_RPG.Healing" }}{{/unless}} {{
+    {{!-- Attack Roll Bonus --}}
+    {{#if hasAttackRoll }}
+        <div class="form-group">
+            <label>{{ localize "KRYX_RPG.ItemAttackBonus" }}</label>
+            <div class="form-fields">
+                <input type="text" name="data.attackBonus" value="{{data.attackBonus}}" data-dtype="Number"/>
+            </div>
+        </div>
+    {{/if}}
+
+    {{!-- Damage Formula --}}
+    <h4 class="damage-header">
+        {{#unless isHealing }}{{ localize "KRYX_RPG.Damage" }}{{ else }}{{ localize "KRYX_RPG.Healing" }}{{/unless}} {{
     localize "KRYX_RPG.Formula" }}
-    <a class="damage-control add-damage"><i class="fas fa-plus"></i></a>
-</h4>
-<ol class="damage-parts form-group">
-    {{#each data.damage.parts as |part i| }}
-    <li class="damage-part flexrow" data-damage-part="{{i}}">
-        <input type="text" name="data.damage.parts.{{i}}.0" value="{{lookup this " 0"}}"/>
-        <select name="data.damage.parts.{{i}}.1">
-            {{#select (lookup this "1") }}
-            <option value="">{{ localize "KRYX_RPG.None" }}</option>
-            {{#each ../config.damageTypes as |name type|}}
-            <option value="{{type}}">{{name}}</option>
-            {{/each}}
-            {{#each ../config.healingTypes as |name type|}}
-            <option value="{{type}}">{{name}}</option>
-            {{/each}}
-            {{/select}}
-        </select>
-        <a class="damage-control delete-damage"><i class="fas fa-minus"></i></a>
-    </li>
-    {{/each}}
-</ol>
+        <a class="damage-control add-damage"><i class="fas fa-plus"></i></a>
+    </h4>
+    <ol class="damage-parts form-group">
+        {{#each data.damage.parts as |part i| }}
+            <li class="damage-part flexrow" data-damage-part="{{i}}">
+                <input type="text" name="data.damage.parts.{{i}}.0" value="{{lookup this " 0"}}"/>
+                <select name="data.damage.parts.{{i}}.1">
+                    {{#select (lookup this "1") }}
+                        <option value="">{{ localize "KRYX_RPG.None" }}</option>
+                        {{#each ../config.damageTypes as |name type|}}
+                            <option value="{{type}}">{{name}}</option>
+                        {{/each}}
+                        {{#each ../config.healingTypes as |name type|}}
+                            <option value="{{type}}">{{name}}</option>
+                        {{/each}}
+                    {{/select}}
+                </select>
+                <a class="damage-control delete-damage"><i class="fas fa-minus"></i></a>
+            </li>
+        {{/each}}
+    </ol>
 
-{{!-- Versatile Damage --}}
-{{#if data.damage.parts.length }}
-<div class="form-group">
-    <label>{{ localize "KRYX_RPG.VersatileDamage" }}</label>
-    <div class="form-fields">
-        <input type="text" name="data.damage.versatile" value="{{data.damage.versatile}}"
-               placeholder="{{ localize 'KRYX_RPG.Formula' }}"/>
+    {{!-- Versatile Damage --}}
+    {{#if data.damage.parts.length }}
+        <div class="form-group">
+            <label>{{ localize "KRYX_RPG.VersatileDamage" }}</label>
+            <div class="form-fields">
+                <input type="text" name="data.damage.versatile" value="{{data.damage.versatile}}"
+                       placeholder="{{ localize 'KRYX_RPG.Formula' }}"/>
+            </div>
+        </div>
+    {{/if}}
+
+    {{!-- Other Formula --}}
+    <div class="form-group">
+        <label>{{ localize "KRYX_RPG.OtherFormula" }}</label>
+        <div class="form-fields">
+            <input type="text" name="data.formula" value="{{data.formula}}"
+                   placeholder="{{ localize 'KRYX_RPG.Formula' }}"/>
+        </div>
     </div>
-</div>
-{{/if}}
 
-{{!-- Other Formula --}}
-<div class="form-group">
-    <label>{{ localize "KRYX_RPG.OtherFormula" }}</label>
-    <div class="form-fields">
-        <input type="text" name="data.formula" value="{{data.formula}}"
-               placeholder="{{ localize 'KRYX_RPG.Formula' }}"/>
+    {{!-- Saving Throw --}}
+    <div class="form-group input-select">
+        <label>{{ localize "KRYX_RPG.ActionSave" }}</label>
+        <div class="form-fields">
+            <select name="data.save.type">
+                {{#select data.save.type}}
+                    <option value=""></option>
+                    {{#each config.saves as |save s|}}
+                        <option value="{{s}}">{{save}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+            <span>{{ localize "KRYX_RPG.VsDC" }}</span>
+            <input type="text" name="data.save.dc" value="{{#if data.save.dc}}{{data.save.dc}}{{/if}}"
+                   data-dtype="Number"
+                   placeholder="{{ localize 'KRYX_RPG.AbbreviationDC' }}" {{#unless isFlatDC}}disabled{{/unless}}/>
+            <select name="data.save.scaling">
+                {{#select data.save.scaling}}
+                    <option value="spell_dc">{{ localize "KRYX_RPG.SpellDC" }}</option>
+                    <option value="maneuver_dc">{{ localize "KRYX_RPG.ManeuverDC" }}</option>
+                    <option value="alchemical_dc">{{ localize "KRYX_RPG.AlchemicalDC" }}</option>
+                    <option value="flat_dc">{{ localize "KRYX_RPG.Flat" }}</option>
+                    {{#each config.saves as |save s|}}
+                        <option value="{{s}}">{{save}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+        </div>
     </div>
-</div>
 
-{{!-- Saving Throw --}}
-<div class="form-group input-select">
-    <label>{{ localize "KRYX_RPG.ActionSave" }}</label>
-    <div class="form-fields">
-        <select name="data.save.type">
-            {{#select data.save.type}}
-            <option value=""></option>
-            {{#each config.saves as |save s|}}
-            <option value="{{s}}">{{save}}</option>
-            {{/each}}
-            {{/select}}
-        </select>
-        <span>{{ localize "KRYX_RPG.VsDC" }}</span>
-        <input type="text" name="data.save.dc" value="{{#if data.save.dc}}{{data.save.dc}}{{/if}}" data-dtype="Number"
-               placeholder="{{ localize 'KRYX_RPG.AbbreviationDC' }}" {{#unless isFlatDC}}disabled{{/unless}}/>
-        <select name="data.save.scaling">
-            {{#select data.save.scaling}}
-            <option value="spell_dc">{{ localize "KRYX_RPG.SpellDC" }}</option>
-            <option value="maneuver_dc">{{ localize "KRYX_RPG.ManeuverDC" }}</option>
-            <option value="alchemical_dc">{{ localize "KRYX_RPG.AlchemicalDC" }}</option>
-            <option value="flat_dc">{{ localize "KRYX_RPG.Flat" }}</option>
-            {{#each config.saves as |save s|}}
-            <option value="{{s}}">{{save}}</option>
-            {{/each}}
-            {{/select}}
-        </select>
+    {{!-- Chat Message Flavor --}}
+    <div class="form-group stacked">
+        <label>{{ localize "KRYX_RPG.ChatFlavor" }}</label>
+        <input type="text" name="data.chatFlavor" value="{{data.chatFlavor}}"/>
     </div>
-</div>
-
-{{!-- Chat Message Flavor --}}
-<div class="form-group stacked">
-    <label>{{ localize "KRYX_RPG.ChatFlavor" }}</label>
-    <input type="text" name="data.chatFlavor" value="{{data.chatFlavor}}"/>
-</div>
 {{/if}}

@@ -46,9 +46,9 @@
                 <label>{{ localize "KRYX_RPG.DefaultAbilityCheck" }}</label>
                 <select name="data.ability">
                     {{#select data.ability}}
-                    {{#each config.abilities as |name a|}}
-                    <option value="{{a}}">{{name}}</option>
-                    {{/each}}
+                        {{#each config.abilities as |name a|}}
+                            <option value="{{a}}">{{name}}</option>
+                        {{/each}}
                     {{/select}}
                 </select>
             </div>

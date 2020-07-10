@@ -56,9 +56,9 @@
                 <div class="form-fields">
                     <select name="data.availability">
                         {{#select data.availability}}
-                        {{#each config.superpowerAvailability as |name key|}}
-                        <option value="{{key}}">{{name}}</option>
-                        {{/each}}
+                            {{#each config.superpowerAvailability as |name key|}}
+                                <option value="{{key}}">{{name}}</option>
+                            {{/each}}
                         {{/select}}
                     </select>
                 </div>
@@ -69,24 +69,24 @@
             <div class="spell-components form-group stacked">
                 <label>{{ localize "KRYX_RPG.SpellComponents" }}</label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.verbal" {{checked data.components.verbal}}/> {{
-                    localize "KRYX_RPG.ComponentVerbal" }}
+                    <input type="checkbox" name="data.components.verbal"{{checked data.components.verbal}}/>
+                    {{ localize "KRYX_RPG.ComponentVerbal" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.somatic" {{checked data.components.somatic}}/> {{
-                    localize "KRYX_RPG.ComponentSomatic" }}
+                    <input type="checkbox" name="data.components.somatic" {{checked data.components.somatic}}/>
+                    {{ localize "KRYX_RPG.ComponentSomatic" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.material" {{checked data.components.material}}/> {{
-                    localize "KRYX_RPG.ComponentMaterial" }}
+                    <input type="checkbox" name="data.components.material" {{checked data.components.material}}/>
+                    {{ localize "KRYX_RPG.ComponentMaterial" }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.concentration" {{checked
-                           data.components.concentration}}/> {{ labels.concentration }}
+                    <input type="checkbox" name="data.components.concentration"
+                        {{ checked data.components.concentration}}/> {{ labels.concentration }}
                 </label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.ritual" {{checked data.components.ritual}}/> {{
-                    localize "KRYX_RPG.Ritual" }}
+                    <input type="checkbox" name="data.components.ritual" {{checked data.components.ritual}}/>
+                    {{ localize "KRYX_RPG.Ritual" }}
                 </label>
             </div>
 
@@ -106,10 +106,10 @@
                 <div class="form-fields">
                     <select name="data.scaling.mode">
                         {{#select data.scaling.mode}}
-                        <option value="none">{{localize "KRYX_RPG.ScalingNone"}}</option>
-                        <option value="cantrip">{{localize "KRYX_RPG.ScalingCantrip"}}</option>
-                        <option value="augment">{{localize "KRYX_RPG.ScalingAugment"}}</option>
-                        <option value="enhance">{{localize "KRYX_RPG.ScalingEnhance"}}</option>
+                            <option value="none">{{localize "KRYX_RPG.ScalingNone"}}</option>
+                            <option value="cantrip">{{localize "KRYX_RPG.ScalingCantrip"}}</option>
+                            <option value="augment">{{localize "KRYX_RPG.ScalingAugment"}}</option>
+                            <option value="enhance">{{localize "KRYX_RPG.ScalingEnhance"}}</option>
                         {{/select}}
                     </select>
                     <input type="text" name="data.scaling.formula" value="{{data.scaling.formula}}"

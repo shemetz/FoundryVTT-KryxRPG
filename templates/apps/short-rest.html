@@ -4,30 +4,32 @@
         <label>{{ localize "KRYX_RPG.ShortRestSelect" }}</label>
         <div class="form-fields">
             <text>{{hitDiceSize}} ({{hitDiceAmount}} {{ localize "KRYX_RPG.LowercaseAvailable" }})</text>
-            <button id="roll-hd" {{#unless canRoll}}disabled{{
-            /unless}}>
-            <i class="fas fa-dice-d20"></i> {{ localize "Roll" }}
+            <button id="roll-hd"
+                {{#unless canRoll}}
+                    disabled
+                {{/unless}}>
+                <i class="fas fa-dice-d20"></i> {{ localize "Roll" }}
             </button>
         </div>
         {{#unless canRoll}}
-        <p class="notes">{{ localize "KRYX_RPG.ShortRestNoHD" }}</p>
+            <p class="notes">{{ localize "KRYX_RPG.ShortRestNoHD" }}</p>
         {{/unless}}
     </div>
 
     {{#if promptNewDay}}
-    <div class="form-group">
-        <label>Is New Day?</label>
-        <input type="checkbox" name="newDay" {{checked newDay}}/>
-        <p class="hint">Recover limited use abilities which recharge "per day"?</p>
-    </div>
+        <div class="form-group">
+            <label>Is New Day?</label>
+            <input type="checkbox" name="newDay" {{checked newDay}}/>
+            <p class="hint">Recover limited use abilities which recharge "per day"?</p>
+        </div>
     {{/if}}
 
     <div class="dialog-buttons">
         {{#each buttons as |button id|}}
-        <button class="dialog-button" data-button="{{id}}">
-            {{{button.icon}}}
-            {{{button.label}}}
-        </button>
+            <button class="dialog-button" data-button="{{id}}">
+                {{{button.icon}}}
+                {{{button.label}}}
+            </button>
         {{/each}}
     </div>
 </form>
