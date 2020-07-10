@@ -261,7 +261,7 @@
   "KRYX_RPG.ItemEquipmentType": "Equipment Type",
   "KRYX_RPG.ItemEquipmentUsage": "Equipment Usage",
   "KRYX_RPG.ItemName": "Item Name",
-  "KRYX_RPG.ItemNew": "New {type}",
+  "KRYX_RPG.ItemNew": "New {typeName}",
   "KRYX_RPG.ItemNoUses": "{name} has no available uses remaining.",
   "KRYX_RPG.ItemRequiredStr": "Required Strength",
   "KRYX_RPG.ItemTypeConsumablePl": "Consumables",

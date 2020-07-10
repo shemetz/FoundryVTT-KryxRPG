@@ -135,9 +135,14 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
         label: "KRYX_RPG.FeatureActive",
         items: [],
         hasActions: true,
-        dataset: {type: "feat_or_feature", "activation.type": "action"}
+        dataset: {type: "feat_or_feature", "activation.type": "action", type_name: "Feat/Feature"}
       },
-      passive: {label: "KRYX_RPG.FeaturePassive", items: [], hasActions: false, dataset: {type: "feat_or_feature"}}
+      passive: {
+        label: "KRYX_RPG.FeaturePassive",
+        items: [],
+        hasActions: false,
+        dataset: {type: "feat_or_feature", type_name: "Feat/Feature"}
+      }
     };
     for (let f of features) {
       if (f.data.activation.type) features_tab.active.items.push(f);

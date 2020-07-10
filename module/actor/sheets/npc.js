@@ -47,16 +47,25 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
         label: game.i18n.localize("KRYX_RPG.AttackPl"),
         items: [],
         hasActions: true,
-        dataset: {type: "weapon", "weapon-type": "natural"}
+        dataset: {type: "weapon", "weapon-type": "natural"} // NOTE: "weapon-type" will change to "weaponType"
       },
       actions: {
         label: game.i18n.localize("KRYX_RPG.ActionPl"),
         items: [],
         hasActions: true,
-        dataset: {type: "feat_or_feature", "activation.type": "action"}
+        dataset: {type: "feat_or_feature", "activation.type": "action", type_name: "Feat/Feature"}
       },
-      passive: {label: game.i18n.localize("KRYX_RPG.Features"), items: [], dataset: {type: "feat_or_feature"}},
-      equipment: {label: game.i18n.localize("KRYX_RPG.Inventory"), items: [], dataset: {type: "loot"}}
+      passive: {
+        label: game.i18n.localize("KRYX_RPG.FeaturePassive"),
+        items: [],
+        hasActions: false,
+        dataset: {type: "feat_or_feature", type_name: "Feat/Feature"}
+      },
+      inventory: {
+        label: game.i18n.localize("KRYX_RPG.Inventory"),
+        items: [],
+        dataset: {type: "loot"}
+      },
     };
 
     // Start by classifying items into groups for rendering
@@ -85,7 +94,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
       else if (item.type === "feat_or_feature") {
         if (item.data.activation.type) features.actions.items.push(item);
         else features.passive.items.push(item);
-      } else features.equipment.items.push(item);
+      } else features.inventory.items.push(item);
     }
 
     // Assign and return

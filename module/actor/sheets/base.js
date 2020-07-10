@@ -152,7 +152,8 @@ export default class ActorSheetKryx extends ActorSheet {
       const order = CONFIG.KRYX_RPG.ARSENAL_ORDERING[key]
       const mainResources = data.actor.data.mainResources
       const resource = superpowerType === "spell" ? mainResources.mana : mainResources.stamina
-      const superpowerTypesName = resource.nameOfEffect.capitalize() + "s" // e.g. "Spells", "Concoctions"
+      const superpowerTypeName = resource.nameOfEffect.capitalize()
+      const superpowerTypesName = superpowerTypeName + "s" // e.g. "Spells", "Concoctions"
       const superpowerResourceName = resource.nameSingular.capitalize() // e.g. "Mana", "Psi", "Catalyst"
       const label = CONFIG.KRYX_RPG.superpowerAvailability[availability] + " " + superpowerTypesName
       catalog[key] = {
@@ -161,7 +162,9 @@ export default class ActorSheetKryx extends ActorSheet {
         canCreate: isOwner,
         resourceName: superpowerResourceName,
         superpowers: [],
-        dataset: {type: "superpower", kind: superpowerType, availability: availability},
+        dataset: {
+          type: "superpower", type_name: superpowerTypeName, availability: availability,
+        },
       }
     }
 
@@ -562,8 +565,9 @@ export default class ActorSheetKryx extends ActorSheet {
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type;
+    const typeName = header.dataset.type_name || type.capitalize()
     const itemData = {
-      name: game.i18n.format("KRYX_RPG.ItemNew", {type: type.capitalize()}),
+      name: game.i18n.format("KRYX_RPG.ItemNew", {typeName}),
       type: type,
       data: duplicate(header.dataset)
     };
