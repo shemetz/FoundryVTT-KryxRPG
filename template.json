@@ -77,9 +77,6 @@
           }
         },
         "skills": {
-          "acrobatics": {
-            "proficiency": 0
-          },
           "alchemy": {
             "proficiency": 0
           },
@@ -89,10 +86,19 @@
           "athletics": {
             "proficiency": 0
           },
+          "brawn": {
+            "proficiency": 0
+          },
           "coercion": {
             "proficiency": 0
           },
+          "coordination": {
+            "proficiency": 0
+          },
           "deception": {
+            "proficiency": 0
+          },
+          "divinity": {
             "proficiency": 0
           },
           "engineering": {
@@ -102,9 +108,6 @@
             "proficiency": 0
           },
           "medicine": {
-            "proficiency": 0
-          },
-          "nature": {
             "proficiency": 0
           },
           "occult": {
@@ -119,16 +122,22 @@
           "persuasion": {
             "proficiency": 0
           },
+          "primal": {
+            "proficiency": 0
+          },
           "psionics": {
             "proficiency": 0
           },
-          "religion": {
-            "proficiency": 0
-          },
-          "society": {
+          "skulduggery": {
             "proficiency": 0
           },
           "stealth": {
+            "proficiency": 0
+          },
+          "streetwise": {
+            "proficiency": 0
+          },
+          "wilderness": {
             "proficiency": 0
           }
         },

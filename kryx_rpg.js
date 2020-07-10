@@ -134,13 +134,11 @@ Hooks.once("ready", function () {
 
   // Determine whether a system migration is required and feasible
   const currentVersion = game.settings.get("kryx_rpg", "systemMigrationVersion");
-  const NEEDS_MIGRATION_VERSION = "24.4.0-1";
-  const COMPATIBLE_MIGRATION_VERSION = "24.4.0";
-  let needMigration = (currentVersion < NEEDS_MIGRATION_VERSION) || (currentVersion === null);
+  const needMigration = (currentVersion < migrations.NEEDS_MIGRATION_VERSION) || (currentVersion === null);
 
   // Perform the migration
   if (needMigration && game.user.isGM) {
-    if (currentVersion && (currentVersion < COMPATIBLE_MIGRATION_VERSION)) {
+    if (currentVersion && (currentVersion < migrations.COMPATIBLE_MIGRATION_VERSION)) {
       ui.notifications.error(`Your Kryx RPG system data is from too old a Foundry version and cannot be reliably migrated to the latest version. The process will be attempted, but errors may occur.`, {permanent: true});
     }
     migrations.migrateWorld();
@@ -182,3 +180,10 @@ Hooks.on("renderChatMessage", (app, html, data) => {
 });
 Hooks.on("getChatLogEntryContext", chat.addChatMessageContextOptions);
 Hooks.on("renderChatLog", (app, html, data) => ItemKryx.chatListeners(html));
+
+
+for (const [id, skl] of Object.entries(KRYX_RPG.skills)) {
+  if (!KRYX_RPG.systemData.skillAbilities[id]) {
+    console.error(`hey shem, you forgot to update the KRYX_RPG.systemData.skillAbilities object for the ${id} skill.`)
+  }
+}

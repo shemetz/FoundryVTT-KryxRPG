@@ -475,7 +475,7 @@ export default class ActorKryx extends Actor {
     return d20Roll(mergeObject(options, {
       parts: parts,
       data: data,
-      title: game.i18n.format("KRYX_RPG.SkillPromptTitle", {skill: CONFIG.KRYX_RPG.skills[skillId]}),
+      title: game.i18n.format("KRYX_RPG.PromptSkillTitle", {skill: CONFIG.KRYX_RPG.skills[skillId]}),
       speaker: ChatMessage.getSpeaker({actor: this}),
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       reliableTalent: reliableTalent

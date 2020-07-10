@@ -1,7 +1,17 @@
+export const NEEDS_MIGRATION_VERSION = "24.4.0-2";
+export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
   ["Protection", "Guardian"],
   ["Marksmanship", "Marksman"],
+]
+
+const renamedSkills = [
+  ["intimidation", "coercion"],
+  ["acrobatics", "coordination"],
+  ["religion", "divinity"],
+  ["nature", "wilderness"],
+  ["society", "streetwise"],
 ]
 
 /**
@@ -139,16 +149,8 @@ export const migrateActorData = function (actor) {
     } else return i;
   });
 
-  //intimidation -> coercion
-  const intimidation = actor.data.skills.intimidation
-  if (intimidation) {
-    updateData["data.skills"] = {
-      "coercion": intimidation,
-      "-=intimidation": null,
-    }
-  }
-
   _migrateThemes(actor, updateData)
+  _migrateSkills(actor, updateData)
 
   if (hasItemUpdates) updateData.items = items;
   return updateData;
@@ -167,6 +169,19 @@ const _migrateThemes = function (actor, updateData) {
   }
   for (const [oldTheme, newTheme] of renamedThemes) renameTheme(oldTheme, newTheme)
   updateData["data.traits.themes.value"] = actorThemes
+}
+
+const _migrateSkills = function (actor, updateData) {
+  const actorSkills = actor.data.skills
+  const updateDataSkills = {}
+  const renameSkill = function (oldSkill, newSkill) {
+    if (actorSkills[oldSkill]) {
+      updateDataSkills[newSkill] = actorSkills[oldSkill]
+      updateDataSkills[`-=${oldSkill}`] = null
+    }
+  }
+  for (const [oldSkill, newSkill] of renamedSkills) renameSkill(oldSkill, newSkill)
+  updateData["data.skills"] = updateDataSkills
 }
 
 
