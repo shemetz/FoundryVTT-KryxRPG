@@ -523,32 +523,26 @@ KRYX_RPG.conditionTypes = {
   "unconscious": "KRYX_RPG.ConUnconscious"
 };
 
-// TODO Languages (probably just remove?)
 KRYX_RPG.languages = {
-  "common": "KRYX_RPG.LanguagesCommon",
-  "aarakocra": "KRYX_RPG.LanguagesAarakocra",
   "abyssal": "KRYX_RPG.LanguagesAbyssal",
+  "aklo": "KRYX_RPG.LanguagesAklo",
   "aquan": "KRYX_RPG.LanguagesAquan",
   "auran": "KRYX_RPG.LanguagesAuran",
   "celestial": "KRYX_RPG.LanguagesCelestial",
-  "deep": "KRYX_RPG.LanguagesDeepSpeech",
+  "common": "KRYX_RPG.LanguagesCommon",
   "draconic": "KRYX_RPG.LanguagesDraconic",
-  "druidic": "KRYX_RPG.LanguagesDruidic",
-  "dwarvish": "KRYX_RPG.LanguagesDwarvish",
+  "dwarven": "KRYX_RPG.LanguagesDwarven",
   "elvish": "KRYX_RPG.LanguagesElvish",
-  "giant": "KRYX_RPG.LanguagesGiant",
   "gith": "KRYX_RPG.LanguagesGith",
   "gnomish": "KRYX_RPG.LanguagesGnomish",
   "goblin": "KRYX_RPG.LanguagesGoblin",
-  "gnoll": "KRYX_RPG.LanguagesGnoll",
   "halfling": "KRYX_RPG.LanguagesHalfling",
   "ignan": "KRYX_RPG.LanguagesIgnan",
   "infernal": "KRYX_RPG.LanguagesInfernal",
-  "orc": "KRYX_RPG.LanguagesOrc",
-  "primordial": "KRYX_RPG.LanguagesPrimordial",
+  "jotun": "KRYX_RPG.LanguagesJotun",
+  "orcish": "KRYX_RPG.LanguagesOrcish",
   "sylvan": "KRYX_RPG.LanguagesSylvan",
   "terran": "KRYX_RPG.LanguagesTerran",
-  "cant": "KRYX_RPG.LanguagesThievesCant",
   "undercommon": "KRYX_RPG.LanguagesUndercommon"
 };
 
