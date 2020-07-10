@@ -93,6 +93,16 @@ export default class AbilityUseDialog extends Dialog {
       });
     }
 
+    // Feature/Feat/Trait
+    if (item.type === "feat_or_feature") {
+      let str = "KRYX_RPG.AbilityUseNormalHint";
+      if (uses.value === 0) str = "KRYX_RPG.AbilityUseFeatureUnavailableHint";
+      return game.i18n.format(str, {
+        featureType: item.data.featureType,
+        per: CONFIG.KRYX_RPG.limitedUsePeriods[uses.per],
+      });
+    }
+
     // Other Items
     else {
       return game.i18n.format("KRYX_RPG.AbilityUseNormalHint", {

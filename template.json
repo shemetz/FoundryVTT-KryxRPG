@@ -396,7 +396,9 @@
       "proficient": true
     },
     "feat_or_feature": {
+      "_comment": "featureType can be 'feature', 'feat', 'trait', potentially more in the future",
       "templates": ["itemDescription", "activatedEffect", "action", "themed"],
+      "featureType": "feature",
       "recharge": {
         "value": null,
         "charged": false

@@ -84,7 +84,9 @@ KRYX_RPG.abilityActivationTypes = {
   "day": KRYX_RPG.timePeriods.day,
   "special": KRYX_RPG.timePeriods.spec,
   "legendary": "KRYX_RPG.LegAct",
-  "lair": "KRYX_RPG.LairAct"
+  "lair": "KRYX_RPG.LairAct",
+  "free": "KRYX_RPG.FreeAction",
+  "triggered": "KRYX_RPG.Triggered",
 };
 
 /* -------------------------------------------- */

@@ -198,7 +198,6 @@ export default class ItemKryx extends Item {
 
     // Feat and Feature Items
     else if (itemType === "feat_or_feature") {
-      labels.featureType = "Feat/Feature/Trait" // TODO - selection between them
       labels.themes = data.themes.value.join(", ") || "(No Theme)"
     }
 
