@@ -142,9 +142,28 @@ export const migrateActorData = function (actor) {
     }
   }
 
+  _migrateThemes(actor, updateData)
+
   if (hasItemUpdates) updateData.items = items;
   return updateData;
 };
+
+/* -------------------------------------------- */
+
+const _migrateThemes = function (actor, updateData) {
+  const actorThemes = actor.data.traits.themes.value
+  const renameTheme = function (oldTheme, newTheme) {
+    const index = actorThemes.indexOf(oldTheme);
+    if (index !== -1) {
+      actorThemes.splice(index, 1);
+      actorThemes.push(newTheme)
+    }
+  }
+  renameTheme("Protection", "Guardian")
+  renameTheme("Marksmanship", "Marksman")
+  updateData["data.traits.themes.value"] = actorThemes
+}
+
 
 /* -------------------------------------------- */
 
@@ -185,6 +204,20 @@ export const migrateItemData = function (item) {
 
   // Remove deprecated fields
   _migrateRemoveDeprecated(item, updateData);
+
+  if (item.data.themes) {
+    const itemThemes = item.data.themes.value
+    const renameTheme = function (oldTheme, newTheme) {
+      const index = itemThemes.indexOf(oldTheme);
+      if (index !== -1) {
+        itemThemes.splice(index, 1);
+        itemThemes.push(newTheme)
+      }
+    }
+    renameTheme("Protection", "Guardian")
+    renameTheme("Marksmanship", "Marksman")
+    updateData["data.themes.value"] = itemThemes
+  }
 
   // Return the migrated update data
   return updateData;

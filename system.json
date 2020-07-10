@@ -2,7 +2,7 @@
   "name": "kryx_rpg",
   "title": "Kryx RPG (WIP)",
   "description": "A comprehensive game system for running games of Kryx RPG in the Foundry VTT environment.",
-  "version": "24.4.0-0",
+  "version": "24.4.0-1",
   "author": "shem",
   "scripts": [],
   "esmodules": ["kryx_rpg.js"],

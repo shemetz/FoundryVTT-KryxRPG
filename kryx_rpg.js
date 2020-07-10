@@ -134,8 +134,8 @@ Hooks.once("ready", function () {
 
   // Determine whether a system migration is required and feasible
   const currentVersion = game.settings.get("kryx_rpg", "systemMigrationVersion");
-  const NEEDS_MIGRATION_VERSION = "24.4.0-0";
-  const COMPATIBLE_MIGRATION_VERSION = "1";
+  const NEEDS_MIGRATION_VERSION = "24.4.0-1";
+  const COMPATIBLE_MIGRATION_VERSION = "24.4.0";
   let needMigration = (currentVersion < NEEDS_MIGRATION_VERSION) || (currentVersion === null);
 
   // Perform the migration
