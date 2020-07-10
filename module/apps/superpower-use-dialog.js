@@ -36,16 +36,15 @@ export default class SuperpowerUseDialog extends Dialog {
     const actorData = actor.data.data;
     const superpowerData = superpower.data.data;
 
-    const isSpell = superpowerData.type === "spell"
     const canAugment = (superpowerData.cost > 0) && ["augment", "enhance"].includes(superpowerData.scaling.mode)
-    const resource = isSpell ? actorData.mainResources.mana : actorData.mainResources.stamina
+    const resource = superpower.isManeuver ? actorData.mainResources.stamina : actorData.mainResources.mana
     const hasPlaceableTemplate = superpower.hasAreaTarget && game.user.can("TEMPLATE_CREATE")
-    const icon = isSpell ? (
-      actorData.mainResources.mana.name === "catalysts"
+    const icon = superpower.isManeuver
+      ? '<i class="fas fa-fist-raised"></i>'
+      : superpower.isConcoction
         ? '<i class="fas fa-flask"></i>' // vial also looks nice
+      // : superpower.isSpell ? (obviously it's a spell if it's not the other two. I'm just slightly paranoid)
         : '<i class="fas fa-magic"></i>'
-    )
-      : '<i class="fas fa-fist-raised"></i>'
     const canCast = superpowerData.cost > 0 && superpowerData.cost <= resource.remaining
     const hintText1 = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastHint1", resource)
     const superpowerName = superpower.data.name
@@ -53,7 +52,7 @@ export default class SuperpowerUseDialog extends Dialog {
     let castConsumeText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastConsume", resource)
     let spendHowMuchText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastSpendHowMuch", resource)
     let noAvailableResourceText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastNoResourcesSpell", resource)
-    if (isSpell && resource.name === "catalyst" && superpowerData.cost > 1) {
+    if (superpower.isConcoction && superpowerData.cost > 1) {
       castConsumeText = castConsumeText.replace("catalyst", "catalysts")
       spendHowMuchText = spendHowMuchText.replace("much catalyst", "many catalysts")
       noAvailableResourceText = noAvailableResourceText.replace("catalyst", "catalysts")

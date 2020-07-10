@@ -347,10 +347,10 @@
       }
     },
     "superpower": {
-      "_comment": "superpower = Spell, Maneuver, or Concoction",
+      "_comment": "superpower = spell, maneuver, or concoction. determined by `powerType` attribute.",
       "templates": ["itemDescription", "activatedEffect", "action", "themed"],
       "cost": 1,
-      "type": "spell",
+      "powerType": "spell",
       "availability": "known",
       "duration": null,
       "components": {

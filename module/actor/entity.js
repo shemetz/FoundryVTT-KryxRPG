@@ -320,13 +320,12 @@ export default class ActorKryx extends Actor {
   /** @override */
   async createOwnedItem(itemData, options) {
 
-    // Assume NPCs are always proficient with weapons and always have spells prepared
+    // Assume NPCs are always proficient with weapons
     if (!this.isPC) {
       let t = itemData.type;
       let initial = {};
       if (t === "weapon") initial["data.proficient"] = true;
       if (["weapon", "equipment"].includes(t)) initial["data.equipped"] = true;
-      if (t === "spell") initial["data.prepared"] = true;
       mergeObject(itemData, initial);
     }
     return super.createOwnedItem(itemData, options);
@@ -415,7 +414,7 @@ export default class ActorKryx extends Actor {
 
     // Update Actor data
     if (shouldConsumeResources && paidCost) {
-      const resource = itemData.type === "spell" ? "mana" : "stamina"
+      const resource = item.isManeuver ? "stamina" : "mana"
       await this.update({
         [`data.mainResources.${resource}.remaining`]: Math.max(this.data.data.mainResources[resource].remaining - paidCost, 0)
       });

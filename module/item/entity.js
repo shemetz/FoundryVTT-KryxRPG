@@ -13,6 +13,30 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
+   * @returns {boolean} true = spell, false = maneuver/concoction
+   */
+  get isSpell() {
+    if (this.data.type !== "superpower") throw new Error("Do not check if a non-superpower item is a spell!")
+    return this.data.data.powerType === "spell"
+  }
+
+  /**
+   * @returns {boolean} true = concoction, false = spell/maneuver
+   */
+  get isConcoction() {
+    if (this.data.type !== "superpower") throw new Error("Do not check if a non-superpower item is a concoction!")
+    return this.data.data.powerType === "concoction"
+  }
+
+  /**
+   * @returns {boolean} true = maneuver, false = spell/concoction
+   */
+  get isManeuver() {
+    if (this.data.type !== "superpower") throw new Error("Do not check if a non-superpower item is a maneuver!")
+    return this.data.data.powerType === "maneuver"
+  }
+
+  /**
    * Determine which ability score modifier is used by this item
    * @type {string|null}
    */
@@ -29,10 +53,11 @@ export default class ItemKryx extends Item {
 
       // Spells - Use Actor spellcasting modifier
       if (this.data.type === "superpower") {
-        if (this.data.data.type === "spell")
-          return actorData.attributes.spellcastingAbility
-        else
+        if (this.isManeuver) {
           return actorData.attributes.maneuverAbility
+        } else {
+          return actorData.attributes.spellcastingAbility
+        }
       }
 
       // Tools - default to Intelligence
@@ -152,24 +177,21 @@ export default class ItemKryx extends Item {
 
     // Superpower - components
     if (itemType === "superpower") {
-      const resource = data.type === "spell" ? actorData.data.mainResources.mana : actorData.data.mainResources.stamina
+      const resource = this.isManeuver ? actorData.data.mainResources.stamina : actorData.data.mainResources.mana
       labels.cost = data.cost
-      labels.isConcoction = actorData.data.mainResources.mana.nameOfEffect
-        === game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalysts")
+      labels.isConcoction = this.isConcoction
       labels.themes = data.themes.value.join(", ") || "(Theme?)"
       labels.components = Object.entries(data.components).reduce((arr, c) => {
         if (c[1] !== true) return arr;
         let letter = c[0].titleCase().slice(0, 1)
-        if (data.type === "spell"
-          && labels.isConcoction
-          && letter === "C")
+        if (this.isConcoction && letter === "C")
           letter = "U" // unstable concoction
         arr.push(letter);
         return arr;
       }, []);
       labels.typeNameCapitalized = resource.nameOfEffect.capitalize()
       labels.concentration = game.i18n.localize(
-        labels.isConcoction ? "KRYX_RPG.ConcentrationConcoction" : "KRYX_RPG.ConcentrationSpell"
+        this.isConcoction ? "KRYX_RPG.ConcentrationConcoction" : "KRYX_RPG.ConcentrationSpell"
       )
       labels.costNameCapitalized = data.cost === 1 ? resource.nameSingular.capitalize() : resource.name.capitalize()
     }
@@ -460,7 +482,7 @@ export default class ItemKryx extends Item {
       "weapon": this._weaponChatData,
       "consumable": this._consumableChatData,
       "loot": this._lootChatData,
-      "spell": this._spellChatData,
+      "superpower": this._superpowerChatData,
       "feat_or_feature": this._featureChatData,
     }[this.data.data.type]
     if (!fn) console.error(`unexpected item data type: ${this.data.type}`)
@@ -545,14 +567,14 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Render a chat card for Spell type data
+   * Render a chat card for spell/concoction/maneuver
    * @return {Object}
    * @private
    */
-  _spellChatData(data, labels, props) {
+  _superpowerChatData(data, labels, props) {
     props.push(
-      labels.level,
-      labels.components,
+      labels.cost,
+      data.themes.value.join(", ") || null,
     );
   }
 

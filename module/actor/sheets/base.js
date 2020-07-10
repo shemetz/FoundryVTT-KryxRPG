@@ -147,11 +147,11 @@ export default class ActorSheetKryx extends ActorSheet {
     const catalog = {} // this object will hold the sections. in 5e code it's "spellbook"
 
     // Add and format a catalog entry
-    const registerSection = (availability, superpowerType) => {
-      const key = availability + "_" + superpowerType
+    const registerSection = (availability, powerType) => {
+      const key = availability + "_" + powerType
       const order = CONFIG.KRYX_RPG.ARSENAL_ORDERING[key]
       const mainResources = data.actor.data.mainResources
-      const resource = superpowerType === "spell" ? mainResources.mana : mainResources.stamina
+      const resource = powerType === "maneuver" ? mainResources.stamina : mainResources.mana
       const superpowerTypeName = resource.nameOfEffect.capitalize()
       const superpowerTypesName = superpowerTypeName + "s" // e.g. "Spells", "Concoctions"
       const superpowerResourceName = resource.nameSingular.capitalize() // e.g. "Mana", "Psi", "Catalyst"
@@ -163,26 +163,31 @@ export default class ActorSheetKryx extends ActorSheet {
         resourceName: superpowerResourceName,
         superpowers: [],
         dataset: {
-          type: "superpower", type_name: superpowerTypeName, availability: availability,
+          type: "superpower", type_name: superpowerTypeName, availability, "power-type": powerType // HTML limitations
         },
       }
     }
 
-    if (data.actor.data.mainResources.mana.limit > 0) {
-      registerSection("atwill", "spell");
-      registerSection("known", "spell");
+    const mainResources = data.actor.data.mainResources
+    if (mainResources.mana.limit > 0) {
+      // no one has both spells and concoctions, it's gonna be fine
+      const isConcoction = mainResources.mana.nameOfEffect
+        === game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalysts")
+      const powerType = isConcoction ? "concoction" : "spell"
+      registerSection("atwill", powerType);
+      registerSection("known", powerType);
     }
 
-    if (data.actor.data.mainResources.stamina.limit > 0) {
+    if (mainResources.stamina.limit > 0) {
       registerSection("known", "maneuver");
     }
 
     // Iterate over every superpower item, adding superpowers to the book by section, sometimes adding sections
     superpowers.forEach(superpower => {
       const availability = superpower.data.availability
-      const superpowerType = superpower.data.type
-      const key = availability + "_" + superpowerType
-      if (!catalog[key]) registerSection(availability, superpowerType)
+      const powerType = superpower.data.powerType
+      const key = availability + "_" + powerType
+      if (!catalog[key]) registerSection(availability, powerType)
       catalog[key].superpowers.push(superpower)
     })
 
@@ -435,7 +440,7 @@ export default class ActorSheetKryx extends ActorSheet {
     if (sameActor) return this._onSortItem(event, itemData);
 
     // Create a spell scroll from a spell item
-    if ((itemData.type === "superpower" && itemData.data.type === "spell") && (this._tabs[0].active === "inventory")) {
+    if ((itemData.type === "superpower" && itemData.data.powerType === "spell") && (this._tabs[0].active === "inventory")) {
       const scroll = await ItemKryx.createScrollFromSpell(itemData);
       itemData = scroll.data;
     }

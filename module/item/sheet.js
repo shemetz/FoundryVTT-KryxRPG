@@ -218,7 +218,7 @@ export default class ItemSheetKryx extends ItemSheet {
   /* -------------------------------------------- */
 
   limitScalingToPossibilities(html) {
-    const allowedOptions = this.item.data.data.type === "spell" ? ["none", "cantrip", "augment"] : ["none", "enhance"]
+    const allowedOptions = this.item.isManeuver ? ["none", "enhance"] : ["none", "cantrip", "augment"]
     html.find(`select[name="data.scaling.mode"] option`).each((i, option) => {
       if (allowedOptions.includes(option.value)) {
         $(option).show()
