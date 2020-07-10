@@ -153,7 +153,8 @@ export default class ItemSheetKryx extends ItemSheet {
       props.push(CONFIG.KRYX_RPG.equipmentTypes[item.data.armor.type]);
       props.push(labels.armor);
     } else if (item.type === "feat_or_feature") {
-      props.push(labels.featureType);
+      if (item.data.themes.value.length)
+        props.push(item.data.themes.value.join(", "))
     }
 
     // Action type
@@ -212,7 +213,8 @@ export default class ItemSheetKryx extends ItemSheet {
     // Activate any Trait Selectors
     html.find('.summary-themes').click(this._onOpenThemesPicker.bind(this));
 
-    this.limitScalingToPossibilities(html)
+    if (this.item.type === "superpower")
+      this.limitScalingToPossibilities(html)
   }
 
   /* -------------------------------------------- */
@@ -269,7 +271,7 @@ export default class ItemSheetKryx extends ItemSheet {
     let possibleThemes;
     const allThemes = Object.keys(KRYX_RPG.themes)
     const actor = this.item.actor
-    if (!actor || !actor.getFlag("kryx_rpg", "preventPickingUnknownThemes")) {
+    if (!actor || actor.getFlag("kryx_rpg", "allowPickingUnknownThemes")) {
       possibleThemes = allThemes
     } else {
       possibleThemes = actor.data.data.traits.themes.value

@@ -198,11 +198,8 @@ export default class ItemKryx extends Item {
 
     // Feat and Feature Items
     else if (itemType === "feat_or_feature") {
-      const act = data.activation;
-      if (act && (act.type === C.abilityActivationTypes.legendary)) labels.featureType = "Legendary Action";
-      else if (act && (act.type === C.abilityActivationTypes.lair)) labels.featureType = "Lair Action";
-      else if (act && act.type) labels.featureType = data.damage.length ? "Attack" : "Action";
-      else labels.featureType = "Passive";
+      labels.featureType = "Feat/Feature/Trait" // TODO - selection between them
+      labels.themes = data.themes.value.join(", ") || "(No Theme)"
     }
 
     // Equipment Items

@@ -653,9 +653,9 @@ KRYX_RPG.characterFlags = {
     section: "Miscellaneous",
     type: Boolean
   },
-  "preventPickingUnknownThemes": {
-    name: "KRYX_RPG.FlagsPreventPickingUnknownThemes",
-    hint: "KRYX_RPG.FlagsPreventPickingUnknownThemesHint",
+  "allowPickingUnknownThemes": {
+    name: "KRYX_RPG.FlagsAllowPickingUnknownThemes",
+    hint: "KRYX_RPG.FlagsAllowPickingUnknownThemesHint",
     section: "Miscellaneous",
     type: Boolean
   },
