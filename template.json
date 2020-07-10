@@ -89,6 +89,9 @@
           "athletics": {
             "proficiency": 0
           },
+          "coercion": {
+            "proficiency": 0
+          },
           "deception": {
             "proficiency": 0
           },
@@ -96,9 +99,6 @@
             "proficiency": 0
           },
           "insight": {
-            "proficiency": 0
-          },
-          "intimidation": {
             "proficiency": 0
           },
           "medicine": {

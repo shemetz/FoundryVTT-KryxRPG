@@ -132,6 +132,16 @@ export const migrateActorData = function (actor) {
       return mergeObject(i, itemUpdate, {enforceTypes: false, inplace: false});
     } else return i;
   });
+
+  //intimidation -> coercion
+  const intimidation = actor.data.skills.intimidation
+  if (intimidation) {
+    updateData["data.skills"] = {
+      "coercion": intimidation,
+      "-=intimidation": null,
+    }
+  }
+
   if (hasItemUpdates) updateData.items = items;
   return updateData;
 };
