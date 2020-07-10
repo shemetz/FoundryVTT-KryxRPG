@@ -319,23 +319,28 @@
   /*  Resting                                  */
   /* ----------------------------------------- */
 
-  .resting {
+  .restingRow {
     flex: none;
     padding: 5px 0;
     margin: 0;
     border-bottom: @borderGroove;
 
-    .restingRow {
-      height: 20px;
-      line-height: 20px;
+    .second-wind.unavailable {
+      color: @colorTan;
+    }
 
-      h4 {
-        flex: auto;
-        margin: 0;
-        font-size: 13px;
-        font-weight: bold;
-        color: @colorOlive;
-      }
+    .second-wind.available:hover {
+      color: #000;
+      text-shadow: 0 0 10px red;
+      cursor: pointer;
+    }
+
+    h4 {
+      flex: auto;
+      margin: 0;
+      font-size: 13px;
+      font-weight: bold;
+      color: @colorOlive;
     }
   }
   /* ----------------------------------------- */

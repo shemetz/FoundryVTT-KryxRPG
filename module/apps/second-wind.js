@@ -77,16 +77,16 @@ export default class SecondWindDialog extends Dialog {
             icon: '<i class="fas fa-medkit"></i>',
             label: "Done",
             callback: html => {
-              resolve(false);
+              resolve(true);
             }
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
             label: "Cancel",
-            callback: reject
+            callback: () => resolve(false)
           }
         },
-        close: reject
+        close: () => resolve(false)
       });
       dlg.render(true);
     });

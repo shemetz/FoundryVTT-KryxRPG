@@ -87,9 +87,9 @@ export default class ActorKryx extends Actor {
       a[abl] = ability.value
     })
     data.saves.fortitude.value = prof * data.saves.fortitude.proficiency + a["con"]
-    data.saves.reflex.value = prof * data.saves.reflex.proficiency + Math.floor((a["str"] + a["dex"])/2)
+    data.saves.reflex.value = prof * data.saves.reflex.proficiency + Math.floor((a["str"] + a["dex"]) / 2)
     data.saves.will.value = prof * data.saves.will.proficiency + Math.floor(
-      ((a["int"] + a["cha"] + a["wis"]) - Math.min(a["int"], a["cha"], a["wis"]))/2
+      ((a["int"] + a["cha"] + a["wis"]) - Math.min(a["int"], a["cha"], a["wis"])) / 2
     )
   }
 
@@ -768,13 +768,17 @@ export default class ActorKryx extends Actor {
    */
   async secondWind({chat = true} = {}) {
     const data = this.data.data;
+    if (!data.attributes.secondWindAvailable) {
+      ui.notifications.warn(`${this.data.name} already used a Second Wind! It will be regained when ${this.data.name} gets a long rest.`)
+      return
+    }
 
     // Take note of the initial hit points and number of hit dice the Actor has
     const hd0 = data.class.level - data.class.hitDiceUsed;
     const hp0 = data.attributes.hp.value;
 
     // Display a Dialog for using a second wind
-    await SecondWindDialog.secondWindDialog({actor: this});
+    const winded = await SecondWindDialog.secondWindDialog({actor: this});
 
     // Note the change in HP and HD which occurred
     const dhd = data.class.level - data.class.hitDiceUsed - hd0;
@@ -788,14 +792,20 @@ export default class ActorKryx extends Actor {
       restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorBonusAction")
     }
 
+    if (!winded && dhp === 0) return
+
+    const stringId = (!winded && dhp !== 0) ? "KRYX_RPG.SecondWindCanceledResult" : "KRYX_RPG.SecondWindResult"
+
     if (chat) {
       ChatMessage.create({
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("KRYX_RPG.SecondWindResult", {name: this.name, dice: -dhd, health: dhp})
+        content: game.i18n.format(stringId, {name: this.name, dice: -dhd, health: dhp})
       });
     }
+
+    this.update({"data.attributes.secondWindAvailable": false})
 
     // Return data summarizing the rest effects
     return {
@@ -840,6 +850,8 @@ export default class ActorKryx extends Actor {
       }
     }
 
+    updateData["data.attributes.secondWindAvailable"] = true
+
     // Recover mana and stamina
     updateData[`data.mainResources.mana.remaining`] = data.mainResources.mana.max;
     updateData[`data.mainResources.stamina.remaining`] = data.mainResources.stamina.max;
@@ -847,7 +859,7 @@ export default class ActorKryx extends Actor {
     // Determine the number of hit dice which may be recovered (half your level rounded up; at least 1; no more than total spent)
     const hitDiceAllowedToRecover = Math.ceil(data.class.level / 2)
     const hitDiceRecovered = Math.min(Math.max(hitDiceAllowedToRecover, 1), data.class.hitDiceUsed);
-    updateData['data.class.hitDiceUsed'] = hitDiceRecovered
+    updateData['data.class.hitDiceUsed'] = data.class.hitDiceUsed - hitDiceRecovered
 
     // Iterate over owned items, restoring uses per day and recovering Hit Dice
     const updateItems = []

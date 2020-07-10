@@ -214,13 +214,15 @@
                 </ul>
 
                 {{!-- Resting --}}
-                <div class="resting restingRow flexrow">
+                <div class="restingRow flexrow">
                     <div>
                         <label class="hit-dice"><b>{{ localize "KRYX_RPG.HitDice" }}:</b>
                             {{data.attributes.hitDiceRemaining}} <span class="sep"> / </span>
                             {{data.details.level}}</label>
                     </div>
-                    <a class="rest second-wind">{{ localize "KRYX_RPG.RestSecondWind" }}</a>
+                    <text class="rest second-wind {{#if
+                            data.attributes.secondWindAvailable}} available {{else}} unavailable {{/if}}">{{ localize
+                            "KRYX_RPG.RestSecondWind" }}</text>
                     <a class="rest short-rest">{{ localize "KRYX_RPG.RestShort" }}</a>
                     <a class="rest long-rest">{{ localize "KRYX_RPG.RestLong" }}</a>
                 </div>
