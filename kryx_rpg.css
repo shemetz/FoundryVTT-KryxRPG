@@ -658,7 +658,7 @@
   display: inline;
 }
 .kryx_rpg.sheet.actor .counters .counter .minor-counter-value {
-  flex: none;
+  flex: 1;
   text-align: left;
 }
 .kryx_rpg.sheet.actor .counters .counter .minor-counter-value > * {
@@ -686,6 +686,9 @@
   padding: 5px 0;
   margin: 0;
   border-bottom: 2px groove #eeede0;
+}
+.kryx_rpg.sheet.actor .restingRow .hit-dice {
+  flex: 1.5;
 }
 .kryx_rpg.sheet.actor .restingRow .second-wind.unavailable {
   color: #7a7971;
@@ -1303,9 +1306,6 @@
   background: rgba(0, 0, 0, 0.05);
   padding: 0 3px;
   margin: 0 3px;
-}
-.kryx_rpg.sheet.actor.character .sheet-header .attributes .hit-dice {
-  font-size: 24px;
 }
 .kryx_rpg.sheet.actor.character .sheet-header .attributes .initiative .attribute-footer input {
   width: 32px;
