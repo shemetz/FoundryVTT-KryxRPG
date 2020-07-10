@@ -1,3 +1,9 @@
+
+const renamedThemes = [
+  ["Protection", "Guardian"],
+  ["Marksmanship", "Marksman"],
+]
+
 /**
  * Perform a system migration for the entire World, applying migrations for Actors, Items, and Compendium packs
  * @return {Promise}      A Promise which resolves once the migration is completed
@@ -159,8 +165,7 @@ const _migrateThemes = function (actor, updateData) {
       actorThemes.push(newTheme)
     }
   }
-  renameTheme("Protection", "Guardian")
-  renameTheme("Marksmanship", "Marksman")
+  for (const [oldTheme, newTheme] of renamedThemes) renameTheme(oldTheme, newTheme)
   updateData["data.traits.themes.value"] = actorThemes
 }
 
@@ -214,8 +219,7 @@ export const migrateItemData = function (item) {
         itemThemes.push(newTheme)
       }
     }
-    renameTheme("Protection", "Guardian")
-    renameTheme("Marksmanship", "Marksman")
+    for (const [oldTheme, newTheme] of renamedThemes) renameTheme(oldTheme, newTheme)
     updateData["data.themes.value"] = itemThemes
   }
 
