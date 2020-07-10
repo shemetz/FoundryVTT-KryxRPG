@@ -4,8 +4,7 @@
         <label>{{ localize "KRYX_RPG.SecondWindSelect" }}</label>
         <div class="form-fields">
             <text>{{hitDiceSize}} ({{hitDiceAmount}} {{ localize "KRYX_RPG.LowercaseAvailable" }})</text>
-            <button id="roll-hd" {{#unless canRoll}}disabled{{
-            /unless}}>
+            <button id="roll-hd" {{#unless canRoll}} disabled {{/unless}}>
             <i class="fas fa-dice-d20"></i> {{ localize "Roll" }}
             </button>
         </div>
