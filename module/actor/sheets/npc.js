@@ -167,10 +167,10 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
    */
   _onRollHealthFormula(event) {
     event.preventDefault();
-    const formula = this.actor.data.data.attributes.hp.formula;
+    const formula = this.actor.data.data.attributes.health.formula;
     if (!formula) return;
-    const hp = new Roll(formula).roll().total;
+    const health = new Roll(formula).roll().total;
     AudioHelper.play({src: CONFIG.sounds.dice});
-    this.actor.update({"data.attributes.hp.value": hp, "data.attributes.hp.max": hp});
+    this.actor.update({"data.attributes.health.value": health, "data.attributes.health.max": health});
   }
 }

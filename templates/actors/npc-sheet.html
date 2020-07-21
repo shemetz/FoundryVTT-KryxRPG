@@ -25,10 +25,6 @@
                     <span>{{lookup config.actorSizes data.traits.size}}</span>
                 </li>
                 <li>
-                    <input type="text" name="data.details.alignment" value="{{data.details.alignment}}"
-                           placeholder="{{ localize 'KRYX_RPG.Alignment' }}"/>
-                </li>
-                <li>
                     <input type="text" name="data.details.type" value="{{data.details.type}}"
                            placeholder="{{ localize 'KRYX_RPG.Type' }}"/>
                 </li>
@@ -43,23 +39,23 @@
                 <li class="attribute health">
                     <h4 class="attribute-name box-title rollable">{{ localize "KRYX_RPG.Health" }}</h4>
                     <div class="attribute-value multiple">
-                        <input name="data.attributes.hp.value" type="text" value="{{data.attributes.hp.value}}"
+                        <input name="data.attributes.health.value" type="text" value="{{data.attributes.health.value}}"
                                data-dtype="Number" placeholder="10"/>
                         <span class="sep"> / </span>
-                        <input name="data.attributes.hp.max" type="text" value="{{data.attributes.hp.max}}"
+                        <input name="data.attributes.health.max" type="text" value="{{data.attributes.health.max}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
                     <footer class="attribute-footer">
-                        <input name="data.attributes.hp.formula" class="hpformula" type="text"
+                        <input name="data.attributes.health.formula" class="healthformula" type="text"
                                placeholder="{{ localize 'KRYX_RPG.HealthFormula' }}"
-                               value="{{data.attributes.hp.formula}}"/>
+                               value="{{data.attributes.health.formula}}"/>
                     </footer>
                 </li>
 
                 <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.ArmorClass" }}</h4>
+                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Defense" }}</h4>
                     <div class="attribute-value">
-                        <input name="data.attributes.ac.value" type="text" value="{{data.attributes.ac.value}}"
+                        <input name="data.attributes.defense.value" type="text" value="{{data.attributes.defense.value}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
                     <footer class="attribute-footer">

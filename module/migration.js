@@ -1,4 +1,4 @@
-export const NEEDS_MIGRATION_VERSION = "24.4.0-2";
+export const NEEDS_MIGRATION_VERSION = "24.9.0-1";
 export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
@@ -8,10 +8,11 @@ const renamedThemes = [
 
 const renamedSkills = [
   ["intimidation", "coercion"],
-  ["acrobatics", "coordination"],
+  // ["acrobatics", "coordination"], // nope!
   ["religion", "divinity"],
   ["nature", "wilderness"],
   ["society", "streetwise"],
+  ["coordination", "acrobatics"],
 ]
 
 /**
@@ -151,6 +152,7 @@ export const migrateActorData = function (actor) {
 
   _migrateThemes(actor, updateData)
   _migrateSkills(actor, updateData)
+  _migrateMiscCharacter(actor, updateData)
 
   if (hasItemUpdates) updateData.items = items;
   return updateData;
@@ -182,6 +184,26 @@ const _migrateSkills = function (actor, updateData) {
   }
   for (const [oldSkill, newSkill] of renamedSkills) renameSkill(oldSkill, newSkill)
   updateData["data.skills"] = updateDataSkills
+}
+
+const _migrateMiscCharacter = function (actor, updateData) {
+  if (typeof(actor.data.class.hitDice) !== undefined) {
+    const updateDataClass = {}
+    updateDataClass['-=hitDice'] = null
+    updateDataClass['-=hitDiceUsed'] = null
+    updateDataClass['healthDice'] = actor.data.class.hitDice
+    updateDataClass['healthDiceUsed'] = actor.data.class.hitDiceUsed
+    updateData["data.class"] = updateDataClass
+  }
+
+  if (typeof(actor.data.attributes.ac) !== undefined) {
+    const updateDataAttributes = {}
+    updateDataAttributes['-=ac'] = null
+    updateDataAttributes['-=hp'] = null
+    updateDataAttributes['defense'] = actor.data.attributes.ac
+    updateDataAttributes['health'] = actor.data.attributes.hp
+    updateData["data.attributes"] = updateDataAttributes
+  }
 }
 
 
@@ -236,6 +258,13 @@ export const migrateItemData = function (item) {
     }
     for (const [oldTheme, newTheme] of renamedThemes) renameTheme(oldTheme, newTheme)
     updateData["data.themes.value"] = itemThemes
+  }
+
+  if (item.data.armor && typeof(item.data.armor.dr) !== undefined) {
+    updateData["data.armor"] = {
+      "-=dr": null,
+      "soak": item.armor.dr,
+    }
   }
 
   // Return the migrated update data

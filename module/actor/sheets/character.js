@@ -43,10 +43,10 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
   getData() {
     const sheetData = super.getData();
 
-    // Temporary HP
-    let hp = sheetData.data.attributes.hp;
-    if (hp.temp === 0) delete hp.temp;
-    if (hp.tempmax === 0) delete hp.tempmax;
+    // Temporary Health
+    let health = sheetData.data.attributes.health;
+    if (health.temp === 0) delete health.temp;
+    if (health.tempmax === 0) delete health.tempmax;
 
     // Resources (not mana/stamina)
     sheetData["resources"] = ["primary", "secondary", "tertiary"].reduce((arr, r) => {

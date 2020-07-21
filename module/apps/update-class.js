@@ -53,7 +53,7 @@ export async function showUpdateClassDialog(actor) {
               "data.class.subclass": $html.find("[name=classSubclass]")[0].value,
               "data.class.progression": $html.find("[name=classProgression]")[0].value,
               "data.class.level": $html.find("[name=classLevel]")[0].value,
-              "data.class.hitDice": KRYX_RPG.systemData.classes[className].archetypes[classArchetype]["hitDice"],
+              "data.class.healthDice": KRYX_RPG.systemData.classes[className].archetypes[classArchetype]["healthDice"],
               "data.attributes.spellcastingAbility": $html.find("[name=spellcastingAbility]")[0].value,
               "data.attributes.maneuverAbility": $html.find("[name=maneuverAbility]")[0].value,
             })

@@ -164,13 +164,13 @@ KRYX_RPG.limitedUsePeriods = {
  * @type {Object}
  */
 KRYX_RPG.equipmentTypes = {
-  "leather": "KRYX_RPG.EquipmentLeather",
-  "hide": "KRYX_RPG.EquipmentHide",
-  "chain": "KRYX_RPG.EquipmentChain",
-  "scale": "KRYX_RPG.EquipmentScale",
-  "plate": "KRYX_RPG.EquipmentPlate",
+  "leather": "KRYX_RPG.EquipmentArmorLeather",
+  "hide": "KRYX_RPG.EquipmentArmorHide",
+  "chain": "KRYX_RPG.EquipmentArmorChain",
+  "scale": "KRYX_RPG.EquipmentArmorScale",
+  "plate": "KRYX_RPG.EquipmentArmorPlate",
   "bonus": "KRYX_RPG.EquipmentBonus",
-  "natural": "KRYX_RPG.EquipmentNatural",
+  "natural": "KRYX_RPG.EquipmentNaturalArmor",
   "shield": "KRYX_RPG.EquipmentShield",
   "clothing": "KRYX_RPG.EquipmentClothing",
   "trinket": "KRYX_RPG.EquipmentTrinket"
@@ -322,18 +322,8 @@ KRYX_RPG.areaTargetTypes = {
 // Healing Types
 KRYX_RPG.healingTypes = {
   "healing": "KRYX_RPG.Healing",
-  "temphp": "KRYX_RPG.HealingTemp"
+  "temphealth": "KRYX_RPG.HealingTemp"
 };
-
-
-/* -------------------------------------------- */
-
-
-/**
- * Enumerate the denominations of hit dice which can apply to classes in the Kryx RPG system
- * @type {Array.<string>}
- */
-KRYX_RPG.hitDieTypes = ["d6", "d8", "d10", "d12"];
 
 
 /* -------------------------------------------- */
@@ -362,7 +352,7 @@ KRYX_RPG.skills = {
   "athletics": "KRYX_RPG.SkillAthletics",
   "brawn": "KRYX_RPG.SkillBrawn",
   "coercion": "KRYX_RPG.SkillCoercion",
-  "coordination": "KRYX_RPG.SkillCoordination",
+  "acrobatics": "KRYX_RPG.SkillAcrobatics",
   "deception": "KRYX_RPG.SkillDeception",
   "divinity": "KRYX_RPG.SkillDivinity",
   "engineering": "KRYX_RPG.SkillEngineering",
@@ -670,77 +660,77 @@ KRYX_RPG.systemData = {
   classes: {
     "Acolyte": {
       "archetypes": {
-        "Priest": {"hitDice": "d6", "progressionChoiceType": "caster"},
-        "Paladin": {"hitDice": "d10", "progressionChoiceType": "gish"},
-        "Avenger": {"hitDice": "d8", "progressionChoiceType": "gish"},
-        "Sacred Fist": {"hitDice": "d8", "progressionChoiceType": "gish"},
+        "Priest": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Paladin": {"healthDice": "d10", "progressionChoiceType": "gish"},
+        "Avenger": {"healthDice": "d8", "progressionChoiceType": "gish"},
+        "Sacred Fist": {"healthDice": "d8", "progressionChoiceType": "gish"},
       },
       "subclassName": "Divine Domain",
     },
     "Alchemist": {
       "archetypes": {
-        "Chemist": {"hitDice": "d6", "progressionChoiceType": "caster"},
-        "Mutant": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+        "Chemist": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Mutant": {"healthDice": "d8", "progressionChoiceType": "spellgish"},
       },
       "subclassName": "Alchemical Discipline",
     },
     "Mage": {
       "archetypes": {
-        "Wizard": {"hitDice": "d6", "progressionChoiceType": "caster"},
-        "Magus": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+        "Wizard": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Magus": {"healthDice": "d8", "progressionChoiceType": "spellgish"},
       },
       "subclassName": "Arcane Tradition",
     },
     "Naturalist": {
       "archetypes": {
-        "Druid": {"hitDice": "d6", "progressionChoiceType": "caster"},
-        "Ranger": {"hitDice": "d8", "progressionChoiceType": "gish"},
-        "Warden": {"hitDice": "d10", "progressionChoiceType": "gish"},
+        "Druid": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Ranger": {"healthDice": "d8", "progressionChoiceType": "gish"},
+        "Warden": {"healthDice": "d10", "progressionChoiceType": "gish"},
       },
       "subclassName": "Circle",
     },
     "Occultist": {
       "archetypes": {
-        "Warlock/Witch": {"hitDice": "d6", "progressionChoiceType": "caster"},
-        "Hexblade": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
+        "Warlock/Witch": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Hexblade": {"healthDice": "d8", "progressionChoiceType": "spellgish"},
       },
       "subclassName": "Otherworldly Patron",
     },
     "Psionicist": {
       "archetypes": {
-        "Psion": {"hitDice": "d6", "progressionChoiceType": "caster"},
-        "Soulknife": {"hitDice": "d10", "progressionChoiceType": "psiongish"},
-        "Monk": {"hitDice": "d8", "progressionChoiceType": "psiongish"},
+        "Psion": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Soulknife": {"healthDice": "d10", "progressionChoiceType": "psiongish"},
+        "Monk": {"healthDice": "d8", "progressionChoiceType": "psiongish"},
       },
       "subclassName": "Psychic Order",
     },
     "Rogue": {
       "archetypes": {
-        "Infiltrator": {"hitDice": "d8", "progressionChoiceType": "gish"},
-        "Spellthief": {"hitDice": "d8", "progressionChoiceType": "spellgish"},
-        "Blood Hunter": {"hitDice": "d8", "progressionChoiceType": "gish"},
+        "Infiltrator": {"healthDice": "d8", "progressionChoiceType": "gish"},
+        "Spellthief": {"healthDice": "d8", "progressionChoiceType": "spellgish"},
+        "Blood Hunter": {"healthDice": "d8", "progressionChoiceType": "gish"},
       },
       "subclassName": "Roguish Subclass",
     },
     "Suffused": {
       "archetypes": {
-        "Sorcerer": {"hitDice": "d6", "progressionChoiceType": "martial"},
-        "Bloodrager": {"hitDice": "d10", "progressionChoiceType": "spellgish"},
+        "Sorcerer": {"healthDice": "d6", "progressionChoiceType": "martial"},
+        "Bloodrager": {"healthDice": "d10", "progressionChoiceType": "spellgish"},
       },
       "subclassName": "Origin",
     },
     "Warrior": {
       "archetypes": {
-        "Battlemaster": {"hitDice": "d10", "progressionChoiceType": "martial"},
-        "Berserker": {"hitDice": "d10", "progressionChoiceType": "martial"},
-        "Dervish": {"hitDice": "d10", "progressionChoiceType": "martial"},
+        "Battlemaster": {"healthDice": "d10", "progressionChoiceType": "martial"},
+        "Berserker": {"healthDice": "d10", "progressionChoiceType": "martial"},
+        "Dervish": {"healthDice": "d10", "progressionChoiceType": "martial"},
       },
       "subclassName": "Martial Specialization",
     },
     "Minstrel": {
       "archetypes": {
-        "Bard": {"hitDice": "d6", "progressionChoiceType": "caster"},
-        "Skald": {"hitDice": "d10", "progressionChoiceType": "gish"},
+        "Bard": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Skald": {"healthDice": "d10", "progressionChoiceType": "gish"},
       },
       "subclassName": "College",
     },
@@ -763,7 +753,7 @@ KRYX_RPG.systemData = {
     "athletics": "str",
     "brawn": "str",
     "coercion": "cha",
-    "coordination": "dex",
+    "acrobatics": "dex",
     "deception": "cha",
     "divinity": "wis",
     "engineering": "int",

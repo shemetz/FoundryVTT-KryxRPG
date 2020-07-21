@@ -1,7 +1,7 @@
 import LongRestDialog from "./long-rest.js";
 
 /**
- * A helper Dialog subclass for rolling Hit Dice on short rest
+ * A helper Dialog subclass for rolling Health Dice on short rest
  * @extends {Dialog}
  */
 export default class ShortRestDialog extends Dialog {
@@ -31,10 +31,10 @@ export default class ShortRestDialog extends Dialog {
   getData() {
     const data = super.getData();
 
-    // Determine Hit Dice
-    data.hitDiceSize = this.actor.data.data.class.hitDice
-    data.hitDiceAmount = this.actor.data.data.class.level - this.actor.data.data.class.hitDiceUsed
-    data.canRoll = data.hitDiceAmount > 0;
+    // Determine Health Dice
+    data.healthDiceSize = this.actor.data.data.class.healthDice
+    data.healthDiceAmount = this.actor.data.data.class.level - this.actor.data.data.class.healthDiceUsed
+    data.canRoll = data.healthDiceAmount > 0;
 
     // Determine rest type
     const variant = game.settings.get("kryx_rpg", "restVariant");
@@ -50,20 +50,20 @@ export default class ShortRestDialog extends Dialog {
   activateListeners(html) {
     super.activateListeners(html);
     let btn = html.find("#roll-hd");
-    btn.click(this._onRollHitDie.bind(this));
+    btn.click(this._onRollHealthDie.bind(this));
     super.activateListeners(html);
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Handle rolling a Hit Die as part of a Short Rest action
+   * Handle rolling a Health Die as part of a Short Rest action
    * @param {Event} event     The triggering click event
    * @private
    */
-  async _onRollHitDie(event) {
+  async _onRollHealthDie(event) {
     event.preventDefault();
-    await this.actor.rollHitDie(this.actor.data.data.class.hitDice);
+    await this.actor.rollHealthDie(this.actor.data.data.class.healthDice);
     this.render();
   }
 

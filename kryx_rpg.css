@@ -489,7 +489,7 @@
   height: 30px;
   line-height: 30px;
 }
-.kryx_rpg.sheet.actor .attributes input.temphp {
+.kryx_rpg.sheet.actor .attributes input.temphealth {
   width: 48%;
 }
 .kryx_rpg.sheet.actor h4.box-title {
@@ -687,7 +687,7 @@
   margin: 0;
   border-bottom: 2px groove #eeede0;
 }
-.kryx_rpg.sheet.actor .restingRow .hit-dice {
+.kryx_rpg.sheet.actor .restingRow .health-dice {
   flex: 1.5;
 }
 .kryx_rpg.sheet.actor .restingRow .second-wind.unavailable {

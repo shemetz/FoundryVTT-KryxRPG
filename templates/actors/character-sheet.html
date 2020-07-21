@@ -38,10 +38,6 @@
                     <input type="text" name="data.details.background" value="{{data.details.background}}"
                            placeholder="{{ localize 'KRYX_RPG.Background' }}"/>
                 </li>
-                <li>
-                    <input type="text" name="data.details.alignment" value="{{data.details.alignment}}"
-                           placeholder="{{ localize 'KRYX_RPG.Alignment' }}"/>
-                </li>
                 <li class="proficiency">
                     <span>
                         {{ localize "KRYX_RPG.Proficiency" }}
@@ -55,19 +51,19 @@
                 <li class="attribute health">
                     <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Health" }}</h4>
                     <div class="attribute-value multiple">
-                        <input name="data.attributes.hp.value" type="text" value="{{data.attributes.hp.value}}"
+                        <input name="data.attributes.health.value" type="text" value="{{data.attributes.health.value}}"
                                data-dtype="Number" placeholder="10"/>
                         <span class="sep"> / </span>
-                        <input name="data.attributes.hp.max" type="text" value="{{data.attributes.hp.max}}"
+                        <input name="data.attributes.health.max" type="text" value="{{data.attributes.health.max}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
                     <footer class="attribute-footer">
-                        <input name="data.attributes.hp.temp" type="text" class="temphp"
+                        <input name="data.attributes.health.temp" type="text" class="temphealth"
                                placeholder="+{{ localize 'KRYX_RPG.Temp' }}"
-                               value="{{data.attributes.hp.temp}}" data-dtype="{{data.attributes.hp.type}}"/>
-                        <input name="data.attributes.hp.tempmax" type="text" class="temphp"
+                               value="{{data.attributes.health.temp}}" data-dtype="{{data.attributes.health.type}}"/>
+                        <input name="data.attributes.health.tempmax" type="text" class="temphealth"
                                placeholder="+{{ localize 'KRYX_RPG.Max' }}"
-                               value="{{data.attributes.hp.tempmax}}" data-dtype="{{data.attributes.hp.type}}"/>
+                               value="{{data.attributes.health.tempmax}}" data-dtype="{{data.attributes.health.type}}"/>
                     </footer>
                 </li>
 
@@ -92,14 +88,14 @@
                 {{/each}}
 
                 <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.ArmorClass" }}</h4>
+                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Defense" }}</h4>
                     <div class="attribute-value">
-                        <input name="data.attributes.ac.value" type="text" value="{{data.attributes.ac.value}}"
+                        <input name="data.attributes.defense.value" type="text" value="{{data.attributes.defense.value}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
-                    {{#if data.attributes.ac.dr}}
+                    {{#if data.attributes.defense.soak}}
                         <footer class="attribute-footer">
-                            <span>DR: {{data.attributes.ac.dr}}</span>
+                            <span>Soak: {{data.attributes.defense.soak}}</span>
                         </footer>
                     {{/if}}
                 </li>
@@ -215,8 +211,8 @@
 
                 {{!-- Resting --}}
                 <div class="restingRow flexrow">
-                    <label class="hit-dice"><b>{{ localize "KRYX_RPG.HitDice" }} ({{ data.class.hitDice }}):</b>
-                        {{data.attributes.hitDiceRemaining}} <span class="sep"> / </span>
+                    <label class="health-dice"><b>{{ localize "KRYX_RPG.HealthDiceLeft" }} ({{ data.class.healthDice }}):</b>
+                        {{data.attributes.healthDiceRemaining}} <span class="sep"> / </span>
                         {{data.details.level}}</label>
                     <text class="rest second-wind {{#if
                             data.attributes.secondWindAvailable}} available {{else}} unavailable {{/if}}">{{ localize

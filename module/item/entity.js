@@ -204,8 +204,8 @@ export default class ItemKryx extends Item {
     // Equipment Items
     else if (itemType === "equipment") {
       const armorText = []
-      if (data.armor.value) armorText.push(`${data.armor.value} AC`)
-      if (data.armor.dr) armorText.push(`${data.armor.dr} DR`)
+      if (data.armor.value) armorText.push(`${data.armor.value} Defense`)
+      if (data.armor.soak) armorText.push(`${data.armor.soak} Soak`)
       labels.armor = armorText.join(", ")
     }
 
@@ -480,7 +480,7 @@ export default class ItemKryx extends Item {
       "loot": this._lootChatData,
       "superpower": this._superpowerChatData,
       "feat_or_feature": this._featureChatData,
-    }[this.data.data.type]
+    }[this.data.type]
     if (!fn) console.error(`unexpected item data type: ${this.data.type}`)
     if (fn) fn.bind(this)(data, labels, props);
 

@@ -14,8 +14,8 @@
           "subclass": "Tempest Domain",
           "progression": "gishHalfHalf",
           "level": 1,
-          "hitDice": "d6",
-          "hitDiceUsed": 0
+          "healthDice": "d6",
+          "healthDiceUsed": 0
         },
         "abilities": {
           "str": {
@@ -49,10 +49,10 @@
           }
         },
         "attributes": {
-          "ac": {
+          "defense": {
             "value": 10
           },
-          "hp": {
+          "health": {
             "value": 10,
             "min": 0,
             "max": 10,
@@ -388,7 +388,7 @@
       "armor": {
         "type": "light",
         "value": 10,
-        "dr": 0,
+        "soak": 0,
         "dex": null
       },
       "strength": 0,

@@ -47,6 +47,10 @@ export default class ActorKryx extends Actor {
 
     // Skill modifiers
     for (const [id, skl] of Object.entries(data.skills)) {
+      if (!KRYX_RPG.systemData.skillAbilities.hasOwnProperty(id)) {
+        console.warn(`deprecated skill was not deleted from ${this.data.name}: ${id}`)
+        continue
+      }
       skl.mod = data.abilities[KRYX_RPG.systemData.skillAbilities[id]].value;
       skl.prof = Math.floor(skl.proficiency * data.attributes.prof);
       skl.total = skl.mod + skl.prof;
@@ -62,15 +66,15 @@ export default class ActorKryx extends Actor {
     init.total = init.mod + init.prof + init.bonus;
     data.attributes.init = init
 
-    // Update DR from items
-    // NOTE: not calculating AC. This is left for other modules, like DynamicEffects.
-    let damageReduction = 0
+    // Update soak (damage reduction) from items
+    // NOTE: not calculating AC/Defense. This is left for other modules, like DynamicEffects.
+    let soak = 0
     for (const item of this.data.items) {
       const itemData = item.data
-      if (item.type !== "equipment" || !itemData.armor || !itemData.equipped || !itemData.armor.dr) continue
-      damageReduction += itemData.armor.dr
+      if (item.type !== "equipment" || !itemData.armor || !itemData.equipped || !itemData.armor.soak) continue
+      soak += itemData.armor.soak
     }
-    data.attributes.ac.dr = damageReduction
+    data.attributes.defense.soak = soak
 
     if (this.items) {
       this._computeResourceProgression();
@@ -102,9 +106,9 @@ export default class ActorKryx extends Actor {
     const data = actorData.data;
 
     const level = data.class.level
-    const hdRemaining = level - data.class.hitDiceUsed
+    const hdRemaining = level - data.class.healthDiceUsed
     data.details.level = level;
-    data.attributes.hitDiceRemaining = hdRemaining;
+    data.attributes.healthDiceRemaining = hdRemaining;
     data.attributes.tier = Math.floor(level / 5) + 1;
     data.attributes.prof = data.attributes.tier + 1;
 
@@ -335,21 +339,21 @@ export default class ActorKryx extends Actor {
 
   /** @override */
   async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-    if (attribute !== "attributes.hp") return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
+    if (attribute !== "attributes.health") return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
 
-    // Get current and delta HP
-    const hp = getProperty(this.data.data, attribute);
-    const tmp = parseInt(hp.temp) || 0;
-    const current = hp.value + tmp;
-    const max = hp.max + (parseInt(hp.tempmax) || 0);
+    // Get current and delta Health
+    const health = getProperty(this.data.data, attribute);
+    const tmp = parseInt(health.temp) || 0;
+    const current = health.value + tmp;
+    const max = health.max + (parseInt(health.tempmax) || 0);
     const delta = isDelta ? value : value - current;
 
-    // For negative changes, deduct from temp HP
+    // For negative changes, deduct from temp health
     let dtmp = delta < 0 ? Math.max(-1 * tmp, delta) : 0;
-    let dhp = delta - dtmp;
+    let deltaHealth = delta - dtmp;
     return this.update({
-      "data.attributes.hp.temp": tmp + dtmp,
-      "data.attributes.hp.value": Math.clamped(hp.value + dhp, 0, max)
+      "data.attributes.health.temp": tmp + dtmp,
+      "data.attributes.health.value": Math.clamped(health.value + deltaHealth, 0, max)
     });
   }
 
@@ -366,20 +370,20 @@ export default class ActorKryx extends Actor {
    */
   async applyDamage(amount = 0, multiplier = 1) {
     amount = Math.floor(parseInt(amount) * multiplier);
-    const hp = this.data.data.attributes.hp;
+    const health = this.data.data.attributes.health;
 
-    // Deduct damage from temp HP first
-    const tmp = parseInt(hp.temp) || 0;
+    // Deduct damage from temp health first
+    const tmp = parseInt(health.temp) || 0;
     const dt = amount > 0 ? Math.min(tmp, amount) : 0;
 
     // Remaining goes to health
-    const tmpMax = parseInt(hp.tempmax) || 0;
-    const dh = Math.clamped(hp.value - (amount - dt), 0, hp.max + tmpMax);
+    const tmpMax = parseInt(health.tempmax) || 0;
+    const dh = Math.clamped(health.value - (amount - dt), 0, health.max + tmpMax);
 
     // Update the Actor
     return this.update({
-      "data.attributes.hp.temp": tmp - dt,
-      "data.attributes.hp.value": dh
+      "data.attributes.health.temp": tmp - dt,
+      "data.attributes.health.value": dh
     });
   }
 
@@ -563,7 +567,7 @@ export default class ActorKryx extends Actor {
    * @return {Promise<Roll|null>}   A Promise which resolves to the Roll instance
    */
   async rollDeathSave(options = {}) {
-
+    // TODO updated to new Dying system (e.g. crits don't put you back at 1)
     // Evaluate a global saving throw bonus
     const speaker = ChatMessage.getSpeaker({actor: this});
     const parts = [];
@@ -595,12 +599,12 @@ export default class ActorKryx extends Actor {
     if (success) {
       let successes = (death.success || 0) + 1;
 
-      // Critical Success = revive with 1hp
+      // Critical Success = revive with 1 health
       if (roll.total === 20) {
         await this.update({
           "data.attributes.death.success": 0,
           "data.attributes.death.failure": 0,
-          "data.attributes.hp.value": 1
+          "data.attributes.health.value": 1
         });
         await ChatMessage.create({
           content: game.i18n.format("KRYX_RPG.DeathSaveCriticalSuccess", {name: this.name}),
@@ -645,18 +649,18 @@ export default class ActorKryx extends Actor {
   /* -------------------------------------------- */
 
   /**
-   * Roll a hit die of the appropriate type, gaining hit points equal to the die roll plus your CON modifier
-   * @param {string} denomination    The hit denomination of hit die to roll. Example "d8"
+   * Roll a health die of the appropriate type, gaining health equal to the die roll plus your CON modifier
+   * @param {string} denomination    The denomination of health die to roll. Example "d8"
    */
-  async rollHitDie(denomination) {
+  async rollHealthDie(denomination) {
     // Prepare roll data
     const parts = [`1${denomination}`, "@abilities.con.value"];
-    const title = game.i18n.localize("KRYX_RPG.HitDiceRoll");
+    const title = game.i18n.localize("KRYX_RPG.HealthDiceRoll");
     const rollData = duplicate(this.data.data);
 
     // Call the roll helper utility
     const roll = await damageRoll({
-      event: new Event("hitDie"),
+      event: new Event("hitDie"), // TODO - keep or rename? maybe useful for modules
       parts: parts,
       data: rollData,
       title: title,
@@ -668,10 +672,10 @@ export default class ActorKryx extends Actor {
     if (!roll) return;
 
     // Adjust actor data
-    await this.update({"data.class.hitDiceUsed": this.data.data.class.hitDiceUsed + 1});
-    const hp = this.data.data.attributes.hp;
-    const dhp = Math.min(hp.max - hp.value, roll.total);
-    return this.update({"data.attributes.hp.value": hp.value + dhp});
+    await this.update({"data.class.healthDiceUsed": this.data.data.class.healthDiceUsed + 1});
+    const health = this.data.data.attributes.health;
+    const delta = Math.min(health.max - health.value, roll.total);
+    return this.update({"data.attributes.health.value": health.value + delta});
   }
 
   /* -------------------------------------------- */
@@ -679,18 +683,18 @@ export default class ActorKryx extends Actor {
   /**
    * Cause this Actor to take a Short Rest
    * During a Short Rest resources and limited item uses may be recovered
-   * @param {boolean} dialog  Present a dialog window which allows for rolling hit dice as part of the Short Rest
+   * @param {boolean} dialog  Present a dialog window which allows for rolling health dice as part of the Short Rest
    * @param {boolean} chat    Summarize the results of the rest workflow as a chat message
    * @return {Promise}        A Promise which resolves once the short rest workflow has completed
    */
   async shortRest({dialog = true, chat = true} = {}) {
     const data = this.data.data;
 
-    // Take note of the initial hit points and number of hit dice the Actor has
-    const hd0 = data.class.level - data.class.hitDiceUsed;
-    const hp0 = data.attributes.hp.value;
+    // Take note of the initial health and number of health dice the Actor has
+    const hd0 = data.class.level - data.class.healthDiceUsed;
+    const health0 = data.attributes.health.value;
 
-    // Display a Dialog for rolling hit dice
+    // Display a Dialog for rolling health dice
     let newDay = false;
     if (dialog) {
       try {
@@ -700,9 +704,9 @@ export default class ActorKryx extends Actor {
       }
     }
 
-    // Note the change in HP and HD which occurred
-    const dhd = data.class.level - data.class.hitDiceUsed - hd0;
-    const dhp = data.attributes.hp.value - hp0;
+    // Note the change in Health and HD which occurred
+    const dhd = data.class.level - data.class.healthDiceUsed - hd0;
+    const deltaHealth = data.attributes.health.value - health0;
 
     // Recover character resources
     const updateData = {};
@@ -742,14 +746,14 @@ export default class ActorKryx extends Actor {
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("KRYX_RPG.ShortRestResult", {name: this.name, dice: -dhd, health: dhp})
+        content: game.i18n.format("KRYX_RPG.ShortRestResult", {name: this.name, dice: -dhd, health: deltaHealth})
       });
     }
 
     // Return data summarizing the rest effects
     return {
       dhd: dhd,
-      dhp: dhp,
+      deltaHealth: deltaHealth,
       updateData: updateData,
       updateItems: updateItems,
       newDay: newDay
@@ -761,7 +765,7 @@ export default class ActorKryx extends Actor {
 
   /**
    * Cause this Actor to spend a Second Wind
-   * During a Second Wind hit dice are spent to regain hit points
+   * During a Second Wind health dice are spent to regain health
    * @param {boolean} chat    Summarize the results of the rest workflow as a chat message
    * @return {Promise}        A Promise which resolves once the short rest workflow has completed
    */
@@ -772,16 +776,16 @@ export default class ActorKryx extends Actor {
       return
     }
 
-    // Take note of the initial hit points and number of hit dice the Actor has
-    const hd0 = data.class.level - data.class.hitDiceUsed;
-    const hp0 = data.attributes.hp.value;
+    // Take note of the initial health and number of health dice the Actor has
+    const hd0 = data.class.level - data.class.healthDiceUsed;
+    const health0 = data.attributes.health.value;
 
     // Display a Dialog for using a second wind
     const winded = await SecondWindDialog.secondWindDialog({actor: this});
 
-    // Note the change in HP and HD which occurred
-    const dhd = data.class.level - data.class.hitDiceUsed - hd0;
-    const dhp = data.attributes.hp.value - hp0;
+    // Note the change in Health and HD which occurred
+    const dhd = data.class.level - data.class.healthDiceUsed - hd0;
+    const deltaHealth = data.attributes.health.value - health0;
 
     // Display a Chat Message summarizing the rest effects
     let restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorAction")
@@ -791,16 +795,16 @@ export default class ActorKryx extends Actor {
       restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorBonusAction")
     }
 
-    if (!winded && dhp === 0) return
+    if (!winded && deltaHealth === 0) return
 
-    const stringId = (!winded && dhp !== 0) ? "KRYX_RPG.SecondWindCanceledResult" : "KRYX_RPG.SecondWindResult"
+    const stringId = (!winded && deltaHealth !== 0) ? "KRYX_RPG.SecondWindCanceledResult" : "KRYX_RPG.SecondWindResult"
 
     if (chat) {
       ChatMessage.create({
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format(stringId, {name: this.name, dice: -dhd, health: dhp})
+        content: game.i18n.format(stringId, {name: this.name, dice: -dhd, health: deltaHealth})
       });
     }
 
@@ -809,14 +813,14 @@ export default class ActorKryx extends Actor {
     // Return data summarizing the rest effects
     return {
       dhd: dhd,
-      dhp: dhp,
+      deltaHealth: deltaHealth,
     }
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Take a long rest, recovering HP, HD, resources, and spell slots
+   * Take a long rest, recovering Health, HD, resources, and spell slots
    * @param {boolean} dialog  Present a confirmation dialog window whether or not to take a long rest
    * @param {boolean} chat    Summarize the results of the rest workflow as a chat message
    * @return {Promise}        A Promise which resolves once the long rest workflow has completed
@@ -834,12 +838,12 @@ export default class ActorKryx extends Actor {
       }
     }
 
-    // Recover hit points to full, and eliminate any existing temporary HP
-    const dhp = data.attributes.hp.max - data.attributes.hp.value;
+    // Recover health to full, and eliminate any existing temporary Health
+    const deltaHealth = data.attributes.health.max - data.attributes.health.value;
     const updateData = {
-      "data.attributes.hp.value": data.attributes.hp.max,
-      "data.attributes.hp.temp": 0,
-      "data.attributes.hp.tempmax": 0
+      "data.attributes.health.value": data.attributes.health.max,
+      "data.attributes.health.temp": 0,
+      "data.attributes.health.tempmax": 0
     };
 
     // Recover character resources
@@ -855,12 +859,12 @@ export default class ActorKryx extends Actor {
     updateData[`data.mainResources.mana.remaining`] = data.mainResources.mana.max;
     updateData[`data.mainResources.stamina.remaining`] = data.mainResources.stamina.max;
 
-    // Determine the number of hit dice which may be recovered (half your level rounded up; at least 1; no more than total spent)
-    const hitDiceAllowedToRecover = Math.ceil(data.class.level / 2)
-    const hitDiceRecovered = Math.min(Math.max(hitDiceAllowedToRecover, 1), data.class.hitDiceUsed);
-    updateData['data.class.hitDiceUsed'] = data.class.hitDiceUsed - hitDiceRecovered
+    // Determine the number of health dice which may be recovered (half your level rounded up; at least 1; no more than total spent)
+    const healthDiceAllowedToRecover = Math.ceil(data.class.level / 2)
+    const healthDiceRecovered = Math.min(Math.max(healthDiceAllowedToRecover, 1), data.class.healthDiceUsed);
+    updateData['data.class.healthDiceUsed'] = data.class.healthDiceUsed - healthDiceRecovered
 
-    // Iterate over owned items, restoring uses per day and recovering Hit Dice
+    // Iterate over owned items, restoring uses per day and recovering Health Dice
     const updateItems = []
     const recovery = newDay ? ["sr", "lr", "day"] : ["sr", "lr"];
     for (let item of this.items) {
@@ -895,14 +899,14 @@ export default class ActorKryx extends Actor {
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("KRYX_RPG.LongRestResult", {name: this.name, health: dhp, dice: hitDiceRecovered})
+        content: game.i18n.format("KRYX_RPG.LongRestResult", {name: this.name, health: deltaHealth, dice: healthDiceRecovered})
       });
     }
 
     // Return data summarizing the rest effects
     return {
-      dhd: hitDiceRecovered,
-      dhp: dhp,
+      dhd: healthDiceRecovered,
+      deltaHealth: deltaHealth,
       updateData: updateData,
       updateItems: updateItems,
       newDay: newDay

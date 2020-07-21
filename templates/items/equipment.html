@@ -82,7 +82,7 @@
 
             {{!-- Armor Class --}}
             <div class="form-group">
-                <label>{{ localize "KRYX_RPG.ArmorClass" }}</label>
+                <label>{{ localize "KRYX_RPG.Defense" }}</label>
                 <div class="form-fields">
                     <input type="text" name="data.armor.value" value="{{data.armor.value}}" data-dtype="Number"/>
                 </div>
@@ -97,11 +97,11 @@
                 </div>
             </div>
 
-            {{!-- Damage Reduction --}}
+            {{!-- Soak (Damage Reduction) --}}
             <div class="form-group">
-                <label>{{ localize "KRYX_RPG.ItemEquipmentDamageReduction" }}</label>
+                <label>{{ localize "KRYX_RPG.ItemEquipmentSoak" }}</label>
                 <div class="form-fields">
-                    <input type="text" name="data.armor.dr" value="{{data.armor.dr}}" data-dtype="Number"/>
+                    <input type="text" name="data.armor.soak" value="{{data.armor.soak}}" data-dtype="Number"/>
                 </div>
             </div>
 
