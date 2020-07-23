@@ -430,7 +430,7 @@ KRYX_RPG.weaponProperties = {
   "sil": "KRYX_RPG.WeaponPropertiesSil",
 };
 
-// Spell Schools
+// Themes
 KRYX_RPG.themes = {
   "Acid": "KRYX_RPG.ThemeAcid",
   "Air": "KRYX_RPG.ThemeAir",
@@ -474,6 +474,15 @@ KRYX_RPG.themes = {
   "Unholy": "KRYX_RPG.ThemeUnholy",
   "Vanguard": "KRYX_RPG.ThemeVanguard",
   "Water": "KRYX_RPG.ThemeWater",
+};
+
+KRYX_RPG.powerSources = {
+  "arcane": "KRYX_RPG.PowerSourceArcane",
+  "divine": "KRYX_RPG.PowerSourceDivine",
+  "harmonic": "KRYX_RPG.PowerSourceHarmonic",
+  "occult": "KRYX_RPG.PowerSourceOccult",
+  "primal": "KRYX_RPG.PowerSourcePrimal",
+  "psionic": "KRYX_RPG.PowerSourcePsionic"
 };
 
 /* -------------------------------------------- */

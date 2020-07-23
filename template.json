@@ -143,6 +143,7 @@
         },
         "traits": {
           "size": "medium",
+          "powerSource": "",
           "senses": "",
           "languages": {
             "value": [],
