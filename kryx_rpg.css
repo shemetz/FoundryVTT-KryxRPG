@@ -605,7 +605,7 @@
   border-radius: 3px;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill {
-  height: 24px;
+  height: 20px;
   padding: 3px 2px;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill:nth-child(even) {
