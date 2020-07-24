@@ -392,8 +392,10 @@ export default class ItemKryx extends Item {
       ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoSource", {name: this.name, type: typeLabel}));
       return false;
     }
-    if (!quantity || (quantity - amount < 0)) {
-      ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoQuantity", {name: this.name, type: typeLabel}));
+    if (quantity - amount < 0) {
+      ui.notifications.warn(game.i18n.format("KRYX_RPG.ConsumeWarningNoQuantity", {
+        name: this.name, type: typeLabel, quantity, amount, charname: actor.name
+      }));
       return false;
     }
 

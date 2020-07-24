@@ -128,7 +128,7 @@
   "KRYX_RPG.ConsumeCharges": "Item Uses",
   "KRYX_RPG.ConsumeMaterial": "Material",
   "KRYX_RPG.ConsumeTitle": "Resource Consumption",
-  "KRYX_RPG.ConsumeWarningNoQuantity": "{name} has run out of it's designated {type}!",
+  "KRYX_RPG.ConsumeWarningNoQuantity": "{name} has run out of its designated {type}! {charname} has {quantity} left, but this requires {amount}!",
   "KRYX_RPG.ConsumeWarningNoResource": "{name} is designated to consume {type} but no resource is specified!",
   "KRYX_RPG.ConsumeWarningNoSource": "The designated {type} source that {name} consumes no longer exists!",
   "KRYX_RPG.Consumed": "Consumed",
