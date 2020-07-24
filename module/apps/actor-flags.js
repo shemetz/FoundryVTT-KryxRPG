@@ -67,8 +67,7 @@ export default class ActorSheetFlags extends BaseEntitySheet {
    * @private
    */
   _getBonuses() {
-    const bonuses = [
-      {name: "data.bonuses.initiative", label: "KRYX_RPG.BonusInitiative"},
+    const bonuses1 = [
       {name: "data.bonuses.mwak.attack", label: "KRYX_RPG.BonusMWAttack"},
       {name: "data.bonuses.mwak.damage", label: "KRYX_RPG.BonusMWDamage"},
       {name: "data.bonuses.rwak.attack", label: "KRYX_RPG.BonusRWAttack"},
@@ -77,14 +76,20 @@ export default class ActorSheetFlags extends BaseEntitySheet {
       {name: "data.bonuses.msak.damage", label: "KRYX_RPG.BonusMSDamage"},
       {name: "data.bonuses.rsak.attack", label: "KRYX_RPG.BonusRSAttack"},
       {name: "data.bonuses.rsak.damage", label: "KRYX_RPG.BonusRSDamage"},
+    ]
+    const bonuses2 = [
+      {name: "data.bonuses.initiative", label: "KRYX_RPG.BonusInitiative"},
       {name: "data.bonuses.abilities.check", label: "KRYX_RPG.BonusAbilityCheck"},
       {name: "data.bonuses.abilities.save", label: "KRYX_RPG.BonusAbilitySave"},
       {name: "data.bonuses.abilities.skill", label: "KRYX_RPG.BonusAbilitySkill"},
       {name: "data.bonuses.spell_dc", label: "KRYX_RPG.BonusSpellDC"},
       {name: "data.bonuses.maneuver_dc", label: "KRYX_RPG.BonusManeuverDC"},
-    ];
+    ]
+    const showBonuses1 = this.entity.getFlag("kryx_rpg", "showDamageImmunityAndSuch")
+    let bonuses = showBonuses1 ? bonuses1 : []
+    bonuses = bonuses.concat(bonuses2)
     for (let b of bonuses) {
-      b.value = getProperty(this.object.data, b.name) || "";
+      b.value = getProperty(this.object.data, b.name);
     }
     return bonuses;
   }

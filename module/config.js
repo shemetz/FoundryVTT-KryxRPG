@@ -660,6 +660,12 @@ KRYX_RPG.characterFlags = {
     section: "Miscellaneous",
     type: Boolean
   },
+  "showDamageImmunityAndSuch": {
+    name: "KRYX_RPG.FlagsShowDamageImmunityAndSuch",
+    hint: "KRYX_RPG.FlagsShowDamageImmunityAndSuchHint",
+    section: "Miscellaneous",
+    type: Boolean
+  },
 };
 
 // Configure allowed status flags

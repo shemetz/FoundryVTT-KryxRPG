@@ -53,6 +53,7 @@ export default class ActorSheetKryx extends ActorSheet {
       cssClass: isOwner ? "editable" : "locked",
       isCharacter: this.entity.data.type === "character",
       isNPC: this.entity.data.type === "npc",
+      showDamageImmunityAndSuch: this.entity.getFlag("kryx_rpg", "kryx_rpg.showDamageImmunityAndSuch"),
       config: CONFIG.KRYX_RPG,
     };
 

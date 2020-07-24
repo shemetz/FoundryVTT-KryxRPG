@@ -53,17 +53,19 @@
         </ul>
     </div>
 
-    <div class="form-group {{data.traits.di.cssClass}}">
-        <label>{{localize "KRYX_RPG.DamImm"}}</label>
-        <a class="trait-selector" data-options="damageTypes" data-target="data.traits.di">
-            <i class="fas fa-edit"></i>
-        </a>
-        <ul class="traits-list">
-            {{#each data.traits.di.selected as |v k|}}
-                <li class="tag {{k}}">{{v}}</li>
-            {{/each}}
-        </ul>
-    </div>
+    {{#if showDamageImmunityAndSuch}}
+        <div class="form-group {{data.traits.di.cssClass}}">
+            <label>{{localize "KRYX_RPG.DamImm"}}</label>
+            <a class="trait-selector" data-options="damageTypes" data-target="data.traits.di">
+                <i class="fas fa-edit"></i>
+            </a>
+            <ul class="traits-list">
+                {{#each data.traits.di.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    {{/if}}
 
     <div class="form-group {{data.traits.dr.cssClass}}">
         <label>{{localize "KRYX_RPG.DamRes"}}</label>
@@ -77,29 +79,33 @@
         </ul>
     </div>
 
-    <div class="form-group {{data.traits.dv.cssClass}}">
-        <label>{{localize "KRYX_RPG.DamVuln"}}</label>
-        <a class="trait-selector" data-options="damageTypes" data-target="data.traits.dv">
-            <i class="fas fa-edit"></i>
-        </a>
-        <ul class="traits-list">
-            {{#each data.traits.dv.selected as |v k|}}
-                <li class="tag {{k}}">{{v}}</li>
-            {{/each}}
-        </ul>
-    </div>
+    {{#if showDamageImmunityAndSuch}}
+        <div class="form-group {{data.traits.dv.cssClass}}">
+            <label>{{localize "KRYX_RPG.DamVuln"}}</label>
+            <a class="trait-selector" data-options="damageTypes" data-target="data.traits.dv">
+                <i class="fas fa-edit"></i>
+            </a>
+            <ul class="traits-list">
+                {{#each data.traits.dv.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    {{/if}}
 
-    <div class="form-group {{data.traits.ci.cssClass}}">
-        <label>{{localize "KRYX_RPG.ConditionImmunities"}}</label>
-        <a class="trait-selector" data-options="conditionTypes" data-target="data.traits.ci">
-            <i class="fas fa-edit"></i>
-        </a>
-        <ul class="traits-list">
-            {{#each data.traits.ci.selected as |v k|}}
-                <li class="tag {{k}}">{{v}}</li>
-            {{/each}}
-        </ul>
-    </div>
+    {{#if showDamageImmunityAndSuch}}
+        <div class="form-group {{data.traits.ci.cssClass}}">
+            <label>{{localize "KRYX_RPG.ConditionImmunities"}}</label>
+            <a class="trait-selector" data-options="conditionTypes" data-target="data.traits.ci">
+                <i class="fas fa-edit"></i>
+            </a>
+            <ul class="traits-list">
+                {{#each data.traits.ci.selected as |v k|}}
+                    <li class="tag {{k}}">{{v}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    {{/if}}
 
     {{#if isCharacter}}
         <div class="form-group {{data.traits.weaponProf.cssClass}}">
@@ -126,9 +132,4 @@
             </ul>
         </div>
     {{/if}}
-
-    <div class="form-group ">
-        <label>{{localize "KRYX_RPG.SpecialTraits"}}</label>
-        <a class="configure-flags"><i class="fas fa-cog"></i></a>
-    </div>
 </div>

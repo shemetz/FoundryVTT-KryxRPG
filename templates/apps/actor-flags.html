@@ -32,6 +32,10 @@
 
     <h3 class="form-header">{{localize "KRYX_RPG.Bonuses"}}</h3>
     <p class="notes">{{localize "KRYX_RPG.BonusesHint"}}</p>
+    <div class="form-group">
+        <label>{{localize b.label}}</label>
+        <input type="text" name="{{b.name}}" value="{{b.value}}"/>
+    </div>
     {{#each bonuses as |b|}}
         <div class="form-group">
             <label>{{localize b.label}}</label>
