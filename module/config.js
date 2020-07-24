@@ -380,7 +380,14 @@ KRYX_RPG.superpowerAvailability = {
   "spellbook": "KRYX_RPG.SuperpowerAvailabilitySpellbook", // in spellbook and not currently known (Wizard, Mage)
 };
 
-/* -------------------------------------------- */
+KRYX_RPG.featureTypes = {
+  "classFeature": "KRYX_RPG.FeatureTypeClassFeature",
+  "feat": "KRYX_RPG.FeatureTypeFeat",
+  "speciesTrait": "KRYX_RPG.FeatureTypeSpeciesTrait",
+  "fightingStyle": "KRYX_RPG.FeatureTypeFightingStyle",
+  "boon": "KRYX_RPG.FeatureTypeBoon",
+  // others will likely be added here
+};
 
 /**
  * The available choices for how superpower damage scaling may be computed
@@ -620,25 +627,25 @@ KRYX_RPG.characterFlags = {
   "savageAttacker": {
     name: "KRYX_RPG.FlagsSavageAttacker",
     hint: "KRYX_RPG.FlagsSavageAttackerHint",
-    section: "Feats & Features",
+    section: "Features",
     type: Boolean
   },
   "halflingLucky": {
     name: "KRYX_RPG.FlagsHalflingLucky",
     hint: "KRYX_RPG.FlagsHalflingLuckyHint",
-    section: "Feats & Features",
+    section: "Features",
     type: Boolean
   },
   "reliableTalent": {
     name: "KRYX_RPG.FlagsReliableTalent",
     hint: "KRYX_RPG.FlagsReliableTalentHint",
-    section: "Feats & Features",
+    section: "Features",
     type: Boolean
   },
   "earForDeceit": {
     name: "KRYX_RPG.FlagsEarForDeceit",
     hint: "KRYX_RPG.FlagsEarForDeceitHint",
-    section: "Feats & Features",
+    section: "Features",
     type: Boolean
   },
   "carryingCapacityMultiplier": {

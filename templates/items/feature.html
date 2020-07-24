@@ -10,13 +10,19 @@
             </h1>
 
             <div class="item-subtitle">
-                <h4 class="item-type">{{data.featureType}}</h4>
+                <h4 class="item-type">{{itemType}}</h4>
                 <span class="item-status">{{itemStatus}}</span>
             </div>
 
             <ul class="summary flexrow">
                 <li>
-                    {{data.featureType}}
+                    <select name="data.featureType">
+                        {{#select data.featureType}}
+                            {{#each config.featureTypes as |name key|}}
+                                <option value="{{key}}">{{name}}</option>
+                            {{/each}}
+                        {{/select}}
+                    </select>
                 </li>
                 <li style="margin-left: 5px">
                     <a class="summary-themes" disallow-custom>{{labels.themes}}</a>

@@ -87,7 +87,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     };
 
     // Partition items by category
-    let [inventoryItems, superpowers, feats_and_features] = data.items.reduce((arr, item) => {
+    let [inventoryItems, superpowers, featuresItems] = data.items.reduce((arr, item) => {
 
       // Item details
       item.img = item.img || DEFAULT_TOKEN;
@@ -104,7 +104,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
       // Classify items into types
       if (item.type === "superpower") arr[1].push(item);
-      else if (item.type === "feat_or_feature") arr[2].push(item);
+      else if (item.type === "feature") arr[2].push(item);
       else if (Object.keys(inventory).includes(item.type)) arr[0].push(item);
       else console.error("KryxRPG | Unfamiliar item type: " + item.type)
       return arr;
@@ -113,7 +113,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     // Apply active item filters
     inventoryItems = this._filterItems(inventoryItems, this._filters.inventory);
     superpowers = this._filterItems(superpowers, this._filters.arsenal);
-    const features = this._filterItems(feats_and_features, this._filters.features);
+    const features = this._filterItems(featuresItems, this._filters.features);
 
     // Organize Arsenal (available superpowers)
     const arsenal = this._prepareArsenalTab(data, superpowers);
@@ -135,13 +135,13 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
         label: "KRYX_RPG.FeatureActive",
         items: [],
         hasActions: true,
-        dataset: {type: "feat_or_feature", "activation.type": "action", type_name: "Feat/Feature"}
+        dataset: {type: "feature", "activation.type": "action", type_name: "Feature"}
       },
       passive: {
         label: "KRYX_RPG.FeaturePassive",
         items: [],
         hasActions: false,
-        dataset: {type: "feat_or_feature", type_name: "Feat/Feature"}
+        dataset: {type: "feature", type_name: "Feature"}
       }
     };
     for (let f of features) {
@@ -166,6 +166,10 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     if (item.type === "superpower") {
       item.toggleClass = item.data.availability !== "spellbook" ? "fixed" : "";
       item.toggleTitle = game.i18n.localize(KRYX_RPG.superpowerAvailability[item.data.availability]);
+    } else if (item.type === "feature") {
+      const isActive = getProperty(item.data, "isActivated");
+      item.toggleClass = isActive ? "active" : "";
+      item.toggleTitle = game.i18n.localize(isActive ? "KRYX_RPG.FeatureIsActivated" : "KRYX_RPG.FeatureIsNotActivated")
     } else {
       const isActive = getProperty(item.data, "equipped");
       item.toggleClass = isActive ? "active" : "";
@@ -273,7 +277,12 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     event.preventDefault();
     const itemId = event.currentTarget.closest(".item").dataset.itemId;
     const item = this.actor.getOwnedItem(itemId);
-    const attr = item.data.type === "superpower" ? "data.preparation.prepared" : "data.equipped";
+    let attr
+    if (item.data.type === "superpower")
+      attr = "data.preparation.prepared"
+    else if (item.data.type === "feature")
+      attr = "data.isActivated"
+    else attr = "data.equipped"
     return item.update({[attr]: !getProperty(item.data, attr)});
   }
 

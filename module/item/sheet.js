@@ -123,7 +123,7 @@ export default class ItemSheetKryx extends ItemSheet {
       return item.data.equipped ? "Equipped" : "Unequipped";
     } else if (item.type === "tool") {
       return item.data.proficient ? "Proficient" : "Not Proficient";
-    }
+    } else return null
   }
 
   /* -------------------------------------------- */
@@ -152,7 +152,7 @@ export default class ItemSheetKryx extends ItemSheet {
     } else if (item.type === "equipment") {
       props.push(CONFIG.KRYX_RPG.equipmentTypes[item.data.armor.type]);
       props.push(labels.armor);
-    } else if (item.type === "feat_or_feature") {
+    } else if (item.type === "feature") {
       if (item.data.themes.value.length)
         props.push(item.data.themes.value.join(", "))
     }

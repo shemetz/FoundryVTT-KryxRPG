@@ -274,7 +274,7 @@
     }
   },
   "Item": {
-    "types": ["superpower", "feat_or_feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"],
+    "types": ["superpower", "feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"],
     "templates": {
       "itemDescription": {
         "description": {
@@ -301,7 +301,7 @@
       "activatedEffect": {
         "activation": {
           "type": "",
-           "cost": null,
+          "cost": null,
           "condition": ""
         },
         "duration": {
@@ -327,7 +327,8 @@
           "type": "",
           "target": null,
           "amount": null
-        }
+        },
+        "isActivated": false
       },
       "action": {
         "ability": null,
@@ -396,10 +397,10 @@
       "stealth": false,
       "proficient": true
     },
-    "feat_or_feature": {
-      "_comment": "featureType can be 'feature', 'feat', 'trait', potentially more in the future",
+    "feature": {
+      "_comment": "featureType can be 'feature', 'feat', 'trait', 'fighting style'",
       "templates": ["itemDescription", "activatedEffect", "action", "themed"],
-      "featureType": "feature",
+      "featureType": "classFeature",
       "recharge": {
         "value": null,
         "charged": false

@@ -15,6 +15,7 @@
             {{#if section.hasActions}}
                 <div class="item-detail item-uses">{{localize "KRYX_RPG.Uses"}}</div>
                 <div class="item-detail item-action">{{localize "KRYX_RPG.Usage"}}</div>
+                <div class="item-detail item-feature-type">{{localize "KRYX_RPG.FeatureType"}}</div>
             {{/if}}
 
             {{#if ../owner}}
@@ -36,6 +37,14 @@
                         <div class="item-image" style="background-image: url({{item.img}})"></div>
                         <h4>{{item.name}}</h4>
                     </div>
+
+                    {{#if item.labels.canBeActivated}}
+                        <div class="item-name feature-activated">
+                            <a class="item-control item-toggle {{item.toggleClass}}" title='{{item.toggleTitle}}'>
+                                <i class="fas fa-star-half-alt"></i>
+                            </a>
+                        </div>
+                    {{/if}}
 
                     {{#if section.hasActions}}
                         <div class="item-detail item-uses">
@@ -64,6 +73,10 @@
                             Level {{item.data.levels}}
                         </div>
                     {{/if}}
+
+                    <div class="item-detail item-feature-type">
+                        {{item.labels.featureTypeName}}
+                    </div>
 
                     {{#if ../../owner}}
                         <div class="item-controls">

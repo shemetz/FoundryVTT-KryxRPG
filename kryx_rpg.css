@@ -817,6 +817,13 @@
   width: 24px;
   text-align: center;
 }
+.kryx_rpg.sheet.actor .inventory-list .item .item-feature-type {
+  width: 100px;
+}
+.kryx_rpg.sheet.actor .inventory-list .item .feature-activated {
+  flex: 0.05;
+  text-align: center;
+}
 .kryx_rpg.sheet.actor .inventory-list .item .item-properties {
   margin-top: 3px;
 }
@@ -858,6 +865,9 @@
   border-right: none;
 }
 .kryx_rpg.sheet.actor .inventory-list .item-detail.item-action {
+  flex: 0 0 100px;
+}
+.kryx_rpg.sheet.actor .inventory-list .item-feature-type {
   flex: 0 0 100px;
 }
 .kryx_rpg.sheet.actor .inventory-list .item-weight {
@@ -1426,6 +1436,12 @@
 .kryx_rpg.sheet.actor.character .inventory .item-controls .item-toggle.fixed:hover,
 .kryx_rpg.sheet.actor.character .arsenal .item-controls .item-toggle.fixed:hover {
   text-shadow: none;
+}
+.kryx_rpg.sheet.actor.character .features .item-toggle {
+  color: #b5b3a4;
+}
+.kryx_rpg.sheet.actor.character .features .item-toggle.active {
+  color: #4b4a44;
 }
 /* ----------------------------------------- */
 /*  Basic Structure                          */

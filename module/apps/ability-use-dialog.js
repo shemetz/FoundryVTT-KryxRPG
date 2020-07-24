@@ -93,8 +93,8 @@ export default class AbilityUseDialog extends Dialog {
       });
     }
 
-    // Feature/Feat/Trait
-    if (item.type === "feat_or_feature") {
+    // Feature, Feat, Trait, Fighting Style, etc
+    if (item.type === "feature") {
       let str = "KRYX_RPG.AbilityUseNormalHint";
       if (uses.value === 0) str = "KRYX_RPG.AbilityUseFeatureUnavailableHint";
       return game.i18n.format(str, {

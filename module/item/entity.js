@@ -196,9 +196,10 @@ export default class ItemKryx extends Item {
       labels.costNameCapitalized = data.cost === 1 ? resource.nameSingular.capitalize() : resource.name.capitalize()
     }
 
-    // Feat and Feature Items
-    else if (itemType === "feat_or_feature") {
+    // Feature Items
+    else if (itemType === "feature") {
       labels.themes = data.themes.value.join(", ") || "(No Theme)"
+      labels.featureTypeName = CONFIG.KRYX_RPG.featureTypes[data.featureType]
     }
 
     // Equipment Items
@@ -241,6 +242,7 @@ export default class ItemKryx extends Item {
       // Recharge Label
       let chg = data.recharge || {};
       labels.recharge = `Recharge [${chg.value}${parseInt(chg.value) < 6 ? "+" : ""}]`;
+      labels.canBeActivated = !!dur.value || !!dur.units
     }
 
     // Item Actions
@@ -296,8 +298,8 @@ export default class ItemKryx extends Item {
       hasAreaTarget: this.hasAreaTarget
     };
 
-    // For feat/feature items, optionally show an ability usage dialog
-    if (this.data.type === "feat_or_feature") {
+    // For feature items, optionally show an ability usage dialog
+    if (this.data.type === "feature") {
       let configured = await this._rollFeature(configureDialog);
       if (configured === false) return;
     } else if (this.data.type === "consumable") {
@@ -414,12 +416,12 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Additional rolling steps when rolling a feat or feature item
+   * Additional rolling steps when rolling a feature item
    * @private
    * @return {boolean} whether the roll should be prevented
    */
   async _rollFeature(configureDialog) {
-    if (this.data.type !== "feat_or_feature") throw new Error("Wrong Item type");
+    if (this.data.type !== "feature") throw new Error("Wrong Item type");
 
     // Configure whether to consume a limited use or to place a template
     const usesRecharge = !!this.data.data.recharge.value;
@@ -479,7 +481,7 @@ export default class ItemKryx extends Item {
       "consumable": this._consumableChatData,
       "loot": this._lootChatData,
       "superpower": this._superpowerChatData,
-      "feat_or_feature": this._featureChatData,
+      "feature": this._featureChatData,
     }[this.data.type]
     if (!fn) console.error(`unexpected item data type: ${this.data.type}`)
     if (fn) fn.bind(this)(data, labels, props);
@@ -577,7 +579,7 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Prepare chat card data for items of the "Feat" type
+   * Prepare chat card data for items of the Feature type
    * @private
    */
   _featureChatData(data, labels, props) {

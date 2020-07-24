@@ -53,13 +53,13 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
         label: game.i18n.localize("KRYX_RPG.ActionPl"),
         items: [],
         hasActions: true,
-        dataset: {type: "feat_or_feature", "activation.type": "action", type_name: "Feat/Feature"}
+        dataset: {type: "feature", "activation.type": "action", type_name: "Feature"}
       },
       passive: {
         label: game.i18n.localize("KRYX_RPG.FeaturePassive"),
         items: [],
         hasActions: false,
-        dataset: {type: "feat_or_feature", type_name: "Feat/Feature"}
+        dataset: {type: "feature", type_name: "Feature"}
       },
       inventory: {
         label: game.i18n.localize("KRYX_RPG.Inventory"),
@@ -88,10 +88,10 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     // Organize Arsenal
     const arsenal = this._prepareArsenalTab(data, superpowers);
 
-    // Organize Feats/Features
+    // Organize Features
     for (let item of other) {
       if (item.type === "weapon") features.weapons.items.push(item);
-      else if (item.type === "feat_or_feature") {
+      else if (item.type === "feature") {
         if (item.data.activation.type) features.actions.items.push(item);
         else features.passive.items.push(item);
       } else features.inventory.items.push(item);
