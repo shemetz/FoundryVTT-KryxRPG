@@ -76,7 +76,7 @@ export default class ActorKryx extends Actor {
     }
     data.attributes.defense.soak = soak
 
-    if (this.items) {
+    if (actorData.items) {
       this._computeResourceProgression();
     }
   }
