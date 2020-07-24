@@ -213,8 +213,10 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     }
 
     // Compute Encumbrance percentage
+    let maximumEncumbrance = KRYX_RPG.encumbrance.base + actorData.data.abilities.str.value * KRYX_RPG.encumbrance.strMultiplier
+    maximumEncumbrance *= mod
     const enc = {
-      max: actorData.data.abilities.str.value * KRYX_RPG.encumbrance.strMultiplier * mod,
+      max: maximumEncumbrance,
       value: Math.round(totalWeight * 10) / 10,
     };
     enc.pct = Math.min(enc.value * 100 / enc.max, 99);

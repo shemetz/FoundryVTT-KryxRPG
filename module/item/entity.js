@@ -419,6 +419,7 @@ export default class ItemKryx extends Item {
 
   /**
    * Additional rolling steps when rolling a feature item
+   * @param {boolean} configureDialog    Should an ability use dialog be shown?
    * @private
    * @return {boolean} whether the roll should be prevented
    */
@@ -428,7 +429,7 @@ export default class ItemKryx extends Item {
     // Configure whether to consume a limited use or to place a template
     const usesRecharge = !!this.data.data.recharge.value;
     const uses = this.data.data.uses;
-    let usesCharges = !!uses.per && (uses.max > 0);
+    let usesCharges = !!uses.per && (uses.max > 0) && !!this.data.data.consume.amount;
     let placeTemplate = false;
     let consume = usesRecharge || usesCharges;
 

@@ -125,7 +125,7 @@
   "KRYX_RPG.ConsumableWand": "Wand",
   "KRYX_RPG.ConsumeAmmunition": "Ammunition",
   "KRYX_RPG.ConsumeAttribute": "Attribute",
-  "KRYX_RPG.ConsumeCharges": "Item Uses",
+  "KRYX_RPG.ConsumeCharges": "Other Charges",
   "KRYX_RPG.ConsumeMaterial": "Material",
   "KRYX_RPG.ConsumeTitle": "Resource Consumption",
   "KRYX_RPG.ConsumeWarningNoQuantity": "{name} has run out of its designated {type}! {charname} has {quantity} left, but this requires {amount}!",
