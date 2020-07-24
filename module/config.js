@@ -673,6 +673,12 @@ KRYX_RPG.characterFlags = {
     section: "Miscellaneous",
     type: Boolean
   },
+  "onlyCountEquippedItemWeight": {
+    name: "KRYX_RPG.FlagsOnlyCountEquippedItemWeight",
+    hint: "KRYX_RPG.FlagsOnlyCountEquippedItemWeight",
+    section: "Miscellaneous",
+    type: Boolean
+  },
 };
 
 // Configure allowed status flags

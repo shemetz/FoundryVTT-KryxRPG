@@ -221,6 +221,8 @@
   "KRYX_RPG.FlagsInstructions": "Configure character features and traits which fine-tune behaviors of the Kryx RPG system.",
   "KRYX_RPG.FlagsAllowPickingUnknownThemes": "Allow picking unknown themes",
   "KRYX_RPG.FlagsAllowPickingUnknownThemesHint": "Selections will not be limited to your currently known themes",
+  "KRYX_RPG.FlagsOnlyCountEquippedItemWeight": "Only count equipped item weights",
+  "KRYX_RPG.FlagsOnlyCountEquippedItemWeightHint": "When calculating total weight of items, ignore unequipped items (e.g. because they are in a bag you aren't carrying)",
   "KRYX_RPG.FlagsReliableTalent": "Reliable Talent",
   "KRYX_RPG.FlagsReliableTalentHint": "Rogue class feature - proficient checks cannot roll below 10.",
   "KRYX_RPG.FlagsSavageAttacker": "Savage Attacker",

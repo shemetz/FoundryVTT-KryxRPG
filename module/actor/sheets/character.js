@@ -125,7 +125,11 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
       i.data.weight = i.data.weight || 0;
       i.totalWeight = Math.round(i.data.quantity * i.data.weight * 10) / 10;
       inventory[i.type].items.push(i);
-      totalWeight += i.totalWeight;
+      const ignoreItemWeight = !!this.actor.getFlag("kryx_rpg", "onlyCountEquippedItemWeight")
+        && !i.data.equipped
+      if (!ignoreItemWeight) {
+        totalWeight += i.totalWeight;
+      }
     }
     data.data.attributes.encumbrance = this._computeEncumbrance(totalWeight, data);
 
