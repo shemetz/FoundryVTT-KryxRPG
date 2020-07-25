@@ -81,7 +81,7 @@ export default class SuperpowerUseDialog extends Dialog {
           use: {
             icon: icon,
             label: resource.nameOfUse.capitalize(),
-            callback: html => resolve(new FormData(html[0].querySelector("#spell-config-form")))
+            callback: html => resolve(new FormData(html[0].querySelector("#superpower-config-form")))
           }
         },
         default: "use",

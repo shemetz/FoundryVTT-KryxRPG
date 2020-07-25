@@ -416,7 +416,7 @@ export default class ActorKryx extends Actor {
         return
       }
       paidCost = parseInt(spellFormData.get("paidCost"));
-      shouldConsumeResources = parseInt(spellFormData.get("shouldConsumeResources"));
+      shouldConsumeResources = Boolean(spellFormData.get("shouldConsumeResources"));
       shouldPlaceTemplate = Boolean(spellFormData.get("shouldPlaceTemplate"));
     }
 
