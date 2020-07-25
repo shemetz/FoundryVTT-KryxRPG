@@ -132,16 +132,8 @@ Hooks.once("setup", function () {
  */
 Hooks.once("ready", function () {
 
-  // Determine whether a system migration is required and feasible
-  const currentVersion = game.settings.get("kryx_rpg", "systemMigrationVersion");
-  const needMigration = (currentVersion < migrations.NEEDS_MIGRATION_VERSION) || (currentVersion === null);
-
-  // Perform the migration
-  if (needMigration && game.user.isGM) {
-    if (currentVersion && (currentVersion < migrations.COMPATIBLE_MIGRATION_VERSION)) {
-      ui.notifications.error(`Your Kryx RPG system data is from too old a Foundry version and cannot be reliably migrated to the latest version. The process will be attempted, but errors may occur.`, {permanent: true});
-    }
-    migrations.migrateWorld();
+  if (game.user.isGM) {
+    migrations.migrateWorldIfNeeded()
   }
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to

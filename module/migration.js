@@ -15,11 +15,25 @@ const renamedSkills = [
   ["coordination", "acrobatics"],
 ]
 
+export const migrateWorldIfNeeded = async function () {
+  // Determine whether a system migration is required and feasible
+  const currentVersion = game.settings.get("kryx_rpg", "systemMigrationVersion")
+  const needMigration = currentVersion === null || compareSemanticVersions(currentVersion, NEEDS_MIGRATION_VERSION) < 0
+  if (!needMigration) return
+
+  // Perform the migration
+  if (currentVersion !== null && compareSemanticVersions(currentVersion, COMPATIBLE_MIGRATION_VERSION) < 0) {
+    ui.notifications.error(`Your Kryx RPG system data is from too old a Foundry version and cannot be reliably migrated to the latest version. The process will be attempted, but errors may occur.`, {permanent: true})
+  }
+
+  migrateWorld()
+}
+
 /**
  * Perform a system migration for the entire World, applying migrations for Actors, Items, and Compendium packs
  * @return {Promise}      A Promise which resolves once the migration is completed
  */
-export const migrateWorld = async function () {
+const migrateWorld = async function () {
   ui.notifications.info(`Applying Kryx RPG System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, {permanent: true});
 
   // Migrate World Actors
@@ -174,35 +188,34 @@ const _migrateThemes = function (actor, updateData) {
 }
 
 const _migrateSkills = function (actor, updateData) {
-  const actorSkills = actor.data.skills
-  const updateDataSkills = {}
+  const dup = actor.data.skills
   const renameSkill = function (oldSkill, newSkill) {
-    if (actorSkills[oldSkill]) {
-      updateDataSkills[newSkill] = actorSkills[oldSkill]
-      updateDataSkills[`-=${oldSkill}`] = null
+    if (dup[oldSkill]) {
+      dup[newSkill] = dup[oldSkill]
+      delete dup[oldSkill]
     }
   }
   for (const [oldSkill, newSkill] of renamedSkills) renameSkill(oldSkill, newSkill)
-  updateData["data.skills"] = updateDataSkills
+  updateData["data.skills"] = dup
 }
 
 const _migrateMiscCharacter = function (actor, updateData) {
-  if (typeof(actor.data.class.hitDice) !== undefined) {
-    const updateDataClass = {}
-    updateDataClass['-=hitDice'] = null
-    updateDataClass['-=hitDiceUsed'] = null
-    updateDataClass['healthDice'] = actor.data.class.hitDice
-    updateDataClass['healthDiceUsed'] = actor.data.class.hitDiceUsed
-    updateData["data.class"] = updateDataClass
+  if (typeof (actor.data.class.hitDice) !== undefined) {
+    const dup = duplicate(actor.data.class)
+    dup.healthDice = dup.hitDice
+    dup.healthDiceUsed = dup.hitDiceUsed
+    delete dup.hitDice
+    delete dup.hitDiceUsed
+    updateData["data.class"] = dup
   }
 
-  if (typeof(actor.data.attributes.ac) !== undefined) {
-    const updateDataAttributes = {}
-    updateDataAttributes['-=ac'] = null
-    updateDataAttributes['-=hp'] = null
-    updateDataAttributes['defense'] = actor.data.attributes.ac
-    updateDataAttributes['health'] = actor.data.attributes.hp
-    updateData["data.attributes"] = updateDataAttributes
+  if (typeof (actor.data.attributes.ac) !== undefined) {
+    const dup = duplicate(actor.data.attributes)
+    dup.defense = dup.ac
+    dup.health = dup.hp
+    delete dup.ac
+    delete dup.hp
+    updateData["data.attributes"] = dup
   }
 }
 
@@ -260,11 +273,11 @@ export const migrateItemData = function (item) {
     updateData["data.themes.value"] = itemThemes
   }
 
-  if (item.data.armor && typeof(item.data.armor.dr) !== undefined) {
-    updateData["data.armor"] = {
-      "-=dr": null,
-      "soak": item.armor.dr,
-    }
+  if (item.data.armor && typeof (item.data.armor.dr) !== undefined) {
+    const dup = duplicate(item.data.armor)
+    dup.soak = dup.dr
+    delete dup.dr
+    updateData["data.armor"] = dup
   }
 
   // Return the migrated update data
@@ -311,10 +324,13 @@ export const migrateSceneData = function (scene) {
  */
 function _migrateActorBonuses(actor, updateData) {
   const b = game.system.model.Actor.character.bonuses;
+  const dup = duplicate(actor.data.bonuses)
   for (let k of Object.keys(actor.data.bonuses || {})) {
-    if (k in b) updateData[`data.bonuses.${k}`] = b[k];
-    else updateData[`data.bonuses.-=${k}`] = null;
+    if (!(k in b)) {
+      delete dup[k]
+    }
   }
+  updateData["data.bonuses"] = dup
 }
 
 
@@ -342,3 +358,25 @@ const _migrateRemoveDeprecated = function (ent, updateData) {
     updateData[`data.${parts.join(".")}`] = null;
   }
 };
+
+/**
+ * Return values:
+ * - a number < 0 if a < b
+ * - a number > 0 if a > b
+ * - 0 if a = b
+ */
+function compareSemanticVersions(a, b) {
+  const regExStrip0 = /(\.0+)+$/;
+  const segmentsA = a.replace(regExStrip0, '').split('.');
+  const segmentsB = b.replace(regExStrip0, '').split('.');
+  const l = Math.min(segmentsA.length, segmentsB.length);
+
+  let diff;
+  for (let i = 0; i < l; i++) {
+    diff = parseInt(segmentsA[i], 10) - parseInt(segmentsB[i], 10);
+    if (diff) {
+      return diff;
+    }
+  }
+  return segmentsA.length - segmentsB.length;
+}
