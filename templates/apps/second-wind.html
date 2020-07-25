@@ -1,9 +1,8 @@
 <form id="second-wind-hd" class="dialog-content" onsubmit="event.preventDefault();">
     <p>{{ localize "KRYX_RPG.SecondWindHint" }}</p>
     <div class="form-group">
-        <label>{{ localize "KRYX_RPG.SecondWindSelect" }}</label>
         <div class="form-fields">
-            <text>{{healthDiceSize}} ({{healthDiceAmount}} {{ localize "KRYX_RPG.LowercaseAvailable" }})</text>
+            <label>{{healthDiceSize}} ({{healthDiceAmount}} {{ localize "KRYX_RPG.LowercaseAvailable" }})</label>
             <button id="roll-hd" {{#unless canRoll}} disabled {{/unless}}>
                 <i class="fas fa-dice-d20"></i> {{ localize "Roll" }}
             </button>
