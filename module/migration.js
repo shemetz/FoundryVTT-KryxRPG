@@ -1,4 +1,4 @@
-export const NEEDS_MIGRATION_VERSION = "24.9.0-1";
+export const NEEDS_MIGRATION_VERSION = "24.13.0-1"; // should be increased to the latest version unless there was a very minor patch
 export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
