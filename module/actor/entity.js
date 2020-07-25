@@ -404,10 +404,10 @@ export default class ActorKryx extends Actor {
     let paidCost = itemData.cost
     let shouldConsumeResources = true
     let canAugment = false
-    if (itemData.scaling.mode === "augment" && item.cost < this.data.data.mainResources.mana.limit)
-      canAugment = true
-    if (itemData.scaling.mode === "enhance" && item.cost < this.data.data.mainResources.stamina.limit)
-      canAugment = true
+    const resourceName = item.isManeuver ? "stamina" : "mana"
+    const resource = this.data.data.mainResources[resourceName]
+    if (paidCost > 0 && paidCost < resource.limit)
+      canAugment = true // nearly everything can be augmented/enhanced, just for extra damage/AoE/duration
     const hasReasonToConfigureDialog = item.hasAreaTarget || canAugment
     if (configureDialog && hasReasonToConfigureDialog) {
       const spellFormData = await SuperpowerUseDialog.create(this, item);
@@ -422,9 +422,8 @@ export default class ActorKryx extends Actor {
 
     // Update Actor data
     if (shouldConsumeResources && paidCost) {
-      const resource = item.isManeuver ? "stamina" : "mana"
       await this.update({
-        [`data.mainResources.${resource}.remaining`]: Math.max(this.data.data.mainResources[resource].remaining - paidCost, 0)
+        [`data.mainResources.${resourceName}.remaining`]: Math.max(resource.remaining - paidCost, 0)
       });
     }
 
