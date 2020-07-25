@@ -400,11 +400,16 @@ export default class ActorKryx extends Actor {
 
     const limitedUses = !!itemData.uses.per;
 
+    // Show a dialog (for configuring measured template, augment/enhance, and how many resources to spend)
     let shouldPlaceTemplate = false;
     let paidCost = itemData.cost
     let shouldConsumeResources = true
-    // Show a dialog (for configuring measured template, augment/enhance, and how many resources to spend)
-    const hasReasonToConfigureDialog = item.hasAreaTarget || ["augment", "enhance"].includes(itemData.scaling.mode)
+    let canAugment = false
+    if (itemData.scaling.mode === "augment" && item.cost < this.data.data.mainResources.mana.limit)
+      canAugment = true
+    if (itemData.scaling.mode === "enhance" && item.cost < this.data.data.mainResources.stamina.limit)
+      canAugment = true
+    const hasReasonToConfigureDialog = item.hasAreaTarget || canAugment
     if (configureDialog && hasReasonToConfigureDialog) {
       const spellFormData = await SuperpowerUseDialog.create(this, item);
       if (spellFormData === null) {
@@ -899,7 +904,11 @@ export default class ActorKryx extends Actor {
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("KRYX_RPG.LongRestResult", {name: this.name, health: deltaHealth, dice: healthDiceRecovered})
+        content: game.i18n.format("KRYX_RPG.LongRestResult", {
+          name: this.name,
+          health: deltaHealth,
+          dice: healthDiceRecovered
+        })
       });
     }
 
