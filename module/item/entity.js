@@ -178,7 +178,13 @@ export default class ItemKryx extends Item {
     // Superpower - components
     if (itemType === "superpower") {
       const resource = this.isManeuver ? actorData.data.mainResources.stamina : actorData.data.mainResources.mana
-      labels.cost = data.cost
+      const spentCost = data.spentCost || data.cost
+      const resourceName = spentCost > 1 ? resource.name : resource.nameSingular
+      labels.cost = `${spentCost} ${resourceName}`
+      if (spentCost !== data.cost) { // if enhanced/augmented
+        const verb = game.i18n.localize(this.isManeuver ? "KRYX_RPG.LowercaseEnhanced" : "KRYX_RPG.LowercaseAugmented")
+        labels.cost += `, ${verb} from ${data.cost}`
+      }
       labels.isConcoction = this.isConcoction
       labels.themes = data.themes.value.join(", ") || "(Theme?)"
       labels.components = Object.entries(data.components).reduce((arr, c) => {
@@ -293,7 +299,8 @@ export default class ItemKryx extends Item {
       isVersatile: this.isVersatile,
       isSuperpower: this.data.type === "superpower",
       hasSave: this.hasSave,
-      hasAreaTarget: this.hasAreaTarget
+      hasAreaTarget: this.hasAreaTarget,
+      spentCost: this.data.data.spentCost || null,
     };
 
     // For feature items, optionally show an ability usage dialog
@@ -981,7 +988,7 @@ export default class ItemKryx extends Item {
     if (!(item instanceof ItemKryx)) {
       return ui.notifications.error(`Item ${card.dataset.itemId} should be an ItemKryx`)
     }
-    const augmentedCost = parseInt(card.dataset.cost) || null;
+    const augmentedCost = parseInt(card.dataset.spentCost) || null;
 
     // Get card targets
     let targets = [];

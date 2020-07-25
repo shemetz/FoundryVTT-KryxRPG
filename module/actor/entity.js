@@ -440,9 +440,9 @@ export default class ActorKryx extends Actor {
       if (template) template.drawPreview(event);
       if (this.sheet.rendered) this.sheet.minimize();
     }
-
+    const itemCopy = item.constructor.createOwned(mergeObject(item.data, {"data.spentCost": paidCost}, {inplace: false}), this);
     // Invoke the Item roll
-    return item.roll();
+    return itemCopy.roll();
   }
 
   /* -------------------------------------------- */

@@ -325,6 +325,8 @@
   "KRYX_RPG.LowercaseAvailable": "available",
   "KRYX_RPG.LowercaseOf": "of",
   "KRYX_RPG.LowercaseSpell": "spell",
+  "KRYX_RPG.LowercaseAugmented": "augmented",
+  "KRYX_RPG.LowercaseEnhanced": "enhanced",
   "KRYX_RPG.MainResourceMana": "mana",
   "KRYX_RPG.MainResourceManaEffect": "spell",
   "KRYX_RPG.MainResourceManaUse": "cast",
