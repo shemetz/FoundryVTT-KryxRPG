@@ -194,6 +194,7 @@ export default class ItemSheetKryx extends ItemSheet {
     let damage = Object.entries(formData).filter(e => e[0].startsWith("data.damage.parts"));
     formData["data.damage.parts"] = damage.reduce((arr, entry) => {
       let [i, j] = entry[0].split(".").slice(3);
+      if (!entry[1]) return arr // prevents empty damage field from being saved and leading to a bug
       if (!arr[i]) arr[i] = [];
       arr[i][j] = entry[1];
       return arr;
