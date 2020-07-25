@@ -26,7 +26,6 @@ export default class ActorKryx extends Actor {
     // Get the Actor's data object
     const actorData = this.data;
     const data = actorData.data;
-    const flags = actorData.flags.kryx_rpg || {};
 
     // Prepare Character data
     if (actorData.type === "character") this._prepareCharacterData(actorData);

@@ -212,7 +212,6 @@ export default class ItemKryx extends Item {
 
     // Activated Items
     if (data.hasOwnProperty("activation")) {
-
       // Ability Activation Label
       let act = data.activation || {};
       if (act) labels.activation = [act.cost, C.abilityActivationTypes[act.type]].filterJoin(" ");
@@ -247,7 +246,6 @@ export default class ItemKryx extends Item {
 
     // Item Actions
     if (data.hasOwnProperty("actionType")) {
-
       // Save DC
       let save = data.save || {};
       if (!save.type) save.dc = null;
@@ -587,6 +585,7 @@ export default class ItemKryx extends Item {
    */
   _featureChatData(data, labels, props) {
     props.push(
+      CONFIG.KRYX_RPG.featureTypes[data.featureType],
       data.source || null,
       data.themes.value.join(", ") || null
     );
