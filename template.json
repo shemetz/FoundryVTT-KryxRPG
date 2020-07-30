@@ -83,6 +83,9 @@
           "arcana": {
             "proficiency": 0
           },
+          "acrobatics": {
+            "proficiency": 0
+          },
           "athletics": {
             "proficiency": 0
           },
@@ -90,9 +93,6 @@
             "proficiency": 0
           },
           "coercion": {
-            "proficiency": 0
-          },
-          "coordination": {
             "proficiency": 0
           },
           "deception": {
