@@ -718,17 +718,29 @@ export default class ActorKryx extends Actor {
       }
     }
 
+    const updateData = {};
+
     // Note the change in Health and HD which occurred
     const dhd = data.class.level - data.class.healthDiceUsed - hd0;
     const deltaHealth = data.attributes.health.value - health0;
 
-    // Recover character resources
-    const updateData = {};
-    for (let [k, r] of Object.entries(data.resources)) {
+    // Recover main resources - mana, stamina, catalysts, psi
+    for (let [res, resource] of Object.entries(data.mainResources)) {
+      const missing = resource.max - resource.remaining
+      const maxRegain = Math.ceil(resource.max / 2)
+      const regained = Math.min(missing, maxRegain)
+      if (regained) {
+        updateData[`data.mainResources.${res}.remaining`] = resource.remaining + regained
+      }
+    }
+
+    // Recover other resources
+    for (const [k, r] of Object.entries(data.resources)) {
       if (r.max && r.sr) {
         updateData[`data.resources.${k}.value`] = r.max;
       }
     }
+    await this.update(updateData)
 
     // Recover item uses
     const recovery = newDay ? ["sr", "day"] : ["sr"];
@@ -756,11 +768,14 @@ export default class ActorKryx extends Actor {
     }
 
     if (chat) {
+      const msg = dhd ?
+        game.i18n.format("KRYX_RPG.ShortRestResult", {name: this.name, dice: -dhd, health: deltaHealth})
+        : game.i18n.format("KRYX_RPG.ShortRestResultNoSpend", {name: this.name})
       ChatMessage.create({
         user: game.user._id,
         speaker: {actor: this, alias: this.name},
         flavor: restFlavor,
-        content: game.i18n.format("KRYX_RPG.ShortRestResult", {name: this.name, dice: -dhd, health: deltaHealth})
+        content: msg
       });
     }
 

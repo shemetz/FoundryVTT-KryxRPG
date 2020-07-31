@@ -415,6 +415,7 @@
   "KRYX_RPG.ShortRestNormal": "Short Rest (15 minutes)",
   "KRYX_RPG.ShortRestOvernight": "Short Rest (New Day)",
   "KRYX_RPG.ShortRestResult": "{name} takes a short rest spending {dice} Health Dice to recover {health} Health.",
+  "KRYX_RPG.ShortRestResultNoSpend": "{name} takes a short rest.",
   "KRYX_RPG.ShortRestSelect": "Select Dice to Roll",
   "KRYX_RPG.Size": "Size",
   "KRYX_RPG.SizeGargantuan": "Gargantuan",
