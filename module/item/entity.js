@@ -220,6 +220,7 @@ export default class ItemKryx extends Item {
       }
       labels.isConcoction = this.isConcoction
       labels.themes = data.themes.value.join(", ") || "(Theme?)"
+      labels.theme = data.themes.value.join(", ") || ""
       labels.components = Object.entries(data.components).reduce((arr, c) => {
         if (c[1] !== true) return arr;
         let letter = c[0].titleCase().slice(0, 1)
