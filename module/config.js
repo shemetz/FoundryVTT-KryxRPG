@@ -295,6 +295,7 @@ KRYX_RPG.targetTypes = {
   "cylinder": "KRYX_RPG.TargetCylinder",
   "cone": "KRYX_RPG.TargetCone",
   "line": "KRYX_RPG.TargetLine",
+  "coneline": "KRYX_RPG.TargetConeOrLine",
   "wall": "KRYX_RPG.TargetWall"
 };
 
@@ -311,6 +312,7 @@ KRYX_RPG.areaScalingStandardSizes = {
   "sphere": 5,
   "cylinder": 5,
   "cone": 15,
+  "coneline": 15, //TODO figure out how to solve this fully :/
   "line": 20,
   "wall": 15,
 }
@@ -329,7 +331,8 @@ KRYX_RPG.areaTargetTypes = {
   line: "ray",
   radius: "circle",
   sphere: "circle",
-  wall: "line"
+  wall: "line",
+  coneline: "", //exists here just to allow it as area type
 };
 
 

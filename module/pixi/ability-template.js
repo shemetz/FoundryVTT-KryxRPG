@@ -10,11 +10,12 @@ export default class AbilityTemplate extends MeasuredTemplate {
    * A factory method to create an AbilityTemplate instance using provided data from an ItemKryx instance
    * @param {ItemKryx} item             The Item object for which to construct the template
    * @param {number} scaling            Multiplier for the value (used for spells with scaling AoE)
+   * @param {string} targetType         target type override (e.g. when user selects cone or line)
    * @return {AbilityTemplate|null}     The template object, or null if the item does not produce a template
    */
-  static fromItem(item, scaling=1) {
+  static fromItem(item, scaling, targetType) {
     const target = getProperty(item.data, "data.target") || {};
-    const templateShape = KRYX_RPG.areaTargetTypes[target.type];
+    const templateShape = KRYX_RPG.areaTargetTypes[targetType];
     if (!templateShape) return null;
     const distance = target.value * scaling
 
@@ -27,7 +28,12 @@ export default class AbilityTemplate extends MeasuredTemplate {
       x: 0,
       y: 0,
       fillColor: game.user.color
-    };
+    }
+
+    if (targetType === "line" && item.data.data.target.type === "coneline") {
+      // awful hack: make cone/line spells (with set scaling as 15 feet/mana) scale at 20 feet/mana when choosing lines
+      templateData.distance *= (20 / 15)
+    }
 
     // Additional type-specific data
     switch (templateShape) {

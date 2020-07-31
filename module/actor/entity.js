@@ -404,11 +404,13 @@ export default class ActorKryx extends Actor {
     let paidCost = itemData.cost
     let shouldConsumeResources = true
     let canAugment = false
+    let selectedTargetType = null // is used for cone/line
     const resourceName = item.isManeuver ? "stamina" : "mana"
     const resource = this.data.data.mainResources[resourceName]
     if (paidCost > 0 && paidCost < resource.limit)
       canAugment = true // nearly everything can be augmented/enhanced, just for extra damage/AoE/duration
-    const hasReasonToConfigureDialog = item.hasAreaTarget || canAugment
+    const canChooseTargetType = itemData.target.type === "coneline"
+    const hasReasonToConfigureDialog = item.hasAreaTarget || canAugment || canChooseTargetType
     if (configureDialog && hasReasonToConfigureDialog) {
       const spellFormData = await SuperpowerUseDialog.create(this, item);
       if (spellFormData === null) {
@@ -418,6 +420,13 @@ export default class ActorKryx extends Actor {
       paidCost = parseInt(spellFormData.get("paidCost"));
       shouldConsumeResources = Boolean(spellFormData.get("shouldConsumeResources"));
       shouldPlaceTemplate = Boolean(spellFormData.get("shouldPlaceTemplate"));
+      if (canChooseTargetType) {
+        if (Boolean(spellFormData.get("useLineTargetType"))) {
+          selectedTargetType = "line"
+        } else {
+          selectedTargetType = "cone"
+        }
+      }
     }
 
     // Update Actor data
@@ -436,8 +445,9 @@ export default class ActorKryx extends Actor {
 
     // Initiate ability template placement workflow if selected
     if (shouldPlaceTemplate && item.hasAreaTarget) {
-      let scaling = item.isAreaScaling ? paidCost : 1
-      const template = AbilityTemplate.fromItem(item, scaling);
+      const scaling = item.isAreaScaling ? paidCost : 1
+      const targetType = selectedTargetType || itemData.target.type
+      const template = AbilityTemplate.fromItem(item, scaling, targetType);
       if (template) template.drawPreview(event);
       if (this.sheet.rendered) this.sheet.minimize();
     }

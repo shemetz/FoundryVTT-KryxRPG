@@ -22,14 +22,19 @@
     {{/unless}}
 
     <div class="form-group">
-        <label class="checkbox" {{#unless hasCost}} style="visibility:hidden" {{/unless}}>{{ castConsumeText }}
+        <label class="checkbox" {{#unless hasCost}} style="visibility:hidden" {{/unless}}>
+            {{ castConsumeText }}
             <input type="checkbox" data-dtype="Boolean" name="shouldConsumeResources" {{ checked canCast }}/>
         </label>
 
-        <div class="form-group"{{#unless hasPlaceableTemplate}} style="visibility:hidden" {{/unless}}>
-            <label class="checkbox">{{ localize "KRYX_RPG.PlaceTemplate" }}
-                <input type="checkbox" data-dtype="Boolean" name="shouldPlaceTemplate" checked/>
-            </label>
-        </div>
+        <label class="checkbox" {{#unless hasPlaceableTemplate}} style="visibility:hidden" {{/unless}}>
+            {{ localize "KRYX_RPG.PlaceTemplate" }}
+            <input type="checkbox" data-dtype="Boolean" name="shouldPlaceTemplate" checked/>
+        </label>
+
+        <label class="checkbox" {{#unless canChooseTargetType}} style="display:none" {{/unless}}>
+            {{ localize "KRYX_RPG.SuperpowerCastLine" }}
+            <input type="checkbox" data-dtype="Boolean" name="useLineTargetType"/>
+        </label>
     </div>
 </form>
