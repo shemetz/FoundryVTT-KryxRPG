@@ -156,7 +156,11 @@ export default class ActorSheetKryx extends ActorSheet {
       const superpowerTypeName = resource.nameOfEffect.capitalize()
       const superpowerTypesName = superpowerTypeName + "s" // e.g. "Spells", "Concoctions"
       const superpowerResourceName = resource.nameSingular.capitalize() // e.g. "Mana", "Psi", "Catalyst"
-      const label = CONFIG.KRYX_RPG.superpowerAvailability[availability] + " " + superpowerTypesName
+      let label = CONFIG.KRYX_RPG.superpowerAvailability[availability] + " " + superpowerTypesName
+      if (availability === "spellbook") {
+        // "Spells in Spellbook" instead of "in Spellbook Spells"
+        label = game.i18n.localize("KRYX_RPG.SpellsInSpellbook")
+      }
       catalog[key] = {
         order: order,
         label: label,

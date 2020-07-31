@@ -36,16 +36,18 @@ export default class SuperpowerUseDialog extends Dialog {
     const actorData = actor.data.data;
     const superpowerData = superpower.data.data;
 
-    const canAugment = (superpowerData.cost > 0) && ["augment", "enhance"].includes(superpowerData.scaling.mode)
+    const hasCost = superpowerData.cost > 0
+    const canAugment = hasCost && ["augment", "enhance"].includes(superpowerData.scaling.mode)
     const resource = superpower.isManeuver ? actorData.mainResources.stamina : actorData.mainResources.mana
     const hasPlaceableTemplate = superpower.hasAreaTarget && game.user.can("TEMPLATE_CREATE")
     const icon = superpower.isManeuver
       ? '<i class="fas fa-fist-raised"></i>'
       : superpower.isConcoction
         ? '<i class="fas fa-flask"></i>' // vial also looks nice
-      // : superpower.isSpell ? (obviously it's a spell if it's not the other two. I'm just slightly paranoid)
+        // : superpower.isSpell ? (obviously it's a spell if it's not the other two. I'm just slightly paranoid)
         : '<i class="fas fa-magic"></i>'
-    const canCast = superpowerData.cost > 0 && superpowerData.cost <= resource.remaining
+    const resourceName = superpowerData.cost > 1 ? resource.name : resource.nameSingular
+    const canCast = hasCost && superpowerData.cost <= resource.remaining
     const hintText1 = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastHint1", resource)
     const superpowerName = superpower.data.name
     const hintText2 = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastHint2", resource)
@@ -61,8 +63,10 @@ export default class SuperpowerUseDialog extends Dialog {
     // Render the superpower use template
     const html = await renderTemplate("systems/kryx_rpg/templates/apps/superpower-use-dialog.html", {
       superpowerData,
-      canCast,
+      hasCost,
       canAugment,
+      resourceName,
+      canCast,
       hasPlaceableTemplate,
       hintText1,
       superpowerName,

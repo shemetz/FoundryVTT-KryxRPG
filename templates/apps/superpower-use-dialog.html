@@ -2,35 +2,34 @@
     <p>{{ hintText1 }}<strong>{{ superpowerName }}</strong>{{ hintText2 }}</p>
 
 
-    {{#if canAugment}}
-        <div class="form-group">
-            <label class="text">{{ localize "KRYX_RPG.SuperpowerBaseCost" }}: {{ superpowerData.cost }}</label>
-        </div>
-        <div class="form-group">
-            <label class="text">{{ spendHowMuchText }}
-                <input type="number" data-dtype="Number"
-                       value="{{ superpowerData.cost }}" name="paidCost" style="width: 30px"/>
-            </label>
-        </div>
-    {{/if}}
+    <div class="form-group">
+        <label class="text">
+            {{#if canAugment }}
+                {{ localize "KRYX_RPG.SuperpowerBaseCost" }}
+            {{else}}
+                {{ localize "KRYX_RPG.SuperpowerCost" }}
+            {{/if}}: {{ superpowerData.cost }} {{ resourceName }}</label>
+    </div>
+    <div class="form-group" {{#unless canAugment}} style="display:none" {{/unless}}>
+        <label class="text">{{ spendHowMuchText }}
+            <input type="number" data-dtype="Number"
+                   value="{{ superpowerData.cost }}" name="paidCost" style="width: 30px"/>
+        </label>
+    </div>
 
     {{#unless canCast}}
         <p class="notification error">{{ noAvailableResourceText }}</p>
     {{/unless}}
 
     <div class="form-group">
-        {{#if canAugment}}
-            <label class="checkbox">{{ castConsumeText }}
-                <input type="checkbox" data-dtype="Boolean" name="shouldConsumeResources" {{ checked canCast }}/>
-            </label>
-        {{/if}}
+        <label class="checkbox" {{#unless hasCost}} style="visibility:hidden" {{/unless}}>{{ castConsumeText }}
+            <input type="checkbox" data-dtype="Boolean" name="shouldConsumeResources" {{ checked canCast }}/>
+        </label>
 
-        {{#if hasPlaceableTemplate}}
-            <div class="form-group">
-                <label class="checkbox">{{ localize "KRYX_RPG.PlaceTemplate" }}
-                    <input type="checkbox" data-dtype="Boolean" name="shouldPlaceTemplate" checked/>
-                </label>
-            </div>
-        {{/if}}
+        <div class="form-group"{{#unless hasPlaceableTemplate}} style="visibility:hidden" {{/unless}}>
+            <label class="checkbox">{{ localize "KRYX_RPG.PlaceTemplate" }}
+                <input type="checkbox" data-dtype="Boolean" name="shouldPlaceTemplate" checked/>
+            </label>
+        </div>
     </div>
 </form>
