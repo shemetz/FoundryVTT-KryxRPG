@@ -8,19 +8,21 @@ export default class AbilityTemplate extends MeasuredTemplate {
 
   /**
    * A factory method to create an AbilityTemplate instance using provided data from an ItemKryx instance
-   * @param {ItemKryx} item               The Item object for which to construct the template
+   * @param {ItemKryx} item             The Item object for which to construct the template
+   * @param {number} scaling            Multiplier for the value (used for spells with scaling AoE)
    * @return {AbilityTemplate|null}     The template object, or null if the item does not produce a template
    */
-  static fromItem(item) {
+  static fromItem(item, scaling=1) {
     const target = getProperty(item.data, "data.target") || {};
     const templateShape = KRYX_RPG.areaTargetTypes[target.type];
     if (!templateShape) return null;
+    const distance = target.value * scaling
 
     // Prepare template data
     const templateData = {
       t: templateShape,
       user: game.user._id,
-      distance: target.value,
+      distance: distance,
       direction: 0,
       x: 0,
       y: 0,
@@ -32,9 +34,9 @@ export default class AbilityTemplate extends MeasuredTemplate {
       case "cone": // Kryx RPG cone RAW should be 53.13 degrees
         templateData.angle = 53.13;
         break;
-      case "rect": // Kryx RPG rectangular AoEs are always cubes but also usually don't exist
-        templateData.distance = Math.hypot(target.value, target.value);
-        templateData.width = target.value;
+      case "rect": // usually people want poly-lines for walls, so rectangles don't actually exist in KryxRPG
+        templateData.distance = Math.hypot(distance, distance);
+        templateData.width = distance;
         templateData.direction = 45;
         break;
       case "ray": // Kryx RPG rays are most commonly 5ft wide

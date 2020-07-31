@@ -301,6 +301,22 @@ KRYX_RPG.targetTypes = {
 
 /* -------------------------------------------- */
 
+/**
+ * Many AoEs have size that depends on amount of mana (or other resource) used, a.k.a "augment sizes".
+ * Usually effects will either say "a sphere" or "a sphere twice as big as normal", for example.
+ * This table shows the expected sizes, in feet.
+ */
+KRYX_RPG.areaScalingStandardSizes = {
+  "radius": 5,
+  "sphere": 5,
+  "cylinder": 5,
+  "cone": 15,
+  "line": 20,
+  "wall": 15,
+}
+
+/* -------------------------------------------- */
+
 
 /**
  * Map the subset of target types which produce a template area of effect

@@ -393,6 +393,7 @@
   "KRYX_RPG.ScalingAugment": "Augment",
   "KRYX_RPG.ScalingEnhance": "Enhance",
   "KRYX_RPG.ScalingFormula": "Scaling Formula",
+  "KRYX_RPG.ScalingPerResource": "per {resourceName}?",
   "KRYX_RPG.SecondWind": "Second Wind",
   "KRYX_RPG.SecondWindFlavorAction": "Second Wind (1 action)",
   "KRYX_RPG.SecondWindFlavorBonusAction": "Second Wind (1 bonus action)",

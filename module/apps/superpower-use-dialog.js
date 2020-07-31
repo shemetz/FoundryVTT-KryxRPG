@@ -37,7 +37,11 @@ export default class SuperpowerUseDialog extends Dialog {
     const superpowerData = superpower.data.data;
 
     const hasCost = superpowerData.cost > 0
-    const canAugment = hasCost && ["augment", "enhance"].includes(superpowerData.scaling.mode)
+    const canAugment = hasCost && (
+      ["augment", "enhance"].includes(superpowerData.scaling.mode)
+      || superpowerData.target.isScaling
+      || superpowerData.duration.isScaling
+    )
     const resource = superpower.isManeuver ? actorData.mainResources.stamina : actorData.mainResources.mana
     const hasPlaceableTemplate = superpower.hasAreaTarget && game.user.can("TEMPLATE_CREATE")
     const icon = superpower.isManeuver

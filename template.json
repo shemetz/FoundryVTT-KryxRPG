@@ -306,10 +306,12 @@
         },
         "duration": {
           "value": null,
+          "isScaling": false,
           "units": ""
         },
         "target": {
           "value": null,
+          "isScaling": false,
           "units": "",
           "type": ""
         },

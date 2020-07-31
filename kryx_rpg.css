@@ -173,6 +173,12 @@
 .kryx_rpg .form-group .form-fields > *:last-child {
   margin-right: 0;
 }
+.kryx_rpg .form-group .form-fields > input[data-dtype="Number"] {
+  flex: 0.35;
+}
+.kryx_rpg .form-group .form-fields label.checkbox {
+  text-align: right;
+}
 .kryx_rpg .form-group.stacked label {
   flex: 0 0 100%;
   margin: 0;
@@ -1079,6 +1085,9 @@
 }
 .kryx_rpg.sheet.item .details .form-group.input-select-select select {
   flex: 1.5;
+}
+.kryx_rpg.sheet.item .details .form-group.input-select-select select.flex066 {
+  flex: 0.66;
 }
 .kryx_rpg.sheet.item .details .form-group.uses-per input {
   flex: 1;

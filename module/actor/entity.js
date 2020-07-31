@@ -436,7 +436,8 @@ export default class ActorKryx extends Actor {
 
     // Initiate ability template placement workflow if selected
     if (shouldPlaceTemplate && item.hasAreaTarget) {
-      const template = AbilityTemplate.fromItem(item);
+      let scaling = item.isAreaScaling ? paidCost : 1
+      const template = AbilityTemplate.fromItem(item, scaling);
       if (template) template.drawPreview(event);
       if (this.sheet.rendered) this.sheet.minimize();
     }

@@ -45,6 +45,14 @@ export default class ItemSheetKryx extends ItemSheet {
 
     // Potential consumption targets
     data.abilityConsumptionTargets = this._getItemConsumptionTargets(data.item);
+    if (this.item.type !== "superpower") {
+      data.scalingText = null
+    } else {
+      const actorMainResources = this.actor.data.data.mainResources
+      const resource = this.item.isManeuver ? actorMainResources.stamina : actorMainResources.mana
+      const resourceName = this.item.data.data.cost === 1 ? resource.nameSingular : resource.name
+      data.scalingText = game.i18n.format("KRYX_RPG.ScalingPerResource", {resourceName: resourceName})
+    }
 
     // Action Details
     data.hasAttackRoll = this.item.hasAttack;
