@@ -271,7 +271,6 @@ export default class ItemKryx extends Item {
         tgtVal = `${tgt.value}/${resourceName}`
       }
       labels.target = [tgtVal, C.distanceUnits[tgt.units], C.targetTypes[tgt.type]].filterJoin(" ")
-      labels.targetSummarized = labels.target
       // simplified scaling for KryxRPG superpowers - most of them have standardized sizes.
       // instead of "15/mana Feet Cone" (Burning Hands) it will say "Cone"
       // instead of "10/mana Feet Cylinder" (Ash Fall) it will say "Large Cylinder"
@@ -298,14 +297,20 @@ export default class ItemKryx extends Item {
       // Duration Label
       let dur = data.duration || {};
       if (["inst", "perm"].includes(dur.units)) dur.value = null;
-      let durVal = dur.value
-      if (dur.isScaling) {
-        const actorMainResources = actorData.data.mainResources
-        const resource = this.isManeuver ? actorMainResources.stamina : actorMainResources.mana
-        const resourceName = resource.nameSingular.capitalize()
-        durVal = `${dur.value}/${resourceName}`
+      let durUnits = C.timePeriods[dur.units]
+      if (durUnits) {
+        if (durUnits.endsWith("s") && dur.value === 1) {
+          //"1 hours" -> "1 hour"
+          durUnits = durUnits.substr(0, durUnits.length - 1)
+        }
+        if (dur.isScaling) {
+          const actorMainResources = actorData.data.mainResources
+          const resource = this.isManeuver ? actorMainResources.stamina : actorMainResources.mana
+          const resourceName = resource.nameSingular.capitalize()
+          durUnits = `${durUnits}/${resourceName}`
+        }
       }
-      labels.duration = [durVal, C.timePeriods[dur.units]].filterJoin(" ");
+      labels.duration = [dur.value, durUnits].filterJoin(" ");
 
       // Recharge Label
       let chg = data.recharge || {};
