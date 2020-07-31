@@ -530,15 +530,18 @@ KRYX_RPG.PROFICIENCY_LEVELS = [0.0, 0.5, 1.0, 1.5];
 /* -------------------------------------------- */
 
 
-// TODO Condition Types (probably split to list those with levels)
+// Condition types (that characters can be immune to)
 KRYX_RPG.conditionTypes = {
   "blinded": "KRYX_RPG.ConBlinded",
+  "burning": "KRYX_RPG.ConBurning",
   "charmed": "KRYX_RPG.ConCharmed",
+  "confused": "KRYX_RPG.ConConfused",
   "deafened": "KRYX_RPG.ConDeafened",
   "diseased": "KRYX_RPG.ConDiseased",
   "exhaustion": "KRYX_RPG.ConExhausted",
   "frightened": "KRYX_RPG.ConFrightened",
   "grappled": "KRYX_RPG.ConGrappled",
+  "hasted": "KRYX_RPG.ConHasted",
   "incapacitated": "KRYX_RPG.ConIncapacitated",
   "invisible": "KRYX_RPG.ConInvisible",
   "paralyzed": "KRYX_RPG.ConParalyzed",
@@ -546,6 +549,8 @@ KRYX_RPG.conditionTypes = {
   "poisoned": "KRYX_RPG.ConPoisoned",
   "prone": "KRYX_RPG.ConProne",
   "restrained": "KRYX_RPG.ConRestrained",
+  "slowed": "KRYX_RPG.ConSlowed",
+  "staggered": "KRYX_RPG.ConStaggered",
   "stunned": "KRYX_RPG.ConStunned",
   "unconscious": "KRYX_RPG.ConUnconscious"
 };
