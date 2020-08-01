@@ -47,9 +47,12 @@
                     {{/each}}
                 {{/select}}
             </select>
-            <label class="checkbox">{{ scalingText }}
-                <input type="checkbox" data-dtype="Boolean" name="data.target.isScaling" {{checked data.target.isScaling}}/>
-            </label>
+            {{#if data.cost}}
+                <label class="checkbox">{{ scalingText }}
+                    <input type="checkbox" data-dtype="Boolean" name="data.target.isScaling"
+                        {{checked data.target.isScaling}}/>
+                </label>
+            {{/if}}
         </div>
     </div>
 
@@ -87,9 +90,13 @@
                     {{/each}}
                 {{/select}}
             </select>
-            <label class="checkbox">{{ scalingText }}
-                <input type="checkbox" data-dtype="Boolean" name="data.duration.isScaling" {{checked data.duration.isScaling}}/>
-            </label>
+            {{#if data.cost}}
+
+                <label class="checkbox">{{ scalingText }}
+                    <input type="checkbox" data-dtype="Boolean" name="data.duration.isScaling"
+                        {{checked data.duration.isScaling}}/>
+                </label>
+            {{/if}}
         </div>
     </div>
 
