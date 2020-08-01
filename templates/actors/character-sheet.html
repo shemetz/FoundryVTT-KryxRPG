@@ -39,8 +39,10 @@
                            placeholder="{{ localize 'KRYX_RPG.Background' }}"/>
                 </li>
                 <li class="proficiency">
-                    <span>{{ localize "KRYX_RPG.Proficiency" }}</span>
-                    <span>{{numberFormat data.attributes.prof decimals=0 sign=true}}</span>
+                    <span>
+                        {{ localize "KRYX_RPG.Proficiency" }}:
+                        {{numberFormat data.attributes.prof decimals=0 sign=true}}
+                    </span>
                 </li>
             </ul>
 
