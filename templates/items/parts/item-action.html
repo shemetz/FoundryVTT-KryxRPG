@@ -99,13 +99,11 @@
                    placeholder="{{ localize 'KRYX_RPG.AbbreviationDC' }}" {{#unless isFlatDC}}disabled{{/unless}}/>
             <select name="data.save.scaling">
                 {{#select data.save.scaling}}
+                    <option value=""></option>
                     <option value="spell_dc">{{ localize "KRYX_RPG.SpellDC" }}</option>
                     <option value="maneuver_dc">{{ localize "KRYX_RPG.ManeuverDC" }}</option>
                     <option value="alchemical_dc">{{ localize "KRYX_RPG.AlchemicalDC" }}</option>
                     <option value="flat_dc">{{ localize "KRYX_RPG.Flat" }}</option>
-                    {{#each config.saves as |save s|}}
-                        <option value="{{s}}">{{save}}</option>
-                    {{/each}}
                 {{/select}}
             </select>
         </div>

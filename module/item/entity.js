@@ -325,9 +325,10 @@ export default class ItemKryx extends Item {
       if (!save.type) save.dc = null;
       else if (this.isOwned) { // Actor owned items
         if (save.scaling === "spell_dc") save.dc = this.actor.getSpellDC();
-        if (save.scaling === "alchemical_dc") save.dc = this.actor.getSpellDC();
-        if (save.scaling === "maneuver_dc") save.dc = this.actor.getManeuverDC();
-        else if (save.scaling !== "flat_dc") save.dc = this.actor.getSpellDC(save.scaling);
+        else if (save.scaling === "alchemical_dc") save.dc = this.actor.getSpellDC();
+        else if (save.scaling === "maneuver_dc") save.dc = this.actor.getManeuverDC();
+        else if (save.scaling === "flat_dc") save.dc = +save.dc
+        else save.dc = null
       } else { // Un-owned items
         if (save.scaling !== "flat_dc") save.dc = null;
       }
