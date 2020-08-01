@@ -2,12 +2,27 @@
   "name": "kryx_rpg",
   "title": "Kryx RPG (WIP)",
   "description": "A comprehensive game system for running games of Kryx RPG in the Foundry VTT environment.",
-  "version": "24.17.0-1",
+  "version": "24.18.0-1",
   "author": "shem",
   "scripts": [],
   "esmodules": ["kryx_rpg.js"],
   "styles": ["kryx_rpg.css"],
-  "packs": [],
+  "packs": [
+    {
+      "name": "items",
+      "label": "Items (SRD)",
+      "system": "kryx_rpg",
+      "path": "./packs/items.db",
+      "entity": "Item"
+    },
+    {
+      "name": "tradegoods",
+      "label": "Trade Goods (SRD)",
+      "system": "kryx_rpg",
+      "path": "./packs/tradegoods.db",
+      "entity": "Item"
+    }
+  ],
   "languages": [
     {
       "lang": "en",
