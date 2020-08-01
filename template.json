@@ -257,19 +257,8 @@
     },
     "npc": {
       "templates": ["common"],
-      "attributes": {
-        "prof": 0
-      },
-      "mainResources": {
-        "mana": {
-          "max": 0,
-          "limit": 0,
-          "name": "mana"
-        },
-        "stamina": {
-          "max": 0,
-          "limit": 0
-        }
+      "details": {
+        "cr": 0
       }
     }
   },

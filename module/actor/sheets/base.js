@@ -2,6 +2,7 @@ import ItemKryx from "../../item/entity.js";
 import TraitSelector from "../../apps/trait-selector.js";
 import ActorSheetFlags from "../../apps/actor-flags.js";
 import {KRYX_RPG} from '../../config.js';
+import {showUpdateClassDialog} from "../../apps/update-class.js";
 
 /**
  * Extend the basic ActorSheet class to do all the Kryx RPG things!
@@ -56,6 +57,9 @@ export default class ActorSheetKryx extends ActorSheet {
       showDamageImmunityAndSuch: this.entity.getFlag("kryx_rpg", "kryx_rpg.showDamageImmunityAndSuch"),
       config: CONFIG.KRYX_RPG,
     };
+
+    // Always show extra stuff for NPCs
+    data.showDamageImmunityAndSuch = data.showDamageImmunityAndSuch || data.isNPC
 
     // The Actor and its Items
     data.actor = duplicate(this.actor.data);
@@ -702,5 +706,16 @@ export default class ActorSheetKryx extends ActorSheet {
       allowCustom: !a.dataset.hasOwnProperty("disallow-custom"),
     };
     new TraitSelector(this.actor, options).render(true)
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * @param {MouseEvent} event    The originating click event
+   * @private
+   */
+  async _onUpdateClass(event) {
+    event.preventDefault();
+    return showUpdateClassDialog(this.actor)
   }
 }

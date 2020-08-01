@@ -156,6 +156,9 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
     // Rollable Health Formula
     html.find(".health .rollable").click(this._onRollHealthFormula.bind(this));
+
+    // "Class" and "level"
+    html.find(".charlevel").click(this._onUpdateClass.bind(this));
   }
 
   /* -------------------------------------------- */

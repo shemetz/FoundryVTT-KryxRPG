@@ -39,10 +39,8 @@
                            placeholder="{{ localize 'KRYX_RPG.Background' }}"/>
                 </li>
                 <li class="proficiency">
-                    <span>
-                        {{ localize "KRYX_RPG.Proficiency" }}
-                        {{numberFormat data.attributes.prof decimals=0 sign=true}}
-                    </span>
+                    <span>{{ localize "KRYX_RPG.Proficiency" }}</span>
+                    <span>{{numberFormat data.attributes.prof decimals=0 sign=true}}</span>
                 </li>
             </ul>
 
@@ -75,9 +73,8 @@
                                 <input name="data.mainResources.{{id}}.remaining" type="text" value="{{res.remaining}}"
                                        data-dtype="Number" placeholder="10"/>
                                 <span class="sep"> / </span>
-                                <!-- TODO - this shouldn't be an input probably-->
                                 <input name="data.mainResources.{{id}}.max" type="text" value="{{res.max}}"
-                                       data-dtype="Number" placeholder="10"/>
+                                       data-dtype="Number" placeholder="10" disabled/>
                             </div>
                             <footer class="attribute-footer">
                                 <span>Limit: {{res.limit}}</span>
@@ -90,7 +87,8 @@
                 <li class="attribute">
                     <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Defense" }}</h4>
                     <div class="attribute-value">
-                        <input name="data.attributes.defense.value" type="text" value="{{data.attributes.defense.value}}"
+                        <input name="data.attributes.defense.value" type="text"
+                               value="{{data.attributes.defense.value}}"
                                data-dtype="Number" placeholder="10"/>
                     </div>
                     {{#if data.attributes.defense.soak}}
@@ -116,7 +114,7 @@
         </section>
     </header>
 
-    {{!-- NPC Sheet Navigation --}}
+    {{!-- Sheet Navigation --}}
     <nav class="sheet-navigation tabs" data-group="primary">
         <a class="item active" data-tab="attributes">{{ localize "KRYX_RPG.Attributes" }}</a>
         <a class="item" data-tab="inventory">{{ localize "KRYX_RPG.Inventory" }}</a>
@@ -125,12 +123,12 @@
         <a class="item" data-tab="biography">{{ localize "KRYX_RPG.Biography" }}</a>
     </nav>
 
-    {{!-- NPC Sheet Body --}}
+    {{!-- Sheet Body --}}
     <section class="sheet-body">
 
         <div class="tab attributes flexrow" data-group="primary" data-tab="attributes">
 
-            {{!-- Ability Scores --}}
+            {{!-- Abilities and Saves --}}
             <ul class="ability-scores-and-saves flexrow">
                 {{#each data.abilities as |ability id|}}
                     <li class="ability" data-ability="{{id}}">
@@ -204,7 +202,8 @@
 
                 {{!-- Resting --}}
                 <div class="restingRow flexrow">
-                    <label class="health-dice"><b>{{ localize "KRYX_RPG.HealthDiceLeft" }} ({{ data.class.healthDice }}):</b>
+                    <label class="health-dice"><b>{{ localize "KRYX_RPG.HealthDiceLeft" }} ({{ data.class.healthDice }}
+                        ):</b>
                         {{data.attributes.healthDiceRemaining}} <span class="sep"> / </span>
                         {{data.details.level}}</label>
                     <text class="rest second-wind {{#if

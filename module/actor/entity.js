@@ -65,16 +65,6 @@ export default class ActorKryx extends Actor {
     init.total = init.mod + init.prof + init.bonus;
     data.attributes.init = init
 
-    // Update soak (damage reduction) from items
-    // NOTE: not calculating AC/Defense. This is left for other modules, like DynamicEffects.
-    let soak = 0
-    for (const item of this.data.items) {
-      const itemData = item.data
-      if (item.type !== "equipment" || !itemData.armor || !itemData.equipped || !itemData.armor.soak) continue
-      soak += itemData.armor.soak
-    }
-    data.attributes.defense.soak = soak
-
     if (actorData.items) {
       this._computeResourceProgression();
     }
@@ -118,6 +108,16 @@ export default class ActorKryx extends Actor {
     const required = exp.max - prior;
     const pct = Math.round((exp.value - prior) * 100 / required);
     exp.pct = Math.clamped(pct, 0, 100);
+
+    // Update soak (damage reduction) from items
+    // NOTE: not calculating AC/Defense. This is left for other modules, like DynamicEffects.
+    let soak = 0
+    for (const item of this.data.items) {
+      const itemData = item.data
+      if (item.type !== "equipment" || !itemData.armor || !itemData.equipped || !itemData.armor.soak) continue
+      soak += itemData.armor.soak
+    }
+    data.attributes.defense.soak = soak
   }
 
   /* -------------------------------------------- */
@@ -129,7 +129,7 @@ export default class ActorKryx extends Actor {
     const data = actorData.data;
 
     // Kill Experience
-    data.details.exp.value = this.getCRExp(data.details.cr);
+    data.attributes.expValue = this.getCRExp(data.details.cr);
 
     // Proficiency
     data.attributes.prof = Math.floor((Math.max(data.details.cr, 1) + 7) / 4);
@@ -147,11 +147,6 @@ export default class ActorKryx extends Actor {
    * @private
    */
   _computeResourceProgression() {
-    if (this.data.type === 'npc') {
-      // NPC resource maximum and limit are already part of its data
-      return
-    }
-
     const data = this.data.data
     const classData = data.class
     const level = classData.level
