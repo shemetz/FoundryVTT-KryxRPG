@@ -1,5 +1,5 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
-    <ol class="trait-list">
+    <ol class="trait-list" {{#if columnCount}} style="column-count: {{columnCount}}" {{/if}}>
         {{#each choices_ordered as |choice_ordered order|}}
             <li>
                 <label class="checkbox">

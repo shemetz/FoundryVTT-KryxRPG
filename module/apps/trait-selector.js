@@ -4,6 +4,9 @@
  */
 import {KRYX_RPG} from '../config.js';
 
+
+const TEXT_STYLE = new PIXI.TextStyle({fontFamily : 'Signika', fontSize: 11})
+
 export default class TraitSelector extends FormApplication {
 
   /** @override */
@@ -44,6 +47,7 @@ export default class TraitSelector extends FormApplication {
     // Populate choices
     const choices = duplicate(this.options.choices);
     const choices_ordered = {}
+    let textWidthMax = 0
     for (let [k, v] of Object.entries(choices)) {
       let order = k
       const ordering = KRYX_RPG[this.attribute + ".ordering"]
@@ -51,6 +55,8 @@ export default class TraitSelector extends FormApplication {
         // special workaround so that armors can be shown in order (grep data.traits.armorProf)
         order = ordering[k]
       }
+      const textWidth = PIXI.TextMetrics.measureText(v, TEXT_STYLE).width
+      textWidthMax = Math.max(textWidthMax, textWidth)
       choices_ordered[order] = {
         key: k,
         choice: {
@@ -59,11 +65,16 @@ export default class TraitSelector extends FormApplication {
         }
       }
     }
+    const length = Object.keys(choices).length
+    let columnCount = 1
+    if (length > 7 && textWidthMax < 120) columnCount = 2
+    if (length > 15 && textWidthMax < 65) columnCount = 3
 
     // Return data
     return {
       allowCustom: this.options.allowCustom,
       choices_ordered: choices_ordered,
+      columnCount: columnCount,
       custom: attr ? attr.custom : ""
     }
   }
