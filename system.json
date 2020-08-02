@@ -10,14 +10,21 @@
   "packs": [
     {
       "name": "items",
-      "label": "Items (SRD)",
+      "label": "Items",
       "system": "kryx_rpg",
       "path": "./packs/items.db",
       "entity": "Item"
     },
     {
+      "name": "superpowers",
+      "label": "Spells, Maneuvers & Concoctions",
+      "system": "kryx_rpg",
+      "path": "./packs/superpowers.db",
+      "entity": "Item"
+    },
+    {
       "name": "tradegoods",
-      "label": "Trade Goods (SRD)",
+      "label": "Trade Goods",
       "system": "kryx_rpg",
       "path": "./packs/tradegoods.db",
       "entity": "Item"

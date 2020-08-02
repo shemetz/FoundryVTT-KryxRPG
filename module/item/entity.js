@@ -168,6 +168,18 @@ export default class ItemKryx extends Item {
     return target && target.isScaling
   }
 
+  /* -------------------------------------------- */
+
+  /**
+   * Returns an object similar to an actor's main resource (mana/stamina/catalysts), or null if this is
+   * not a superpower type item.
+   * @type {Object}
+   */
+  get mainResource() {
+    if (this.data.type !== "superpower") return null
+    return CONFIG.KRYX_RPG.mainResourceByPowerType[this.data.data.powerType]
+  }
+
 
   /* -------------------------------------------- */
 
@@ -203,14 +215,13 @@ export default class ItemKryx extends Item {
 
     // Get the Item's data
     const itemType = this.data.type;
-    const actorData = this.actor ? this.actor.data : {};
     const data = this.data.data;
     const C = CONFIG.KRYX_RPG;
     const labels = {};
 
     // Superpower - components
+    const resource = this.mainResource
     if (itemType === "superpower") {
-      const resource = this.isManeuver ? actorData.data.mainResources.stamina : actorData.data.mainResources.mana
       const spentCost = data.spentCost || data.cost
       const resourceName = spentCost > 1 ? resource.name : resource.nameSingular
       labels.cost = `${spentCost} ${resourceName}`
@@ -265,8 +276,6 @@ export default class ItemKryx extends Item {
       }
       let tgtVal = tgt.value
       if (tgt.isScaling) {
-        const actorMainResources = actorData.data.mainResources
-        const resource = this.isManeuver ? actorMainResources.stamina : actorMainResources.mana
         const resourceName = resource.nameSingular.capitalize()
         tgtVal = `${tgt.value}/${resourceName}`
       }
@@ -304,8 +313,6 @@ export default class ItemKryx extends Item {
           durUnits = durUnits.substr(0, durUnits.length - 1)
         }
         if (dur.isScaling) {
-          const actorMainResources = actorData.data.mainResources
-          const resource = this.isManeuver ? actorMainResources.stamina : actorMainResources.mana
           const resourceName = resource.nameSingular.capitalize()
           durUnits = `${durUnits}/${resourceName}`
         }

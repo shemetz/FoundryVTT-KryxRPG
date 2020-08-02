@@ -32,32 +32,32 @@ export default class ItemSheetKryx extends ItemSheet {
   /** @override */
   getData() {
     const data = super.getData();
-    data.labels = this.item.labels;
+    const item = this.item
+    data.labels = item.labels;
 
     // Include CONFIG values
     data.config = CONFIG.KRYX_RPG;
 
     // Item Type, Status, and Details
-    data.itemType = data.item.type.titleCase();
+    data.itemType = item.type.titleCase();
     data.itemStatus = this._getItemStatus(data.item);
     data.itemProperties = this._getItemProperties(data.item);
-    data.isPhysical = data.item.data.hasOwnProperty("quantity");
+    data.isPhysical = item.data.hasOwnProperty("quantity");
 
     // Potential consumption targets
     data.abilityConsumptionTargets = this._getItemConsumptionTargets(data.item);
-    if (this.item.type !== "superpower") {
+    if (item.type !== "superpower") {
       data.scalingText = null
     } else {
-      const actorMainResources = this.actor.data.data.mainResources
-      const resource = this.item.isManeuver ? actorMainResources.stamina : actorMainResources.mana
-      const resourceName = this.item.data.data.cost === 1 ? resource.nameSingular : resource.name
+      const resource = item.mainResource
+      const resourceName = item.data.cost === 1 ? resource.nameSingular : resource.name
       data.scalingText = game.i18n.format("KRYX_RPG.ScalingPerResource", {resourceName: resourceName})
     }
 
     // Action Details
-    data.hasAttackRoll = this.item.hasAttack;
-    data.isHealing = data.item.data.actionType === "heal";
-    data.isFlatDC = getProperty(data.item.data, "save.scaling") === "flat_dc";
+    data.hasAttackRoll = item.hasAttack;
+    data.isHealing = item.data.actionType === "heal";
+    data.isFlatDC = getProperty(item.data, "save.scaling") === "flat_dc";
     return data;
   }
 

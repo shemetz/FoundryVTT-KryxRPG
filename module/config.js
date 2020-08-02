@@ -646,6 +646,40 @@ KRYX_RPG.ARSENAL_ORDERING = {
   "known_maneuver": 13,
 }
 
+// Used for items
+KRYX_RPG.mainResourceByPowerType = {
+  "spell": {
+    "remaining": 0,
+    "max": 0,
+    "limit": 0,
+    "dc": 0,
+    "name": "mana",
+    "nameSingular": "mana",
+    "nameOfEffect": "spell",
+    "nameOfUse": "cast",
+  },
+  "maneuver": {
+    "remaining": 0,
+    "max": 0,
+    "limit": 0,
+    "dc": 0,
+    "name": "stamina",
+    "nameSingular": "stamina",
+    "nameOfEffect": "maneuver",
+    "nameOfUse": "use",
+  },
+  "concoction": {
+    "remaining": 0,
+    "max": 0,
+    "limit": 0,
+    "dc": 0,
+    "name": "catalysts",
+    "nameSingular": "catalyst",
+    "nameOfEffect": "concoction",
+    "nameOfUse": "craft",
+  },
+}
+
 // Configure Optional Character Flags
 KRYX_RPG.characterFlags = {
   "savageAttacker": {
