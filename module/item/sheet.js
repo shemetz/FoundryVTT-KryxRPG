@@ -42,7 +42,7 @@ export default class ItemSheetKryx extends ItemSheet {
     data.itemType = item.type.titleCase();
     data.itemStatus = this._getItemStatus(data.item);
     data.itemProperties = this._getItemProperties(data.item);
-    data.isPhysical = item.data.hasOwnProperty("quantity");
+    data.isPhysical = item.data.data.hasOwnProperty("quantity");
 
     // Potential consumption targets
     data.abilityConsumptionTargets = this._getItemConsumptionTargets(data.item);
@@ -56,8 +56,8 @@ export default class ItemSheetKryx extends ItemSheet {
 
     // Action Details
     data.hasAttackRoll = item.hasAttack;
-    data.isHealing = item.data.actionType === "heal";
-    data.isFlatDC = getProperty(item.data, "save.scaling") === "flat_dc";
+    data.isHealing = item.data.data.actionType === "heal";
+    data.isFlatDC = item.data.data.save.scaling === "flat_dc";
     return data;
   }
 

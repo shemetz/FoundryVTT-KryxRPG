@@ -324,7 +324,7 @@
       "action": {
         "ability": null,
         "actionType": null,
-        "attackBonus": 0,
+        "attackBonus": null,
         "chatFlavor": "",
         "critical": null,
         "damage": {
