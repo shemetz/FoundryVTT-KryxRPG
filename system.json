@@ -45,7 +45,7 @@
   "secondaryTokenAttribute": null,
   "minimumCoreVersion": "0.6.4",
   "compatibleCoreVersion": "0.6.5",
-  "url": "https://github.com/itamarcu/kryx_rpg",
-  "manifest": "https://github.com/itamarcu/kryx_rpg/raw/master/system.json",
-  "download": "https://github.com/itamarcu/kryx_rpg/archive/master.zip"
+  "url": "https://github.com/itamarcu/FoundryVTT-KryxRPG",
+  "manifest": "https://github.com/itamarcu/FoundryVTT-KryxRPG/raw/master/system.json",
+  "download": "https://github.com/itamarcu/FoundryVTT-KryxRPG/archive/master.zip"
 }
