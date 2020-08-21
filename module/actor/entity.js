@@ -404,7 +404,7 @@ export default class ActorKryx extends Actor {
     const resource = this.data.data.mainResources[resourceName]
     if (paidCost > 0 && paidCost < resource.limit)
       canAugment = true // nearly everything can be augmented/enhanced, just for extra damage/AoE/duration
-    const canChooseTargetType = itemData.target.type === "coneline"
+    const canChooseTargetType = itemData.target.type === "coneOrLine"
     const hasReasonToConfigureDialog = item.hasAreaTarget || canAugment || canChooseTargetType
     if (configureDialog && hasReasonToConfigureDialog) {
       const spellFormData = await SuperpowerUseDialog.create(this, item);

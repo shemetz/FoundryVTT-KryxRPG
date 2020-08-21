@@ -30,7 +30,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
       fillColor: game.user.color
     }
 
-    if (targetType === "line" && item.data.data.target.type === "coneline") {
+    if (targetType === "line" && item.data.data.target.type === "coneOrLine") {
       // awful hack: make cone/line spells (with set scaling as 15 feet/mana) scale at 20 feet/mana when choosing lines
       templateData.distance *= (20 / 15)
     }

@@ -279,24 +279,31 @@ KRYX_RPG.encumbrance = {
 /* -------------------------------------------- */
 
 /**
- * This Object defines the types of single or area targets which can be applied in Kryx RPG
+ * This Object defines the types of single or area targets which can be applied in Kryx RPG.
+ *
+ * All of these are standard sizes, unless they are "Double" (= twice as big as normal) or a nonstandard area
  * @type {Object}
  */
 KRYX_RPG.targetTypes = {
   "none": "KRYX_RPG.None",
   "self": "KRYX_RPG.TargetSelf",
-  "creature": "KRYX_RPG.TargetCreature",
-  "ally": "KRYX_RPG.TargetAlly",
-  "enemy": "KRYX_RPG.TargetEnemy",
+  "creature": "KRYX_RPG.TargetCreature", // includes "creature or object"
   "object": "KRYX_RPG.TargetObject",
   "space": "KRYX_RPG.TargetSpace",
-  "radius": "KRYX_RPG.TargetRadius",
+  "area": "KRYX_RPG.TargetArea",
+  "radiusCreatures": "KRYX_RPG.TargetRadiusCreatures",
+  "radiusSense": "KRYX_RPG.TargetRadiusSense",
   "sphere": "KRYX_RPG.TargetSphere",
+  "sphereDouble": "KRYX_RPG.TargetSphereDouble",
+  "nearPoint": "KRYX_RPG.TargetNearPoint",
   "cylinder": "KRYX_RPG.TargetCylinder",
+  "cylinderDouble": "KRYX_RPG.TargetCylinderDouble",
   "cone": "KRYX_RPG.TargetCone",
   "line": "KRYX_RPG.TargetLine",
-  "coneline": "KRYX_RPG.TargetConeOrLine",
-  "wall": "KRYX_RPG.TargetWall"
+  "coneOrLine": "KRYX_RPG.TargetConeOrLine",
+  "wall": "KRYX_RPG.TargetWall",
+  "wallDouble": "KRYX_RPG.TargetWallDouble",
+  "special": "KRYX_RPG.TargetSpecial",
 };
 
 
@@ -312,7 +319,7 @@ KRYX_RPG.areaScalingStandardSizes = {
   "sphere": 5,
   "cylinder": 5,
   "cone": 15,
-  "coneline": 15, //TODO figure out how to solve this fully :/
+  "coneOrLine": 15, //TODO figure out how to solve this fully :/
   "line": 20,
   "wall": 15,
 }
@@ -332,7 +339,7 @@ KRYX_RPG.areaTargetTypes = {
   radius: "circle",
   sphere: "circle",
   wall: "line",
-  coneline: "", //exists here just to allow it as area type
+  coneOrLine: "", //exists here just to allow it as area type
 };
 
 

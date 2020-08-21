@@ -44,7 +44,7 @@ export default class SuperpowerUseDialog extends Dialog {
     )
     const resource = superpower.isManeuver ? actorData.mainResources.stamina : actorData.mainResources.mana
     const hasPlaceableTemplate = superpower.hasAreaTarget && game.user.can("TEMPLATE_CREATE")
-    const canChooseTargetType = hasPlaceableTemplate && superpowerData.target.type === "coneline"
+    const canChooseTargetType = hasPlaceableTemplate && superpowerData.target.type === "coneOrLine"
     const icon = superpower.isManeuver
       ? '<i class="fas fa-fist-raised"></i>'
       : superpower.isConcoction
