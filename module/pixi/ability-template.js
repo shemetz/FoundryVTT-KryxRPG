@@ -17,7 +17,10 @@ export default class AbilityTemplate extends MeasuredTemplate {
     const target = getProperty(item.data, "data.target") || {};
     const templateShape = KRYX_RPG.areaTargetTypes[targetType];
     if (!templateShape) return null;
-    const distance = target.value * scaling
+    let distance = CONFIG.KRYX_RPG.areaScalingStandardSizes[targetType]
+    if (distance === undefined) {
+      distance = target.value * scaling
+    }
 
     // Prepare template data
     const templateData = {
@@ -30,20 +33,10 @@ export default class AbilityTemplate extends MeasuredTemplate {
       fillColor: game.user.color
     }
 
-    if (targetType === "line" && item.data.data.target.type === "coneOrLine") {
-      // awful hack: make cone/line spells (with set scaling as 15 feet/mana) scale at 20 feet/mana when choosing lines
-      templateData.distance *= (20 / 15)
-    }
-
     // Additional type-specific data
     switch (templateShape) {
       case "cone": // Kryx RPG cone RAW should be 53.13 degrees
         templateData.angle = 53.13;
-        break;
-      case "rect": // usually people want poly-lines for walls, so rectangles don't actually exist in KryxRPG
-        templateData.distance = Math.hypot(distance, distance);
-        templateData.width = distance;
-        templateData.direction = 45;
         break;
       case "ray": // Kryx RPG rays are most commonly 5ft wide
         templateData.width = 5;

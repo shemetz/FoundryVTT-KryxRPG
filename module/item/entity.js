@@ -182,27 +182,6 @@ export default class ItemKryx extends Item {
 
 
   /* -------------------------------------------- */
-
-  /**
-   * - Returns 1 if this is a standard-scaling AoE (e.g. Fireball).
-   * - Returns 2 if this is a double-scaling AoE (e.g. Ash Fall)
-   * - Returns 0 if this is not standard-scaling
-   * @type {number}
-   */
-  get checkScalingMode() {
-    const target = this.data.data.target
-    if (!target || !target.isScaling) return 0
-    const expectedScaling = CONFIG.KRYX_RPG.areaScalingStandardSizes[target.type]
-    // will be undefined if someone's using "more creatures per mana" scaling for example
-    if (!expectedScaling) return 0
-    let value = parseFloat(target.value)
-    if (target.units !== "ft" && target.units !== "") return 0 // you can add more code to support metric if you want!
-    if (value === expectedScaling) return 1
-    if (value === expectedScaling * 2) return 2
-    return 0
-  }
-
-  /* -------------------------------------------- */
   /*	Data Preparation														*/
 
   /* -------------------------------------------- */
@@ -283,15 +262,11 @@ export default class ItemKryx extends Item {
       // simplified scaling for KryxRPG superpowers - most of them have standardized sizes.
       // instead of "15/mana Feet Cone" (Burning Hands) it will say "Cone"
       // instead of "10/mana Feet Cylinder" (Ash Fall) it will say "Large Cylinder"
-      const scalingMode = this.checkScalingMode
-      if (scalingMode === 1)
-        labels.target = `${C.targetTypes[tgt.type]}`
-      if (scalingMode === 2)
-        labels.target = `Large ${C.targetTypes[tgt.type]}`
-      if (!tgt.value && tgt.isScaling && C.areaScalingStandardSizes.hasOwnProperty(tgt.type)) {
-        // When user is lazy and inputs effect shape without a number, we'll update it to be the standard size
-        tgt.value = C.areaScalingStandardSizes[tgt.type]
-        tgt.units = "ft"
+      labels.target = `${C.targetTypes[tgt.type]}`
+      if (C.areaScalingStandardSizes.hasOwnProperty(tgt.type)) {
+        // When user inputs effect shape without a number, we'll update it to be the standard size
+        tgt.value = null
+        tgt.units = null
         this.update({"data.target.value": tgt.value, "data.target.units": tgt.units})
       }
 

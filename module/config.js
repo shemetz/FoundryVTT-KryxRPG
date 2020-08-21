@@ -306,22 +306,22 @@ KRYX_RPG.targetTypes = {
   "special": "KRYX_RPG.TargetSpecial",
 };
 
-
 /* -------------------------------------------- */
 
 /**
  * Many AoEs have size that depends on amount of mana (or other resource) used, a.k.a "augment sizes".
  * Usually effects will either say "a sphere" or "a sphere twice as big as normal", for example.
- * This table shows the expected sizes, in feet.
  */
 KRYX_RPG.areaScalingStandardSizes = {
-  "radius": 5,
+  "cone": 15,
+  "coneOrLine": 15,  // TODO figure out how to solve this fully :/
+  "line": 20,
   "sphere": 5,
   "cylinder": 5,
-  "cone": 15,
-  "coneOrLine": 15, //TODO figure out how to solve this fully :/
-  "line": 20,
   "wall": 15,
+  "sphereBig": 10,
+  "cylinderBig": 10,
+  "wallBig": 30,
 }
 
 /* -------------------------------------------- */
@@ -336,10 +336,13 @@ KRYX_RPG.areaTargetTypes = {
   cone: "cone",
   cylinder: "circle",
   line: "ray",
-  radius: "circle",
+  radiusCreatures: "circle",
   sphere: "circle",
   wall: "line",
   coneOrLine: "", //exists here just to allow it as area type
+  cylinderBig: "circle",
+  sphereBig: "circle",
+  wallBig: "line",
 };
 
 
