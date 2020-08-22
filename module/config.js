@@ -248,7 +248,9 @@ KRYX_RPG.damageTypes = {
   "psychic": "KRYX_RPG.DamagePsychic",
   "radiant": "KRYX_RPG.DamageRadiant",
   "slashing": "KRYX_RPG.DamageSlashing",
-  "concussion": "KRYX_RPG.DamageConcussion"
+  "concussion": "KRYX_RPG.DamageConcussion",
+  "same": "KRYX_RPG.DamageSame",
+  "chaos": "KRYX_RPG.DamageChaos",
 };
 
 /* -------------------------------------------- */
@@ -260,6 +262,7 @@ KRYX_RPG.distanceUnits = {
   "ft": "KRYX_RPG.DistFt",
   "mi": "KRYX_RPG.DistMi",
   "spec": "KRYX_RPG.Special",
+  "sight": "KRYX_RPG.DistSight",
   "any": "KRYX_RPG.DistAny"
 };
 
