@@ -14,13 +14,14 @@ export default class AbilityTemplate extends MeasuredTemplate {
    * @return {AbilityTemplate|null}     The template object, or null if the item does not produce a template
    */
   static fromItem(item, scaling, targetType) {
-    const target = getProperty(item.data, "data.target") || {};
     const templateShape = KRYX_RPG.areaTargetTypes[targetType];
     if (!templateShape) return null;
     let distance = CONFIG.KRYX_RPG.areaScalingStandardSizes[targetType]
     if (distance === undefined) {
-      distance = target.value * scaling
+      ui.notifications.error("This item states it has a placeable template but it's not standard!")
+      return
     }
+    distance *= scaling
 
     // Prepare template data
     const templateData = {

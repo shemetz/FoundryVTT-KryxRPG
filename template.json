@@ -300,7 +300,6 @@
         },
         "target": {
           "value": null,
-          "isScaling": false,
           "units": "",
           "type": ""
         },

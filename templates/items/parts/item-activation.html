@@ -29,16 +29,6 @@
     <div class="form-group input-select-select">
         <label>{{ localize "KRYX_RPG.Target" }}</label>
         <div class="form-fields">
-            <input type="text" name="data.target.value" value="{{data.target.value}}" data-dtype="Number"
-                   placeholder="-"/>
-            <select name="data.target.units" class="flex066">
-                {{#select data.target.units}}
-                    <option value=""></option>
-                    {{#each config.distanceUnits as |name key|}}
-                        <option value="{{key}}">{{name}}</option>
-                    {{/each}}
-                {{/select}}
-            </select>
             <select name="data.target.type" class="flex066">
                 {{#select data.target.type}}
                     <option value=""></option>
@@ -47,12 +37,8 @@
                     {{/each}}
                 {{/select}}
             </select>
-            {{#if data.cost}}
-                <label class="checkbox">{{ scalingText }}
-                    <input type="checkbox" data-dtype="Boolean" name="data.target.isScaling"
-                        {{checked data.target.isScaling}}/>
-                </label>
-            {{/if}}
+            <input type="text" name="data.target.custom" value="{{data.target.custom}}" data-dtype="String"
+                   placeholder="(custom?)"/>
         </div>
     </div>
 

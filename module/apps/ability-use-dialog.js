@@ -39,7 +39,7 @@ export default class AbilityUseDialog extends Dialog {
       title: game.i18n.format("KRYX_RPG.AbilityUseHint", item.data),
       note: this._getAbilityUseNote(item.data, uses, recharge),
       canUse: recharges ? recharge.charged : (quantity > 0 && !uses.value) || uses.value > 0,
-      hasPlaceableTemplate: game.user.can("TEMPLATE_CREATE") && item.hasAreaTarget,
+      hasPlaceableTemplate: game.user.can("TEMPLATE_CREATE") && item.hasPlaceableTemplate,
     });
 
     // Create the Dialog and return as a Promise

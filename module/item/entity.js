@@ -149,12 +149,11 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Does the Item have an area of effect target
    * @type {boolean}
    */
-  get hasAreaTarget() {
-    const target = this.data.data.target;
-    return target && (target.type in CONFIG.KRYX_RPG.areaTargetTypes);
+  get hasPlaceableTemplate() {
+    // in the future this might include non-scaling placeable templates like squares
+    return this.isAreaScaling
   }
 
   /* -------------------------------------------- */
@@ -165,7 +164,7 @@ export default class ItemKryx extends Item {
    */
   get isAreaScaling() {
     const target = this.data.data.target
-    return target && target.isScaling
+    return target && target.type in CONFIG.KRYX_RPG.areaTargetTypes
   }
 
   /* -------------------------------------------- */
@@ -248,26 +247,12 @@ export default class ItemKryx extends Item {
 
       // Target Label
       let tgt = data.target || {};
-      if (["none", "touch", "self"].includes(tgt.units)) tgt.value = null;
-      if (["none", "self"].includes(tgt.type)) {
-        tgt.value = null;
-        tgt.units = null;
-      }
-      let tgtVal = tgt.value
-      if (tgt.isScaling) {
-        const resourceName = resource.nameSingular.capitalize()
-        tgtVal = `${tgt.value}/${resourceName}`
-      }
-      labels.target = [tgtVal, C.distanceUnits[tgt.units], C.targetTypes[tgt.type]].filterJoin(" ")
       // simplified scaling for KryxRPG superpowers - most of them have standardized sizes.
       // instead of "15/mana Feet Cone" (Burning Hands) it will say "Cone"
       // instead of "10/mana Feet Cylinder" (Ash Fall) it will say "Large Cylinder"
       labels.target = `${C.targetTypes[tgt.type]}`
-      if (C.areaScalingStandardSizes.hasOwnProperty(tgt.type)) {
-        // When user inputs effect shape without a number, we'll update it to be the standard size
-        tgt.value = null
-        tgt.units = null
-        this.update({"data.target.value": tgt.value, "data.target.units": tgt.units})
+      if (tgt.custom) {
+        labels.target = tgt.custom
       }
 
       // Range Label
@@ -277,6 +262,14 @@ export default class ItemKryx extends Item {
         rng.long = null;
       }
       labels.range = [rng.value, rng.long ? `/ ${rng.long}` : null, C.distanceUnits[rng.units]].filterJoin(" ");
+      let range = labels.range
+      if (["none", "self"].includes(rng.units)) {
+        range = null
+      }
+      if (rng.units === "touch") {
+        range = "touch"
+      }
+      labels.targetWithRange = [labels.target, range].filterJoin(", ")
 
       // Duration Label
       let dur = data.duration || {};
@@ -350,7 +343,7 @@ export default class ItemKryx extends Item {
       isVersatile: this.isVersatile,
       isSuperpower: this.data.type === "superpower",
       hasSave: this.hasSave,
-      hasAreaTarget: this.hasAreaTarget,
+      hasPlaceableTemplate: this.hasPlaceableTemplate,
       spentCost: this.data.data.spentCost || null,
     };
 
@@ -490,7 +483,7 @@ export default class ItemKryx extends Item {
     let consume = usesRecharge || usesCharges;
 
     // Determine whether the feat uses charges
-    configureDialog = configureDialog && (consume || this.hasAreaTarget);
+    configureDialog = configureDialog && (consume || this.hasPlaceableTemplate);
     if (configureDialog) {
       const usage = await AbilityUseDialog.create(this);
       if (usage === null) return false;
@@ -507,7 +500,7 @@ export default class ItemKryx extends Item {
     }
 
     // Maybe initiate template placement workflow
-    if (this.hasAreaTarget && placeTemplate) {
+    if (this.hasPlaceableTemplate && placeTemplate) {
       const template = AbilityTemplate.fromItem(this);
       if (template) template.drawPreview(event);
       if (this.owner && this.owner.sheet) this.owner.sheet.minimize();
@@ -901,7 +894,7 @@ export default class ItemKryx extends Item {
     }
 
     // Maybe initiate template placement workflow
-    if (this.hasAreaTarget && placeTemplate) {
+    if (this.hasPlaceableTemplate && placeTemplate) {
       const template = AbilityTemplate.fromItem(this);
       if (template) template.drawPreview(event);
       if (this.owner && this.owner.sheet) this.owner.sheet.minimize();

@@ -405,7 +405,7 @@ export default class ActorKryx extends Actor {
     if (paidCost > 0 && paidCost < resource.limit)
       canAugment = true // nearly everything can be augmented/enhanced, just for extra damage/AoE/duration
     const canChooseTargetType = itemData.target.type === "coneOrLine"
-    const hasReasonToConfigureDialog = item.hasAreaTarget || canAugment || canChooseTargetType
+    const hasReasonToConfigureDialog = item.hasPlaceableTemplate || canAugment || canChooseTargetType
     if (configureDialog && hasReasonToConfigureDialog) {
       const spellFormData = await SuperpowerUseDialog.create(this, item);
       if (spellFormData === null) {
@@ -439,7 +439,7 @@ export default class ActorKryx extends Actor {
     }
 
     // Initiate ability template placement workflow if selected
-    if (shouldPlaceTemplate && item.hasAreaTarget) {
+    if (shouldPlaceTemplate && item.hasPlaceableTemplate) {
       const scaling = item.isAreaScaling ? paidCost : 1
       const targetType = selectedTargetType || itemData.target.type
       const template = AbilityTemplate.fromItem(item, scaling, targetType);
