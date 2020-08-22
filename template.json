@@ -344,7 +344,6 @@
       "cost": 1,
       "powerType": "spell",
       "availability": "known",
-      "duration": null,
       "components": {
         "ritual": false,
         "concentration": false
