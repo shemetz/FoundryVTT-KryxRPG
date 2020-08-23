@@ -780,7 +780,7 @@ export default class ItemKryx extends Item {
    * @private
    */
   _scaleCantripDamage(parts, level, scale) {
-    const add = Math.ceil(level / 4);
+    const add = Math.max(0, Math.ceil(level / 4) - 1);
     if (add === 0) return;
     if (scale && (scale !== parts[0])) {
       parts[0] = parts[0] + " + " + scale.replace(new RegExp(Roll.diceRgx, "g"), (match, nd, d) => `${add}d${d}`);
