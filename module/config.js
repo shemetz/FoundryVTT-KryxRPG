@@ -131,9 +131,11 @@ KRYX_RPG.itemActionTypes = {
   "msak": "KRYX_RPG.ActionMSAK",
   "rsak": "KRYX_RPG.ActionRSAK",
   "save": "KRYX_RPG.ActionSave",
+  "autodmg": "KRYX_RPG.ActionAutoDamage",
   "heal": "KRYX_RPG.ActionHeal",
   "abil": "KRYX_RPG.ActionAbil",
   "util": "KRYX_RPG.ActionUtil",
+  "affhp": "KRYX_RPG.ActionAffectHealth",
   "other": "KRYX_RPG.ActionOther"
 };
 
@@ -249,6 +251,9 @@ KRYX_RPG.damageTypes = {
   "radiant": "KRYX_RPG.DamageRadiant",
   "slashing": "KRYX_RPG.DamageSlashing",
   "concussion": "KRYX_RPG.DamageConcussion",
+  "healing": "KRYX_RPG.DamageHealing",
+  "temphp": "KRYX_RPG.DamageTempHp",
+  "totalhp": "KRYX_RPG.DamageTotalHp",
   "same": "KRYX_RPG.DamageSame",
   "chaos": "KRYX_RPG.DamageChaos",
 };
