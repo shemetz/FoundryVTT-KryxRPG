@@ -69,18 +69,6 @@
             <div class="spell-components form-group stacked">
                 <label>{{ localize "KRYX_RPG.SpellComponents" }}</label>
                 <label class="checkbox">
-                    <input type="checkbox" name="data.components.verbal"{{checked data.components.verbal}}/>
-                    {{ localize "KRYX_RPG.ComponentVerbal" }}
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" name="data.components.somatic" {{checked data.components.somatic}}/>
-                    {{ localize "KRYX_RPG.ComponentSomatic" }}
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" name="data.components.material" {{checked data.components.material}}/>
-                    {{ localize "KRYX_RPG.ComponentMaterial" }}
-                </label>
-                <label class="checkbox">
                     <input type="checkbox" name="data.components.concentration"
                         {{ checked data.components.concentration}}/> {{ labels.concentration }}
                 </label>
@@ -88,6 +76,12 @@
                     <input type="checkbox" name="data.components.ritual" {{checked data.components.ritual}}/>
                     {{ localize "KRYX_RPG.Ritual" }}
                 </label>
+            </div>
+
+            {{!-- Material Components --}}
+            <div class="form-group stacked">
+                <label>{{ localize "KRYX_RPG.SpellMaterials" }}</label>
+                <input class="materials" type="text" name="data.components.materials" value="{{data.components.materials}}"/>
             </div>
 
             <h3 class="form-header">{{ localize "KRYX_RPG.SuperpowerActivationHeader" }}</h3>

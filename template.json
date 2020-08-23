@@ -314,7 +314,7 @@
         "uses": {
           "value": 0,
           "max": 0,
-          "per": null
+          "per": ""
         },
         "consume": {
           "type": "",
@@ -349,7 +349,8 @@
       "availability": "known",
       "components": {
         "ritual": false,
-        "concentration": false
+        "concentration": false,
+        "materials": ""
       },
       "scaling": {
         "mode": null,
