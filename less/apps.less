@@ -406,3 +406,34 @@
     margin: 2px;
   }
 }
+
+.tooltipped {
+}
+
+.tooltip {
+  position: absolute;
+  left: 46px;
+  margin-top: 34px;
+  width: 600px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.tooltip .tooltiptext {
+  font-style: italic;
+  background-color: #E9E9E9;
+  color: black;
+  border-radius: 6px;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.2);
+  padding: 0.3rem 0.3rem;
+  text-shadow: none; // counters the text shadow from hovering over other stuff
+  white-space: normal; // counters stuff
+  line-height: 150%;
+  display: inline-block;
+}
+
+.tooltipped:hover + .tooltip {
+  opacity: 1;
+  visibility: visible;
+}

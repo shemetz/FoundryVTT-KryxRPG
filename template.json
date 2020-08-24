@@ -266,7 +266,6 @@
     "types": ["superpower", "feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"],
     "templates": {
       "itemDescription": {
-        "short_description": "",
         "description": {
           "value": "",
           "chat": "",

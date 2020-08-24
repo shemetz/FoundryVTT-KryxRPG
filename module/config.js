@@ -327,9 +327,9 @@ KRYX_RPG.areaScalingStandardSizes = {
   "sphere": 5,
   "cylinder": 5,
   "wall": 15,
-  "sphereBig": 10,
-  "cylinderBig": 10,
-  "wallBig": 30,
+  "sphereDouble": 10,
+  "cylinderDouble": 10,
+  "wallDouble": 30,
 }
 
 /* -------------------------------------------- */
@@ -348,9 +348,9 @@ KRYX_RPG.areaTargetTypes = {
   sphere: "circle",
   wall: "line",
   coneOrLine: "", //exists here just to allow it as area type
-  cylinderBig: "circle",
-  sphereBig: "circle",
-  wallBig: "line",
+  cylinderDouble: "circle",
+  sphereDouble: "circle",
+  wallDouble: "line",
 };
 
 

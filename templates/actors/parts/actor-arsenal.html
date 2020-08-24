@@ -16,7 +16,9 @@
                 <h3>{{section.label}}</h3>
             </div>
 
-            <div class="superpower-cost">{{section.resourceName}} {{localize "KRYX_RPG.SuperpowerCost"}}</div>
+            <!-- not sure if I want the column to say "Mana"/"Stamina"/"Catalysts", or "Cost"... -->
+            <div class="superpower-cost">{{section.resourceName}}</div>
+<!--            <div class="superpower-cost">{{localize "KRYX_RPG.SuperpowerCost"}}</div>-->
             <div class="superpower-theme">{{localize "KRYX_RPG.Theme"}}</div>
             <div class="superpower-action">{{localize "KRYX_RPG.SuperpowerUsage"}}</div>
             <div class="superpower-target">{{localize "KRYX_RPG.SuperpowerTarget"}}</div>
@@ -36,7 +38,16 @@
                 <li class="item flexrow" data-item-id="{{item._id}}">
                     <div class="item-name flexrow rollable">
                         <div class="item-image" style="background-image: url({{item.img}})"></div>
-                        <h4>{{item.name}}</h4>
+                        <h4 class="tooltipped">
+                            {{item.name}}
+                        </h4>
+                        {{#if item.data.chatFlavor }}
+                            <span class="tooltip">
+                                <span class="tooltiptext">
+                                    {{item.data.chatFlavor}}
+                                </span>
+                            </span>
+                        {{/if}}
                         {{#if item.data.uses.per }}
                             <div class="item-detail spell-uses">
                                 Uses {{item.data.uses.value}} / {{item.data.uses.max}}
@@ -50,7 +61,7 @@
                         {{/each}}
                     </div>
                     <div class="superpower-cost">{{item.data.cost}}</div>
-                    <div class="superpower-theme">{{item.labels.theme}}</div>
+                    <div class="superpower-theme">{{item.labels.mainTheme}}</div>
                     <div class="superpower-action">{{item.labels.activation}}</div>
                     <div class="superpower-target" title="{{localize 'KRYX_RPG.Range'}}: {{labels.range}}">
                         {{#if item.labels.targetWithRange}}

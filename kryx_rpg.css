@@ -409,6 +409,31 @@
   height: 24px;
   margin: 2px;
 }
+.tooltip {
+  position: absolute;
+  left: 46px;
+  margin-top: 34px;
+  width: 600px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tooltip .tooltiptext {
+  font-style: italic;
+  background-color: #E9E9E9;
+  color: black;
+  border-radius: 6px;
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.2);
+  padding: 0.3rem 0.3rem;
+  text-shadow: none;
+  white-space: normal;
+  line-height: 150%;
+  display: inline-block;
+}
+.tooltipped:hover + .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
 .kryx_rpg.sheet.actor {
   /* ----------------------------------------- */
   /*  Sheet Header                             */
@@ -965,11 +990,22 @@
 .kryx_rpg.sheet.actor .superpower-theme,
 .kryx_rpg.sheet.actor .superpower-action,
 .kryx_rpg.sheet.actor .superpower-target {
-  flex: 0 0 100px;
   font-size: 12px;
   color: #7a7971;
   text-align: center;
   border-right: 1px solid #c9c7b8;
+}
+.kryx_rpg.sheet.actor .superpower-cost {
+  flex: 0 0 50px;
+}
+.kryx_rpg.sheet.actor .superpower-theme {
+  flex: 0 0 65px;
+}
+.kryx_rpg.sheet.actor .superpower-action {
+  flex: 0 0 90px;
+}
+.kryx_rpg.sheet.actor .superpower-target {
+  flex: 0 0 140px;
 }
 .kryx_rpg.sheet.actor .spell-component {
   line-height: 14px;
