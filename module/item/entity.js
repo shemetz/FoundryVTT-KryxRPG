@@ -108,16 +108,6 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
-   * Does the Item implement a versatile damage roll as part of its usage
-   * @type {boolean}
-   */
-  get isVersatile() {
-    return !!(this.hasDamage && this.data.data.damage.versatile);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Does the item provide an amount of healing instead of conventional damage?
    * @return {boolean}
    */
@@ -340,7 +330,6 @@ export default class ItemKryx extends Item {
       hasAttack: this.hasAttack,
       isHealing: this.isHealing,
       hasDamage: this.hasDamage,
-      isVersatile: this.isVersatile,
       isSuperpower: this.data.type === "superpower",
       hasSave: this.hasSave,
       hasPlaceableTemplate: this.hasPlaceableTemplate,
@@ -717,7 +706,7 @@ export default class ItemKryx extends Item {
    *
    * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
    */
-  rollDamage({event, augmentedCost = null, versatile = false} = {}) {
+  rollDamage({event, augmentedCost = null} = {}) {
     const itemData = this.data.data;
     const actorData = this.actor.data.data;
     if (!this.hasDamage) {
@@ -729,7 +718,6 @@ export default class ItemKryx extends Item {
 
     // Define Roll parts
     const parts = itemData.damage.parts.map(d => d[0]);
-    if (versatile && itemData.damage.versatile) parts[0] = itemData.damage.versatile;
     if (this.data.type === "superpower") {
       if (!itemData.attack) fastForward = true
       const scalingMode = itemData.scaling.mode

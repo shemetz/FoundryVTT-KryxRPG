@@ -26,10 +26,6 @@
             </button>
         {{/if}}
 
-        {{#if isVersatile}}
-            <button data-action="versatile">{{ localize "KRYX_RPG.Versatile" }}</button>
-        {{/if}}
-
         {{#if hasSave}}
             <button data-action="save" data-save="{{data.save.ability}}" disabled>
                 {{ localize "KRYX_RPG.Save" }} {{labels.save}}

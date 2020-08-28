@@ -329,8 +329,7 @@
         "chatFlavor": "",
         "critical": null,
         "damage": {
-          "parts": [],
-          "versatile": ""
+          "parts": []
         },
         "formula": "",
         "save": {
