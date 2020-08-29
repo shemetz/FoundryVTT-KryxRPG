@@ -201,8 +201,18 @@ export default class ItemSheetKryx extends ItemSheet {
     // Handle Damage Array
     let damage = Object.entries(formData).filter(e => e[0].startsWith("data.damage.parts"));
     formData["data.damage.parts"] = damage.reduce((arr, entry) => {
-      let [i, j] = entry[0].split(".").slice(3);
       if (!entry[1]) return arr // prevents empty damage field from being saved and leading to a bug
+      let [i, j] = entry[0].split(".").slice(3);
+      if (!arr[i]) arr[i] = [];
+      arr[i][j] = entry[1];
+      return arr;
+    }, []);
+
+    // Handle Effects Array
+    let effects = Object.entries(formData).filter(e => e[0].startsWith("data.effects.parts"));
+    formData["data.effects.parts"] = effects.reduce((arr, entry) => {
+      if (!entry[1]) return arr // prevents empty effects field from being saved and leading to a bug
+      let [i, j] = entry[0].split(".").slice(3);
       if (!arr[i]) arr[i] = [];
       arr[i][j] = entry[1];
       return arr;
@@ -218,6 +228,7 @@ export default class ItemSheetKryx extends ItemSheet {
   activateListeners(html) {
     super.activateListeners(html);
     html.find(".damage-control").click(this._onDamageControl.bind(this));
+    html.find(".additional-effect-control").click(this._onEffectControl.bind(this));
 
     // Activate any Trait Selectors
     html.find('.summary-themes').click(this._onOpenThemesPicker.bind(this));
@@ -252,19 +263,58 @@ export default class ItemSheetKryx extends ItemSheet {
     const a = event.currentTarget;
 
     // Add new damage component
-    if (a.classList.contains("add-damage")) {
+    if (a.classList.contains("add-damage-effect")) {
       await this._onSubmit(event);  // Submit any unsaved changes
       const damage = this.item.data.data.damage;
       return this.item.update({"data.damage.parts": damage.parts.concat([["", ""]])});
     }
 
     // Remove a damage component
-    if (a.classList.contains("delete-damage")) {
+    if (a.classList.contains("delete-damage-effect")) {
       await this._onSubmit(event);  // Submit any unsaved changes
-      const li = a.closest(".damage-part");
+      const li = a.closest(".damage-effect-part");
       const damage = duplicate(this.item.data.data.damage);
-      damage.parts.splice(Number(li.dataset.damagePart), 1);
+      damage.parts.splice(Number(li.dataset["damageEffectPart"]), 1);
       return this.item.update({"data.damage.parts": damage.parts});
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Add or remove an effect to/from the list of additional effects
+   *
+   * NOTE: the effects list looks like -
+   *
+   *     effects: {
+   *       parts: [
+   *         ["burning 1"],
+   *         ["prone"]
+   *       ]
+   *     }
+   *
+   * This makes it similar in structure to damage.
+   *
+   * @param {Event} event     The original click event
+   * @return {Promise}
+   * @private
+   */
+  async _onEffectControl(event) {
+    event.preventDefault();
+    const a = event.currentTarget;
+
+    if (a.classList.contains("add-damage-effect")) {
+      await this._onSubmit(event);  // Submit any unsaved changes
+      const effects = this.item.data.data.effects;
+      return this.item.update({"data.effects.parts": effects.parts.concat([[""]])});
+    }
+
+    if (a.classList.contains("delete-damage-effect")) {
+      await this._onSubmit(event);  // Submit any unsaved changes
+      const li = a.closest(".damage-effect-part");
+      const effects = duplicate(this.item.data.data.effects);
+      effects.parts.splice(Number(li.dataset["damageEffectPart"]), 1);
+      return this.item.update({"data.effects.parts": effects.parts});
     }
   }
 

@@ -26,6 +26,12 @@
             </button>
         {{/if}}
 
+        {{#if hasEffects}}
+            <button data-action="effects">
+                {{localize "KRYX_RPG.Effects" }}
+            </button>
+        {{/if}}
+
         {{#if hasSave}}
             <button data-action="save" data-save="{{data.save.ability}}" disabled>
                 {{ localize "KRYX_RPG.Save" }} {{labels.save}}

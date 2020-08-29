@@ -36,14 +36,14 @@
     {{/if}}
 
     {{!-- Damage Formula --}}
-    <h4 class="damage-header">
+    <h4 class="damage-effect-header">
         {{#unless isHealing }}{{ localize "KRYX_RPG.Damage" }}{{ else }}{{ localize "KRYX_RPG.Healing" }}{{/unless}} {{
     localize "KRYX_RPG.Formula" }}
-        <a class="damage-control add-damage"><i class="fas fa-plus"></i></a>
+        <a class="damage-control add-damage-effect"><i class="fas fa-plus"></i></a>
     </h4>
-    <ol class="damage-parts form-group">
+    <ol class="damage-effect-parts form-group">
         {{#each data.damage.parts as |part i| }}
-            <li class="damage-part flexrow" data-damage-part="{{i}}">
+            <li class="damage-effect-part flexrow" data-damage-effect-part="{{i}}">
                 <input type="text" name="data.damage.parts.{{i}}.0" value="{{lookup this "0"}}"/>
                 <select name="data.damage.parts.{{i}}.1">
                     {{#select (lookup this "1") }}
@@ -51,12 +51,23 @@
                         {{#each ../config.damageTypes as |name type|}}
                             <option value="{{type}}">{{name}}</option>
                         {{/each}}
-                        {{#each ../config.healingTypes as |name type|}}
-                            <option value="{{type}}">{{name}}</option>
-                        {{/each}}
                     {{/select}}
                 </select>
-                <a class="damage-control delete-damage"><i class="fas fa-minus"></i></a>
+                <a class="damage-control delete-damage-effect"><i class="fas fa-minus"></i></a>
+            </li>
+        {{/each}}
+    </ol>
+
+    {{!-- Additional Effects --}}
+    <h4 class="damage-effect-header">
+        {{ localize "KRYX_RPG.Effects" }}
+        <a class="additional-effect-control add-damage-effect"><i class="fas fa-plus"></i></a>
+    </h4>
+    <ol class="damage-effect-parts form-group">
+        {{#each data.effects.parts as |part i| }}
+            <li class="damage-effect-part flexrow" data-damage-effect-part="{{i}}">
+                <input type="text" name="data.effects.parts.{{i}}.0" value="{{lookup this "0"}}"/>
+                <a class="additional-effect-control delete-damage-effect"><i class="fas fa-minus"></i></a>
             </li>
         {{/each}}
     </ol>

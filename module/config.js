@@ -356,12 +356,6 @@ KRYX_RPG.areaTargetTypes = {
 
 /* -------------------------------------------- */
 
-// Healing Types
-KRYX_RPG.healingTypes = {
-  "healing": "KRYX_RPG.Healing",
-  "temphealth": "KRYX_RPG.HealingTemp"
-};
-
 
 /* -------------------------------------------- */
 

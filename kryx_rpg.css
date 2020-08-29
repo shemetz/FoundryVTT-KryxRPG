@@ -1159,30 +1159,31 @@
   flex: 0 0 48px;
   margin-right: 10px;
 }
-.kryx_rpg.sheet.item h4.damage-header {
+.kryx_rpg.sheet.item h4.damage-effect-header {
   margin: 0;
   padding: 0;
   font-weight: bold;
   line-height: 24px;
   color: #4b4a44;
 }
-.kryx_rpg.sheet.item .damage-parts {
+.kryx_rpg.sheet.item .damage-effect-parts {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.kryx_rpg.sheet.item .damage-parts .damage-part {
+.kryx_rpg.sheet.item .damage-effect-parts .damage-effect-part {
   flex: 0 0 100%;
   padding: 0;
 }
-.kryx_rpg.sheet.item .damage-parts .damage-part input {
+.kryx_rpg.sheet.item .damage-effect-parts .damage-effect-part input {
   flex: 3;
 }
-.kryx_rpg.sheet.item .damage-parts .damage-part select {
+.kryx_rpg.sheet.item .damage-effect-parts .damage-effect-part select {
   margin-left: 5px;
   flex: 1;
 }
-.kryx_rpg.sheet.item .damage-control {
+.kryx_rpg.sheet.item .damage-control,
+.kryx_rpg.sheet.item .additional-effect-control {
   width: 18px;
   flex: 0 0 18px;
   line-height: 24px;
@@ -1253,6 +1254,9 @@
   -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
+}
+.kryx_rpg.chat-card .card-effects {
+  margin: 5px 0;
 }
 .kryx_rpg.chat-card .card-buttons {
   margin: 5px 0;
@@ -1398,6 +1402,16 @@
   color: #000000;
   width: 1.25rem;
   border-radius: 50%;
+}
+.additional-effect {
+  border: 1px solid #999;
+  border-radius: 3px;
+  box-shadow: 0 0 2px #FFF inset;
+  background: rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 3px;
+  font-size: small;
+  margin-bottom: 20px;
 }
 /* ----------------------------------------- */
 /*  Basic Structure                          */

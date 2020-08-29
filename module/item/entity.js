@@ -108,6 +108,16 @@ export default class ItemKryx extends Item {
   /* -------------------------------------------- */
 
   /**
+   * Does the Item implement effects as part of its usage
+   * @type {boolean}
+   */
+  get hasEffects() {
+    return !!(this.data.data.effects && this.data.data.effects.parts.length);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
    * Does the item provide an amount of healing instead of conventional damage?
    * @return {boolean}
    */
@@ -330,6 +340,7 @@ export default class ItemKryx extends Item {
       hasAttack: this.hasAttack,
       isHealing: this.isHealing,
       hasDamage: this.hasDamage,
+      hasEffects: this.hasEffects,
       isSuperpower: this.data.type === "superpower",
       hasSave: this.hasSave,
       hasPlaceableTemplate: this.hasPlaceableTemplate,
@@ -824,6 +835,32 @@ export default class ItemKryx extends Item {
 
   /* -------------------------------------------- */
 
+  async showEffects() {
+    if (!this.data.data.effects.parts) {
+      throw new Error("This Item does not have effects to show!");
+    }
+    const title = `${this.name} - Effects`;
+    const token = this.actor.token;
+    const templateData = {
+      actor: this.actor,
+      tokenId: token ? `${token.scene._id}.${token.id}` : null,
+      item: this.data,
+      effects: this.data.data.effects.parts.map(e => e[0].capitalize()),
+    };
+    const template = `systems/kryx_rpg/templates/chat/effects-card.html`;
+    const html = await renderTemplate(template, templateData);
+
+    return ChatMessage.create({
+      flavor: title,
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: ChatMessage.getSpeaker({actor: this.actor}),
+    })
+  }
+
+  /* -------------------------------------------- */
+
   /**
    * Use a consumable item, deducting from the quantity or charges of the item.
    * @param {boolean} configureDialog   Whether to show a configuration dialog
@@ -1036,6 +1073,7 @@ export default class ItemKryx extends Item {
     if (action === "attack") await item.rollAttack({event});
     else if (action === "damage") await item.rollDamage({event, augmentedCost});
     else if (action === "formula") await item.rollFormula();
+    else if ("effects" === action) await item.showEffects();
 
     // Saving Throws for card targets
     else if (action === "save") {
@@ -1051,6 +1089,10 @@ export default class ItemKryx extends Item {
     else if (action === "placeTemplate") {
       const template = AbilityTemplate.fromItem(item);
       if (template) template.drawPreview(event);
+    }
+
+    else {
+      ui.notifications.error(`Unknown card button action: ${action}`)
     }
 
     // Re-enable the button

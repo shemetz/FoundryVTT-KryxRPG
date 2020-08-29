@@ -331,6 +331,9 @@
         "damage": {
           "parts": []
         },
+        "effects": {
+          "parts": []
+        },
         "formula": "",
         "save": {
           "type": "",
