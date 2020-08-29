@@ -73,6 +73,7 @@
   "KRYX_RPG.Bonuses": "Global Bonuses",
   "KRYX_RPG.BonusesHint": "Define global bonuses as formulas which are added to certain rolls. For example: 1d4 + 2",
   "KRYX_RPG.Cancel": "Cancel",
+  "KRYX_RPG.Capable": "Capable",
   "KRYX_RPG.Charged": "Charged",
   "KRYX_RPG.Charges": "Charges",
   "KRYX_RPG.ChatContextDamage": "Apply Damage",

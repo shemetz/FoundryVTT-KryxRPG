@@ -250,7 +250,7 @@ export default class ItemKryx extends Item {
       // simplified scaling for KryxRPG superpowers - most of them have standardized sizes.
       // instead of "15/mana Feet Cone" (Burning Hands) it will say "Cone"
       // instead of "10/mana Feet Cylinder" (Ash Fall) it will say "Large Cylinder"
-      labels.target = `${C.targetTypes[tgt.type]}`
+      labels.target = tgt.type ? `${C.targetTypes[tgt.type]}` : null
       if (tgt.custom) {
         labels.target = tgt.custom
       }
@@ -289,7 +289,7 @@ export default class ItemKryx extends Item {
 
       // Recharge Label
       let chg = data.recharge || {};
-      labels.recharge = `Recharge [${chg.value}${parseInt(chg.value) < 6 ? "+" : ""}]`;
+      labels.recharge = chg.value ? `Recharge [${chg.value}${parseInt(chg.value) < 6 ? "+" : ""}]` : null
       labels.canBeActivated = !!dur.value || !!dur.units
     }
 
