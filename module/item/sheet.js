@@ -57,7 +57,7 @@ export default class ItemSheetKryx extends ItemSheet {
     // Action Details
     data.hasAttackRoll = item.hasAttack;
     data.isHealing = item.data.data.actionType === "heal";
-    data.isFlatDC = item.data.data.save.scaling === "flat_dc";
+    data.isFlatDC = item.data.data.save && item.data.data.save.scaling === "flat_dc";
     return data;
   }
 
