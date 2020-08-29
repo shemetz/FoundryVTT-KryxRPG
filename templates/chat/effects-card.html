@@ -1,0 +1,12 @@
+<div class="kryx_rpg chat-card item-card" data-actor-id="{{actor._id}}" data-item-id="{{item._id}}"
+    {{#if tokenId}} data-token-id="{{tokenId}}" {{/if}}>
+    <div class="card-content">
+        <div style="text-align: -webkit-center">
+            {{#each effects as |eff i|}}
+                <span class="additional-effect">
+                    {{eff}}
+                </span>
+            {{/each}}
+        </div>
+    </div>
+</div>

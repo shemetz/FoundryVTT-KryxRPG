@@ -345,6 +345,7 @@ export default class ItemKryx extends Item {
       hasSave: this.hasSave,
       hasPlaceableTemplate: this.hasPlaceableTemplate,
       spentCost: this.data.data.spentCost || null,
+      targetType: this.data.data.targetType || null,
     };
 
     // For feature items, optionally show an ability usage dialog
@@ -501,7 +502,7 @@ export default class ItemKryx extends Item {
 
     // Maybe initiate template placement workflow
     if (this.hasPlaceableTemplate && placeTemplate) {
-      const template = AbilityTemplate.fromItem(this);
+      const template = AbilityTemplate.fromItem(this, 1, this.data.data.targetType);
       if (template) template.drawPreview(event);
       if (this.owner && this.owner.sheet) this.owner.sheet.minimize();
     }
@@ -920,7 +921,7 @@ export default class ItemKryx extends Item {
 
     // Maybe initiate template placement workflow
     if (this.hasPlaceableTemplate && placeTemplate) {
-      const template = AbilityTemplate.fromItem(this);
+      const template = AbilityTemplate.fromItem(this, 1, this.data.data.targetType);
       if (template) template.drawPreview(event);
       if (this.owner && this.owner.sheet) this.owner.sheet.minimize();
     }
@@ -1087,7 +1088,9 @@ export default class ItemKryx extends Item {
 
     // Spell Template Creation
     else if (action === "placeTemplate") {
-      const template = AbilityTemplate.fromItem(item);
+      const scaling = item.isAreaScaling ? card.dataset.spentCost : 1
+      const targetType = card.dataset.targetType
+      const template = AbilityTemplate.fromItem(item, scaling, targetType);
       if (template) template.drawPreview(event);
     }
 

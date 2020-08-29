@@ -437,16 +437,20 @@ export default class ActorKryx extends Actor {
       if (uses <= 0) ui.notifications.warn(game.i18n.format("KRYX_RPG.ItemNoUses", {name: item.name}));
       await item.update({"data.uses.value": Math.max(parseInt(item.data.data.uses.value || 0) - 1, 0)})
     }
-
+    const targetType = selectedTargetType || itemData.target.type
     // Initiate ability template placement workflow if selected
     if (shouldPlaceTemplate && item.hasPlaceableTemplate) {
       const scaling = item.isAreaScaling ? paidCost : 1
-      const targetType = selectedTargetType || itemData.target.type
       const template = AbilityTemplate.fromItem(item, scaling, targetType);
       if (template) template.drawPreview(event);
       if (this.sheet.rendered) this.sheet.minimize();
     }
-    const itemCopy = item.constructor.createOwned(mergeObject(item.data, {"data.spentCost": paidCost}, {inplace: false}), this);
+    const itemCopy = item.constructor.createOwned(mergeObject(item.data,
+      {
+        "data.spentCost": paidCost,
+        "data.targetType": targetType,
+      }
+      , {inplace: false}), this);
     // Invoke the Item roll
     return itemCopy.roll();
   }

@@ -15,11 +15,10 @@ export default class AbilityTemplate extends MeasuredTemplate {
    */
   static fromItem(item, scaling, targetType) {
     const templateShape = KRYX_RPG.areaTargetTypes[targetType];
-    if (!templateShape) return null;
     let distance = CONFIG.KRYX_RPG.areaScalingStandardSizes[targetType]
-    if (distance === undefined) {
-      ui.notifications.error("This item states it has a placeable template but it's not standard!")
-      return
+    if (templateShape === undefined || distance === undefined) {
+      ui.notifications.error(`Failed placing template for ${item.name}; ${targetType}`)
+      return null
     }
     distance *= scaling
 
