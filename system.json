@@ -2,7 +2,7 @@
   "name": "kryx_rpg",
   "title": "Kryx RPG (WIP)",
   "description": "A comprehensive game system for running games of Kryx RPG in the Foundry VTT environment.",
-  "version": "25.11.0-1",
+  "version": "25.15.0-1",
   "author": "shem",
   "scripts": [],
   "esmodules": ["kryx_rpg.js"],
@@ -44,7 +44,7 @@
   "primaryTokenAttribute": "attributes.health",
   "secondaryTokenAttribute": null,
   "minimumCoreVersion": "0.6.4",
-  "compatibleCoreVersion": "0.6.5",
+  "compatibleCoreVersion": "0.6.6",
   "url": "https://github.com/itamarcu/FoundryVTT-KryxRPG",
   "manifest": "https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/system.json",
   "download": "https://github.com/itamarcu/FoundryVTT-KryxRPG/archive/master.zip"
