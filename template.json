@@ -291,7 +291,6 @@
       "activatedEffect": {
         "activation": {
           "type": "",
-          "cost": null,
           "condition": ""
         },
         "duration": {
