@@ -1011,6 +1011,7 @@
   line-height: 14px;
 }
 .kryx_rpg.sheet.actor .spell-component.C,
+.kryx_rpg.sheet.actor .spell-component.U,
 .kryx_rpg.sheet.actor .spell-component.R {
   display: inline-block;
   text-align: center;
