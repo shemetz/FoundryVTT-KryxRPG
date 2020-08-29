@@ -239,7 +239,7 @@
   "KRYX_RPG.FlagsShowDamageImmunityAndSuch": "Show damage immunity, attack bonus, etc",
   "KRYX_RPG.FlagsShowDamageImmunityAndSuchHint": "Show additional properties in the sheet: Damage Immunities, Damage Vulnerabilities, Condition Immunities, Attack/damage bonuses",
   "KRYX_RPG.FlagsSave": "Update Special Traits",
-  "KRYX_RPG.FlagsTitle": "Configure Special Traits",
+  "KRYX_RPG.FlagsTitle": "Configure Special Traits & Properties",
   "KRYX_RPG.Flat": "Flat DC",
   "KRYX_RPG.Formula": "Formula",
   "KRYX_RPG.FreeAction": "Free Action",
