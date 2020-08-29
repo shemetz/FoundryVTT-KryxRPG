@@ -10,7 +10,7 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 ## Setup
 
 1. Open your foundry setup screen, go to "Game Systems" and "Install System"
-2. In the bottom, paste the manifest URL: **`https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/system.json`**
+2. In the bottom, paste the [manifest URL](https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/system.json): **`https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/system.json`**
 3. Click "Install"
 4. Wait patiently
 
@@ -78,7 +78,7 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 ### Using Powers
 
 - Power description (for spells in the included compendium) is a near-direct copy from the KryxRPG website
-- Clicking the power name will take you to the corresponding page (e.g. [Produce Flame](https://www.kryxrpg.com/spells/produce-flame).
+- Clicking the power name will take you to the corresponding page (e.g. [Produce Flame](https://www.kryxrpg.com/spells/produce-flame)).
 - Damage rolls for cantrips automatically scale by your level
 
 ![produce_flame_roll](metadata/produce_flame_roll.png)
