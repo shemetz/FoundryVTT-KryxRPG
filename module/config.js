@@ -509,6 +509,7 @@ KRYX_RPG.themes = {
   "Telekinesis": "KRYX_RPG.ThemeTelekinesis",
   "Teleportation": "KRYX_RPG.ThemeTeleportation",
   "Time": "KRYX_RPG.ThemeTime",
+  "Undeath": "KRYX_RPG.ThemeUndeath",
   "Unholy": "KRYX_RPG.ThemeUnholy",
   "Vanguard": "KRYX_RPG.ThemeVanguard",
   "Water": "KRYX_RPG.ThemeWater",
