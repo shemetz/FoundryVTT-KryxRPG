@@ -16,7 +16,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     return mergeObject(super.defaultOptions, {
       classes: ["kryx_rpg", "sheet", "actor", "character"],
       width: 720,
-      height: 680
+      height: 700
     });
   }
 

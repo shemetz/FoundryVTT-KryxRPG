@@ -574,7 +574,7 @@
 }
 .kryx_rpg.sheet.actor .ability-scores-and-saves {
   flex: 0 0 100px;
-  height: 440px;
+  height: 460px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -607,6 +607,7 @@
 .kryx_rpg.sheet.actor .ability-scores-and-saves .save .below-abilities,
 .kryx_rpg.sheet.actor .ability-scores-and-saves .ability .below-abilities {
   height: 24px;
+  width: max-content;
   margin: -8px 0 0;
   display: inline-flex;
 }
@@ -628,7 +629,7 @@
 }
 .kryx_rpg.sheet.actor ul.skills-list {
   flex: 0 0 180px;
-  height: 440px;
+  height: 460px;
   list-style: none;
   margin: 0 5px 0;
   padding: 3px 0 2px;
@@ -636,7 +637,7 @@
   border-radius: 3px;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill {
-  height: 20px;
+  height: 21.5px;
   padding: 3px 2px;
 }
 .kryx_rpg.sheet.actor ul.skills-list li.skill:nth-child(even) {
@@ -1423,7 +1424,7 @@
 /* ----------------------------------------- */
 .kryx_rpg.sheet.actor.character {
   min-width: 720px;
-  min-height: 680px;
+  min-height: 700px;
   /* ----------------------------------------- */
   /*  Sheet Header                             */
   /* ----------------------------------------- */
@@ -1614,7 +1615,7 @@
 /* ----------------------------------------- */
 .kryx_rpg.sheet.actor.npc {
   min-width: 600px;
-  min-height: 680px;
+  min-height: 700px;
 }
 .kryx_rpg.sheet.actor.npc .header-exp {
   flex: 0 0 80px;

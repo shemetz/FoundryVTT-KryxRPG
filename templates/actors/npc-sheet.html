@@ -139,7 +139,7 @@
             <ul class="ability-scores-and-saves flexrow">
                 {{#each data.abilities as |ability id|}}
                     <li class="ability" data-ability="{{id}}">
-                        <h4 class="ability-name box-title rollable">{{ability.label}}</h4>
+                        <span class="ability-name box-title rollable">{{ability.label}}</span>
                         <input class="ability-value" name="data.abilities.{{id}}.value" type="text"
                                value="{{ability.signedValue}}" data-dtype="Number" placeholder="0"/>
                     </li>
