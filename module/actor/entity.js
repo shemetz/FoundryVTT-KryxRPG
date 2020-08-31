@@ -79,9 +79,9 @@ export default class ActorKryx extends Actor {
     Object.entries(actorData.data.abilities).forEach(([abl, ability]) => {
       a[abl] = ability.value
     })
-    data.saves.fortitude.value = prof * data.saves.fortitude.proficiency + a["con"]
-    data.saves.reflex.value = prof * data.saves.reflex.proficiency + Math.floor((a["str"] + a["dex"]) / 2)
-    data.saves.will.value = prof * data.saves.will.proficiency + Math.floor(
+    data.saves.fortitude.value = Math.floor(prof * data.saves.fortitude.proficiency) + a["con"]
+    data.saves.reflex.value = Math.floor(prof * data.saves.reflex.proficiency) + Math.floor((a["str"] + a["dex"]) / 2)
+    data.saves.will.value = Math.floor(prof * data.saves.will.proficiency) + Math.floor(
       ((a["int"] + a["cha"] + a["wis"]) - Math.min(a["int"], a["cha"], a["wis"])) / 2
     )
   }
