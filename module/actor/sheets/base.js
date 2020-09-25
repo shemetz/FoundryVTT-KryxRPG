@@ -256,7 +256,7 @@ export default class ActorSheetKryx extends ActorSheet {
       0: '<i class="far fa-circle"></i>',
       0.5: '<i class="fas fa-adjust"></i>',
       1: '<i class="fas fa-check"></i>',
-      1.5: '<i class="fas fa-check-double"></i>'
+      1.5: '<i class="fas fa-check-double"></i>', // deprecated
     };
     return icons[level];
   }
@@ -393,7 +393,7 @@ export default class ActorSheetKryx extends ActorSheet {
 
     // Get the current level and the array of levels
     const level = parseFloat(field.val());
-    const levels = KRYX_RPG.PROFICIENCY_LEVELS // [0, 0.5, 1, 1.5]
+    const levels = KRYX_RPG.PROFICIENCY_LEVELS // [0, 0.5, 1]
     let idx = levels.indexOf(level);
 
     // Toggle next level - forward on click, backwards on right
@@ -666,8 +666,8 @@ export default class ActorSheetKryx extends ActorSheet {
     event.preventDefault();
     const field = event.currentTarget.previousElementSibling;
     // + if left-click, - if right-click
-    const delta = event.type === "click" ? 0.5 : event.type === "contextmenu" ? 1.5 : 0
-    let nextValue = (parseFloat(field.value) + delta) % 2.0
+    const delta = event.type === "click" ? 0.5 : event.type === "contextmenu" ? -0.5 : 0
+    let nextValue = (parseFloat(field.value) + delta + 1.5) % 1.5
     this.actor.update({[field.name]: nextValue});
   }
 
