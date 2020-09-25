@@ -111,6 +111,7 @@ export default class ActorKryx extends Actor {
 
     // Update soak (damage reduction) from items
     // NOTE: not calculating AC/Defense. This is left for other modules, like DynamicEffects.
+    // NOTE: if you still decide to add this, note that Defense in KryxRPG includes half proficiency bonus.
     let soak = 0
     for (const item of this.data.items) {
       const itemData = item.data

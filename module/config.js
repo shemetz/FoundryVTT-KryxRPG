@@ -135,7 +135,7 @@ KRYX_RPG.itemActionTypes = {
   "heal": "KRYX_RPG.ActionHeal",
   "abil": "KRYX_RPG.ActionAbil",
   "util": "KRYX_RPG.ActionUtil",
-  "affhp": "KRYX_RPG.ActionAffectHealth",
+  "affhp": "KRYX_RPG.ActionAffectHealth", // deprecated?
   "other": "KRYX_RPG.ActionOther"
 };
 
@@ -518,7 +518,6 @@ KRYX_RPG.themes = {
 KRYX_RPG.powerSources = {
   "arcane": "KRYX_RPG.PowerSourceArcane",
   "divine": "KRYX_RPG.PowerSourceDivine",
-  "harmonic": "KRYX_RPG.PowerSourceHarmonic",
   "occult": "KRYX_RPG.PowerSourceOccult",
   "primal": "KRYX_RPG.PowerSourcePrimal",
   "psionic": "KRYX_RPG.PowerSourcePsionic"
@@ -825,13 +824,6 @@ KRYX_RPG.systemData = {
         "Dervish": {"healthDice": "d10", "progressionChoiceType": "martial"},
       },
       "subclassName": "Martial Specialization",
-    },
-    "Minstrel": {
-      "archetypes": {
-        "Bard": {"healthDice": "d6", "progressionChoiceType": "caster"},
-        "Skald": {"healthDice": "d10", "progressionChoiceType": "gish"},
-      },
-      "subclassName": "College",
     },
   },
   classProgressionChoiceTypes: {
