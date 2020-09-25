@@ -1,6 +1,6 @@
 // import { setupCompendiums } from "../not_on_git/setup_compendiums.js"
 
-export const NEEDS_MIGRATION_VERSION = "24.13.0-1"; // should be increased to the latest version unless there was a very minor patch
+export const NEEDS_MIGRATION_VERSION = "25.35.0-1"; // should be increased to the latest version unless there was a very minor patch
 export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
