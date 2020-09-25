@@ -20,12 +20,17 @@ const renamedSkills = [
 export const migrateWorldIfNeeded = async function () {
   // Determine whether a system migration is required and feasible
   const currentVersion = game.settings.get("kryx_rpg", "systemMigrationVersion")
-  const needMigration = currentVersion === null || compareSemanticVersions(currentVersion, NEEDS_MIGRATION_VERSION) < 0
+  if (currentVersion === null || currentVersion === "0") {
+      game.settings.set("kryx_rpg", "systemMigrationVersion", game.system.data.version);
+      return
+  }
+  const needMigration = compareSemanticVersions(currentVersion, NEEDS_MIGRATION_VERSION) < 0
   if (!needMigration) return
 
   // Perform the migration
-  if (currentVersion !== null && compareSemanticVersions(currentVersion, COMPATIBLE_MIGRATION_VERSION) < 0) {
-    ui.notifications.error(`Your Kryx RPG system data is from too old a Foundry version and cannot be reliably migrated to the latest version. The process will be attempted, but errors may occur.`, {permanent: true})
+  if (compareSemanticVersions(currentVersion, COMPATIBLE_MIGRATION_VERSION) < 0) {
+    ui.notifications.error(`Your Kryx RPG system data is from too old a version (${currentVersion}) and` +
+     ` cannot be reliably migrated to the latest version. The process will be attempted, but errors may occur.`, {permanent: true})
   }
 
   migrateWorld()
