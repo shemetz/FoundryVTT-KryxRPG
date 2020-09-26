@@ -24,6 +24,7 @@
       line-height: 36px;
       .nodesto();
       color: @colorOlive;
+
       &:hover {
         color: #111;
         text-shadow: 0 0 10px red;
@@ -93,23 +94,44 @@
     background: #c7d0c0;
     border: 1px solid #006c00;
   }
+
   &.failure {
     color: inherit;
     background: #ffdddd;
     border: 1px solid #6e0000;
   }
+
   &.critical {
     color: green;
   }
+
   &.fumble {
     color: red;
   }
 }
 
 /* Extras copied from the Kryx RPG website - they allow pasted htmls to look good */
-// from burning hands
 
-.hTRuQY {
+// burning hands (going by div order)
+// card container
+.hTRuQY,
+.dXlbah {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+}
+
+// BigCardContent inside
+.eTNkmV,
+.dOkwPD {
+  position: relative;
+}
+
+// title div
+.eTNkmV,
+.rpxdH {
   -webkit-box-align: center;
   align-items: center;
   display: flex;
@@ -117,11 +139,8 @@
   justify-content: space-between;
 }
 
-.eTNkmV {
-  font-size: 1.25rem;
-}
-
-.eTNkmV {
+// title h4
+.iQFEor {
   font-family: MrJeeves, "Times New Roman", Times, serif;
   font-weight: bold;
   letter-spacing: 0.025em;
@@ -133,7 +152,9 @@
   font-variant: small-caps;
 }
 
-.bWWKHS {
+// cost
+.bWWKHS,
+.gHMzex {
   -webkit-box-align: center;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
@@ -150,27 +171,43 @@
   border-radius: 50%;
 }
 
-.eMNyC {
+// augment / enhance
+.eMNyC,
+.cCabuB {
   font-family: MrJeeves, "Times New Roman", Times, serif;
+  font-variant: small-caps;
   font-weight: bold;
   letter-spacing: 0.025em;
   line-height: 1.05em;
   margin-bottom: 0px;
   margin-top: 0.5em;
   font-size: 1rem;
-  font-variant: small-caps;
 }
 
 // from chaos bolt
-.guWBPQ {
-  max-width: 50rem;
+// div containing table
+.guWBPQ,
+.cdUMsr {
   clear: right;
   float: right;
   margin-left: 0.75rem;
+  max-width: 40rem;
+  margin-bottom: 0.75rem;
 }
 
-// from reality break
-.hdSvMq {
+// table
+.eeaLdo {
+  break-inside: avoid;
+  font-size: 0.875rem;
+  margin-bottom: 0.8em;
+  //
+  max-width: 100%;
+  width: auto;
+}
+
+//td
+.hdSvMq,
+.kftDOx td {
   min-width: 2.5rem;
   padding: 0.25em;
 }
@@ -197,50 +234,52 @@
   }
 }
 
-// maneuvers
-.fHOPmY {
-    -webkit-box-align: center;
-    align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
-    display: flex;
-    font-size: 1rem;
-    height: 1.25rem;
-    -webkit-box-pack: center;
-    justify-content: center;
-    margin-left: 0.5rem;
-    text-align: center;
-    background-color: rgb(255, 241, 118);
-    color: rgb(0, 0, 0);
-    width: 1.25rem;
-    border-radius: 2px;
+// maneuver cost
+.fHOPmY,
+.dGTqJj {
+  -webkit-box-align: center;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
+  display: flex;
+  font-size: 1rem;
+  height: 1.25rem;
+  -webkit-box-pack: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  text-align: center;
+  background-color: rgb(255, 241, 118);
+  border-radius: 2px;
+  color: rgb(0, 0, 0);
+  width: 1.25rem;
 }
 
-// concoctions
-.hFRCkA {
-    -webkit-box-align: center;
-    align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
-    display: flex;
-    font-size: 1rem;
-    height: 1.25rem;
-    -webkit-box-pack: center;
-    justify-content: center;
-    margin-left: 0.5rem;
-    text-align: center;
-    background-color: rgb(174, 213, 129);
-    color: rgb(0, 0, 0);
-    width: 1.25rem;
-    border-radius: 50%;
+// concoction cost
+.hFRCkA,
+.fDxHXX {
+  -webkit-box-align: center;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
+  display: flex;
+  font-size: 1rem;
+  height: 1.25rem;
+  -webkit-box-pack: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  text-align: center;
+  background-color: rgb(174, 213, 129);
+  border-radius: 50%;
+  color: rgb(0, 0, 0);
+  width: 1.25rem;
 }
 
 // Additional effects for superpowers
 .additional-effect {
-    border: 1px solid #999;
-    border-radius: 3px;
-    box-shadow: 0 0 2px #FFF inset;
-    background: rgba(0, 0, 0, 0.1);
-    text-align: center;
-    padding: 3px;
-    font-size: small;
-    margin-bottom: 20px;
+  border: 1px solid #999;
+  border-radius: 3px;
+  box-shadow: 0 0 2px #FFF inset;
+  background: rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 3px;
+  font-size: small;
+  margin-bottom: 20px;
 }
