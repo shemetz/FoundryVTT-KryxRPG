@@ -1,5 +1,5 @@
 # Foundry VTT - Kryx RPG system
-## Version 25.35.0-2
+## Version 25.35.1-2
 
 An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundry Virtual Tabletop](http://foundryvtt.com).
 
