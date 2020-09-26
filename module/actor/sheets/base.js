@@ -58,6 +58,11 @@ export default class ActorSheetKryx extends ActorSheet {
       config: CONFIG.KRYX_RPG,
     };
 
+    // Temporary Health
+    let health = this.actor.data.data.attributes.health;
+    if (parseInt(health.temp) === 0) delete health.temp;
+    if (parseInt(health.tempmax) === 0) delete health.tempmax;
+
     // Always show extra stuff for NPCs
     data.showDamageImmunityAndSuch = data.showDamageImmunityAndSuch || data.isNPC
 
