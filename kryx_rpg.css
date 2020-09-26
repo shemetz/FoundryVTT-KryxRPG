@@ -573,7 +573,7 @@
   font-size: 12px;
 }
 .kryx_rpg.sheet.actor .ability-scores-and-saves {
-  flex: 0 0 100px;
+  flex: 0 0 85px;
   height: 460px;
   list-style: none;
   margin: 0;
