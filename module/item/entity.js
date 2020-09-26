@@ -856,7 +856,10 @@ export default class ItemKryx extends Item {
       user: game.user._id,
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
-      speaker: ChatMessage.getSpeaker({actor: this.actor}),
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+    },
+    {
+      rollMode: game.settings.get("core", "rollMode"),
     })
   }
 
