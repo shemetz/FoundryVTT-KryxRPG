@@ -156,6 +156,10 @@ function onArchetypeUpdated(archetype) {
       splAblSelect.show()
       manAblSelect.show()
       break
+    case "none":
+      splAblSelect.hide()
+      manAblSelect.hide()
+      break
   }
   if (KRYX_RPG.systemData.archetypesThatHaveConcoctions.includes(archetype)) {
     $(`label.spellcasting-ability-label`).hide()

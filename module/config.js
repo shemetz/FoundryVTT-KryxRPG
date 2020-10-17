@@ -613,6 +613,7 @@ KRYX_RPG.resourceProgression = {
   "gishHalfHalf": "KRYX_RPG.ResourceProgressionGishHalfHalf",
   "gishManeuvers": "KRYX_RPG.ResourceProgressionGishManeuvers",
   "fullMartial": "KRYX_RPG.ResourceProgressionFullMartial",
+  "none": "KRYX_RPG.ResourceProgressionNone",
 };
 
 /**
@@ -648,7 +649,13 @@ KRYX_RPG.RESOURCE_PROGRESSION_MULTIPLIERS = {
     manaLimit: 0,
     stamina: 2.25,
     staminaLimit: 0.25,
-  }
+  },
+  "none": {
+    mana: 0,
+    manaLimit: 0,
+    stamina: 0,
+    staminaLimit: 0,
+  },
 };
 
 // "Arsenal" is the current temporary name of "The spells, maneuvers, and concoctions that a character is able to use".
@@ -826,6 +833,13 @@ KRYX_RPG.systemData = {
       },
       "subclassName": "Martial Specialization",
     },
+    // used for some monsters like the frog
+    "None": {
+      "archetypes": {
+        "Nothing": {"healthDice": "d4", "progressionChoiceType": "none"},
+      },
+      "subclassName": 'Special "subclass"',
+    },
   },
   classProgressionChoiceTypes: {
     // no choice will be shown for these:
@@ -835,6 +849,8 @@ KRYX_RPG.systemData = {
     // for these, there are several options for progression
     "gish": ["gishSpells", "gishHalfHalf", "gishManeuvers"],
     "spellgish": ["gishSpells", "gishHalfHalf"],
+    // used for some monsters like the frog
+    "none": ["none"],
   },
   archetypesThatHaveConcoctions: ["Chemist", "Mutant", "Infiltrator", "Blood Hunter"],
   spellcastingAbilities: ["int", "wis", "cha"],

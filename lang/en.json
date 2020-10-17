@@ -379,6 +379,7 @@
   "KRYX_RPG.ResourceProgressionGishHalfHalf": "Half Maneuvers, Half Spells",
   "KRYX_RPG.ResourceProgressionGishManeuvers": "Maneuvers",
   "KRYX_RPG.ResourceProgressionGishSpells": "Spells",
+  "KRYX_RPG.ResourceProgressionNone": "No maneuvers and no spells",
   "KRYX_RPG.ResourceSecondary": "Resource 2",
   "KRYX_RPG.ResourceTertiary": "Resource 3",
   "KRYX_RPG.RestLong": "Long Rest",
