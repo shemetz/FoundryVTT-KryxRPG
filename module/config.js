@@ -791,13 +791,6 @@ KRYX_RPG.systemData = {
       },
       "subclassName": "Circle",
     },
-    "Occultist": {
-      "archetypes": {
-        "Warlock/Witch": {"healthDice": "d6", "progressionChoiceType": "caster"},
-        "Hexblade": {"healthDice": "d8", "progressionChoiceType": "spellgish"},
-      },
-      "subclassName": "Otherworldly Patron",
-    },
     "Psionicist": {
       "archetypes": {
         "Psion": {"healthDice": "d6", "progressionChoiceType": "caster"},
@@ -816,8 +809,12 @@ KRYX_RPG.systemData = {
     },
     "Suffused": {
       "archetypes": {
-        "Sorcerer": {"healthDice": "d6", "progressionChoiceType": "martial"},
+        // Splitting Sorcerer/Witch/Warlock just because players would probably want to just show one name
+        "Sorcerer": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Witch": {"healthDice": "d6", "progressionChoiceType": "caster"},
+        "Warlock": {"healthDice": "d6", "progressionChoiceType": "caster"},
         "Bloodrager": {"healthDice": "d10", "progressionChoiceType": "spellgish"},
+        "Infuser": {"healthDice": "d8", "progressionChoiceType": "spellgish"},
       },
       "subclassName": "Origin",
     },
