@@ -1,6 +1,10 @@
 # Foundry VTT - Kryx RPG system
 ## Version 25.35.1-2
 
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/itamarcu/FoundryVTT-KryxRPG?style=for-the-badge) 
+![GitHub Releases](https://img.shields.io/github/downloads/itamarcu/FoundryVTT-KryxRPG/latest/total?style=for-the-badge) 
+![GitHub All Releases](https://img.shields.io/github/downloads/itamarcu/FoundryVTT-KryxRPG/total?style=for-the-badge&label=Downloads+total)  
+
 An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundry Virtual Tabletop](http://foundryvtt.com).
 
 ##### Based on: [Foundry VTT 5th Edition](https://gitlab.com/foundrynet/dnd5e)
