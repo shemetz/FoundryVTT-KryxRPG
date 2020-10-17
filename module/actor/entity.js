@@ -495,7 +495,8 @@ export default class ActorKryx extends Actor {
       title: game.i18n.format("KRYX_RPG.PromptSkillTitle", {skill: CONFIG.KRYX_RPG.skills[skillId]}),
       speaker: ChatMessage.getSpeaker({actor: this}),
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
-      reliableTalent: reliableTalent
+      reliableTalent: reliableTalent,
+      messageData: {"flags.kryx_rpg.roll": {type: "skill", skillId}}
     }));
   }
 
@@ -529,7 +530,8 @@ export default class ActorKryx extends Actor {
       data: data,
       title: game.i18n.format("KRYX_RPG.AbilityPromptTitle", {ability: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
-      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky")
+      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
+      messageData: {"flags.kryx_rpg.roll": {type: "ability", abilityId}},
     }));
   }
 
@@ -569,7 +571,8 @@ export default class ActorKryx extends Actor {
       data: data,
       title: game.i18n.format("KRYX_RPG.SavePromptTitle", {save: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
-      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky")
+      halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
+      messageData: {"flags.kryx_rpg.roll": {type: "save", saveId}}
     }));
   }
 
@@ -601,7 +604,8 @@ export default class ActorKryx extends Actor {
       title: game.i18n.localize("KRYX_RPG.DeathSavingThrow"),
       speaker: speaker,
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
-      targetValue: 10
+      targetValue: 10,
+      messageData: {"flags.kryx_rpg.roll": {type: "death"}},
     }));
     if (!roll) return null;
 
@@ -681,7 +685,8 @@ export default class ActorKryx extends Actor {
       speaker: ChatMessage.getSpeaker({actor: this}),
       allowcritical: false,
       fastForward: true,
-      dialogOptions: {width: 350}
+      dialogOptions: {width: 350},
+      messageData: {"flags.kryx_rpg.roll": {type: "hitDie"}},
     });
     if (!roll) return;
 

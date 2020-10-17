@@ -551,7 +551,7 @@ export default class ItemKryx extends Item {
     if (data.hasOwnProperty("activation")) {
       props.push(
         labels.target,
-        labels.activation,
+        labels.activation + (data.activation?.condition ? ` (${data.activation.condition})` : ""),
         labels.range,
         labels.duration
       );
@@ -688,13 +688,10 @@ export default class ItemKryx extends Item {
         width: 400,
         top: options.event ? options.event.clientY - 80 : null,
         left: window.innerWidth - 710
-      }
+      },
+      messageData: {"flags.kryx_rpg.roll": {type: "attack", itemId: this.id}}
     };
-
-    // Expanded weapon critical threshold
-    if ((this.data.type === "weapon") && flags.weaponCriticalThreshold) {
-      rollConfig.critical = parseInt(flags.weaponCriticalThreshold);
-    }
+    rollConfig.event = options.event;
 
     // Apply Halfling Lucky
     if (flags.halflingLucky) rollConfig.halflingLucky = true;
@@ -716,7 +713,7 @@ export default class ItemKryx extends Item {
    * Place a damage roll using an item (weapon, feat, spell, or equipment)
    * Rely upon the damageRoll logic for the core implementation
    *
-   * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
+   * @return {Promise<Roll>}   A Promise which resolves to the created Roll instance
    */
   rollDamage({event, augmentedCost = null} = {}) {
     const itemData = this.data.data;
@@ -724,6 +721,7 @@ export default class ItemKryx extends Item {
     if (!this.hasDamage) {
       throw new Error("You may not make a Damage Roll with this Item.");
     }
+    const messageData = {"flags.kryx_rpg.roll": {type: "damage", itemId: this.id}};
     const rollData = this.getRollData();
     rollData.item.effectiveCost = augmentedCost || rollData.item.cost
     let fastForward = false
@@ -769,7 +767,8 @@ export default class ItemKryx extends Item {
         width: 400,
         top: event ? event.clientY - 80 : null,
         left: window.innerWidth - 710
-      }
+      },
+      messageData,
     });
   }
 
@@ -829,7 +828,8 @@ export default class ItemKryx extends Item {
     roll.toMessage({
       speaker: ChatMessage.getSpeaker({actor: this.actor}),
       flavor: this.data.data.chatFlavor || title,
-      rollMode: game.settings.get("core", "rollMode")
+      rollMode: game.settings.get("core", "rollMode"),
+      messageData: {"flags.kryx_rpg.roll": {type: "other", itemId: this.id}},
     });
     return roll;
   }
@@ -852,15 +852,16 @@ export default class ItemKryx extends Item {
     const html = await renderTemplate(template, templateData);
 
     return ChatMessage.create({
-      flavor: title,
-      user: game.user._id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-      content: html,
-      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-    },
-    {
-      rollMode: game.settings.get("core", "rollMode"),
-    })
+        flavor: title,
+        user: game.user._id,
+        type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+        content: html,
+        speaker: ChatMessage.getSpeaker({actor: this.actor}),
+      },
+      {
+        rollMode: game.settings.get("core", "rollMode"),
+        messageData: {"flags.kryx_rpg.roll": {type: "other", itemId: this.id}},
+      })
   }
 
   /* -------------------------------------------- */
@@ -988,7 +989,8 @@ export default class ItemKryx extends Item {
         top: options.event ? options.event.clientY - 80 : null,
         left: window.innerWidth - 710,
       },
-      halflingLucky: this.actor.getFlag("kryx_rpg", "halflingLucky") || false
+      halflingLucky: this.actor.getFlag("kryx_rpg", "halflingLucky") || false,
+      messageData: {"flags.kryx_rpg.roll": {type: "tool", itemId: this.id}}
     });
   }
 
@@ -1095,9 +1097,7 @@ export default class ItemKryx extends Item {
       const targetType = card.dataset.targetType
       const template = AbilityTemplate.fromItem(item, scaling, targetType);
       if (template) template.drawPreview(event);
-    }
-
-    else {
+    } else {
       ui.notifications.error(`Unknown card button action: ${action}`)
     }
 
