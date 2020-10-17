@@ -32,11 +32,18 @@ export default class AbilityUseDialog extends Dialog {
     const quantity = itemData.quantity || 0;
     const recharge = itemData.recharge || {};
     const recharges = !!recharge.value;
+    // special cases:
+    // "superpower", "feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"
+    let itemWithName
+    if (item.type === "superpower") itemWithName = `${item.data.name} ${item.powerType}`
+    else if (item.type === "feature") itemWithName = `${item.data.name} ${item.featureType}`
+    else itemWithName = item.name
+    const abilityUseHint = game.i18n.format("KRYX_RPG.AbilityUseHint", {itemWithName})
 
     // Render the ability usage template
     const html = await renderTemplate("systems/kryx_rpg/templates/apps/ability-use.html", {
       item: item.data,
-      title: game.i18n.format("KRYX_RPG.AbilityUseHint", item.data),
+      title: abilityUseHint,
       note: this._getAbilityUseNote(item.data, uses, recharge),
       canUse: recharges ? recharge.charged : (quantity > 0 && !uses.value) || uses.value > 0,
       hasPlaceableTemplate: game.user.can("TEMPLATE_CREATE") && item.hasPlaceableTemplate,
@@ -65,15 +72,22 @@ export default class AbilityUseDialog extends Dialog {
   /* -------------------------------------------- */
 
   static _getAbilityUseNote(item, uses, recharge) {
+    let itemType
+    if (item.type === "superpower") itemType = item.powerType
+    else if (item.type === "feature") itemType = item.featureType
+    else itemType = item.type
 
     // Zero quantity
     const quantity = item.data.quantity;
-    if (quantity <= 0) return game.i18n.localize("KRYX_RPG.AbilityUseUnavailableHint");
+    if (quantity <= 0) return game.i18n.localize("KRYX_RPG.AbilityUseUnavailableHint", {
+      type: itemType,
+      per: CONFIG.KRYX_RPG.limitedUsePeriods[uses.per],
+    });
 
     // Abilities which use Recharge
     if (!!recharge.value) {
       return game.i18n.format(recharge.charged ? "KRYX_RPG.AbilityUseChargedHint" : "KRYX_RPG.AbilityUseRechargeHint", {
-        type: item.type,
+        type: itemType,
       })
     }
 
@@ -90,23 +104,15 @@ export default class AbilityUseDialog extends Dialog {
         type: item.data.consumableType,
         value: uses.value,
         quantity: item.data.quantity,
-      });
-    }
-
-    // Feature, Feat, Trait, Fighting Style, etc
-    if (item.type === "feature") {
-      let str = "KRYX_RPG.AbilityUseNormalHint";
-      if (uses.value === 0) str = "KRYX_RPG.AbilityUseFeatureUnavailableHint";
-      return game.i18n.format(str, {
-        featureType: item.data.featureType,
-        per: CONFIG.KRYX_RPG.limitedUsePeriods[uses.per],
+        max: uses.max,
+        per: CONFIG.KRYX_RPG.limitedUsePeriods[uses.per]
       });
     }
 
     // Other Items
     else {
       return game.i18n.format("KRYX_RPG.AbilityUseNormalHint", {
-        type: item.type,
+        type: itemType,
         value: uses.value,
         max: uses.max,
         per: CONFIG.KRYX_RPG.limitedUsePeriods[uses.per]
