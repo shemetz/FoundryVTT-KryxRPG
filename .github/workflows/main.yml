@@ -10,19 +10,19 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Substitute the Manifest and Download URLs in the module.json
+    # Substitute the Manifest and Download URLs in the system.json
     - name: Substitute Manifest and Download Links For Versioned Ones
       id: sub_manifest_link_version
       uses: microsoft/variable-substitution@v1
       with:
-        files: 'module.json'
+        files: 'system.json'
       env:
         version: ${{github.event.release.tag_name}}
-        manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
-        download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
+        manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/system.json
+        download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/system.zip
 
     # Create a zip file with all files required by the module to add to the release
-    - run: zip -r ./module.zip module.json scripts/
+    - run: zip -r ./system.zip fonts/ icons/ lang/ less/ module/ packs/ templates/ tokens/ ui/ kryx_rpg.css kryx_rpg.js LICENSE.txt OGL.txt README.md system.json template.json
 
     # Create a release for this specific version
     - name: Update Release with Files
@@ -34,7 +34,7 @@ jobs:
         draft: false
         prerelease: false
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: './module.json, ./module.zip'
+        artifacts: './system.json, ./system.zip'
         tag: ${{ github.event.release.tag_name }}
 
     # Update the 'latest' release
@@ -48,5 +48,5 @@ jobs:
         draft: false
         prerelease: false
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: './module.json,./module.zip'
+        artifacts: './system.json,./system.zip'
         tag: latest

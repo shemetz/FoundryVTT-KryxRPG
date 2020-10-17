@@ -46,7 +46,7 @@
   "minimumCoreVersion": "0.6.4",
   "compatibleCoreVersion": "0.7.4",
   "url": "https://github.com/itamarcu/FoundryVTT-KryxRPG",
-  "manifest": "https://github.com/itamarcu/FoundryVTT-KryxRPG/raw/master/module.json",
+  "manifest": "https://github.com/itamarcu/FoundryVTT-KryxRPG/raw/master/system.json",
   "download": "https://github.com/itamarcu/FoundryVTT-KryxRPG/archive/master.zip",
   "readme": "https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/README.md",
   "bugs": "https://github.com/itamarcu/FoundryVTT-KryxRPG/issues"
