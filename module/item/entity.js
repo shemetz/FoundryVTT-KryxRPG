@@ -801,7 +801,11 @@ export default class ItemKryx extends Item {
   _scaleSpellDamage(parts, baseCost, effectiveCost, formula) {
     const upcastLevels = Math.max(effectiveCost - baseCost, 0);
     if (upcastLevels === 0) return parts;
-    const bonus = new Roll(formula).alter(0, upcastLevels);
+    const roll = new Roll(formula)
+    let bonus
+    // Backwards Compatibility
+    if (isNewerVersion(game.data.version, "0.6.9")) bonus = roll.alter(upcastLevels, 0);
+    else bonus = roll.alter(0, upcastLevels);
     parts.push(bonus.formula);
     return parts;
   }
