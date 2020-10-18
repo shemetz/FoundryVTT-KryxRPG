@@ -1,5 +1,4 @@
 # Foundry VTT - Kryx RPG system
-## Version 26.3.1-1
 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/itamarcu/FoundryVTT-KryxRPG?style=for-the-badge) 
 ![GitHub Releases](https://img.shields.io/github/downloads/itamarcu/FoundryVTT-KryxRPG/latest/total?style=for-the-badge) 
