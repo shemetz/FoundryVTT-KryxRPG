@@ -206,7 +206,7 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     // Add Currency Weight
     if (game.settings.get("kryx_rpg", "currencyWeight")) {
       const currency = actorData.data.currency;
-      const numCoins = Object.values(currency).reduce((val, denom) => val += denom, 0);
+      const numCoins = Object.values(currency).reduce((val, denom) => val += Math.max(denom, 0), 0);
       totalWeight += numCoins / KRYX_RPG.encumbrance.currencyPerWeight;
     }
 
