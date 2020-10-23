@@ -378,6 +378,11 @@ export default class ItemKryx extends Item {
       }
     };
 
+    // If the consumable was destroyed in the process - embed the item data in the surviving message
+    if ( (this.data.type === "consumable") && !this.actor.items.has(this.id) ) {
+      chatData.flags["kryx_rpg.itemData"] = this.data;
+    }
+
     // Toggle default roll mode
     let rollMode = game.settings.get("core", "rollMode");
     if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
@@ -1059,8 +1064,9 @@ export default class ItemKryx extends Item {
     const actor = this._getChatCardActor(card);
     if (!actor) return;
 
-    // Get the Item
-    const item = actor.getOwnedItem(card.dataset.itemId);
+    // Get the Item from stored flag data or by the item ID on the Actor
+    const storedData = message.getFlag("dnd5e", "itemData");
+    const item = storedData ? this.createOwned(storedData, actor) : actor.getOwnedItem(card.dataset.itemId);
     if (!item) {
       return ui.notifications.error(`The requested item ${card.dataset.itemId} no longer exists on Actor ${actor.name}`)
     }
