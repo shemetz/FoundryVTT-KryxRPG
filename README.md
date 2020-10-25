@@ -114,6 +114,10 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 
 They are not really that interesting, they're pretty much like character sheets but with a few small differences (manually input Soak, calculate EXP by CR, a place for legendary actions). It's possible that I'll try to improve them to look more like monster sheets at some point, but right now they're functional (hopefully) and maybe modules will make them look better.
 
+### Using Monsters
+
+Currently, there is no easy way to import monsters. That's a planned feature for the future.  However, if you're looking for a fast-and-dirty solution, I recommend using the [Roll from Compendium](https://github.com/itamarcu/roll-from-compendium) module.  You can manually set up the basic ability scores of the monster, its "class" level (for purposes of mana/stamina amounts and limits), and then cast spells and use maneuvers straight out of the compendium, without needing to drag them to the monster. 
+
 # Plans for the future
 
 - Add all the other powers to the compendium (pending some planning and discussion)
