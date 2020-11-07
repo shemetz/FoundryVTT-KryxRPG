@@ -40,6 +40,16 @@
                     <input type="text" name="data.details.source" value="{{data.details.source}}"
                            placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
                 </li>
+                {{#if externalUrl}}
+                    <li style="line-height: normal">
+                        <a href="{{data.details.source}}">{{ localize "KRYX_RPG.ExternalUrl" }}</a>
+                    </li>
+                {{else}}
+                    <li>
+                        <input type="text" name="data.details.source" value="{{data.details.source}}"
+                               placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
+                    </li>
+                {{/if}}
                 <li class="experience">
                     <span>{{data.attributes.expValue}} EXP</span>
                 </li>
@@ -235,3 +245,4 @@
         </div>
     </section>
 </form>
+

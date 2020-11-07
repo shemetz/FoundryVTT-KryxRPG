@@ -109,13 +109,16 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
    * Add some extra data when rendering the sheet to reduce the amount of logic required within the template.
    */
   getData() {
-    const data = super.getData();
+    const sheetData = super.getData();
 
     // Challenge Rating
-    const cr = parseFloat(data.data.details.cr || 0);
+    const cr = parseFloat(sheetData.data.details.cr || 0);
     const crLabels = {0: "0", 0.125: "1/8", 0.25: "1/4", 0.5: "1/2"};
-    data.labels["cr"] = cr >= 1 ? String(cr) : crLabels[cr] || 1;
-    return data;
+    sheetData.labels["cr"] = cr >= 1 ? String(cr) : crLabels[cr] || 1;
+    // showing link instead of URL; but disabling it if missing creature type, to allow re-editing
+    sheetData['externalUrl'] = this.actor.data.data.details.source.startsWith('http') && this.actor.data.data.details.type
+
+    return sheetData;
   }
 
   /* -------------------------------------------- */
