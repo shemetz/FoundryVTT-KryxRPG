@@ -398,7 +398,7 @@ export default class ActorSheetKryx extends ActorSheet {
 
     // Get the current level and the array of levels
     const level = parseFloat(field.val());
-    const levels = KRYX_RPG.PROFICIENCY_LEVELS // [0, 0.5, 1]
+    const levels = this.entity.data.type === "character" ? KRYX_RPG.PROFICIENCY_LEVELS : KRYX_RPG.PROFICIENCY_LEVELS_FOR_NPC
     let idx = levels.indexOf(level);
 
     // Toggle next level - forward on click, backwards on right

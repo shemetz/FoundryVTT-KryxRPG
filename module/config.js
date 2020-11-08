@@ -534,13 +534,20 @@ KRYX_RPG.proficiencyLevels = {
   "0": "KRYX_RPG.NotProficient",
   "0.5": "KRYX_RPG.Capable",
   "1": "KRYX_RPG.Proficient",
-  // "1.5": "KRYX_RPG.Expertise", // removed in KryxRPG 25.28.0
+  "1.5": "KRYX_RPG.Expertise", // removed in KryxRPG 25.28.0, for player characters
 };
 
 KRYX_RPG.PROFICIENCY_LEVELS = [
   0.0,
   0.5,
   1.0,
+];
+
+KRYX_RPG.PROFICIENCY_LEVELS_FOR_NPC = [
+  0.0,
+  0.5,
+  1.0,
+  1.5,
 ];
 
 /* -------------------------------------------- */
