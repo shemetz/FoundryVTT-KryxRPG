@@ -287,7 +287,7 @@ export default class ActorKryx extends Actor {
     if (data.type === "character") {
       mergeObject(data.token, {
         vision: true,
-        dimSight: 30,
+        dimSight: 2,
         brightSight: 0,
         actorLink: true,
         disposition: 1
