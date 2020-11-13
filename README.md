@@ -40,7 +40,7 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 - Mana/Stamina/Catalysts ("main resources"), with maximum, limit, and DC automatically calculated
 - Soak, below your Defense, if you have any armor that grants it
 - Fortitude, Reflex, and Will saves; automatically calculated, you can pick proficiencies in them. Their styling is weird because I am bad at styling HTML/CSS and I tried to make it fit the default page size
-- All KryxRPG skills (tied to default abilities; might add choice in the future). Skills have the three levels of proficiency (capable, proficient, expert)
+- All KryxRPG skills (tied to default abilities; might add choice in the future). Skills have the ~~three~~ two levels of proficiency (capable, proficient, ~~expert~~)
 - Functional second wind, short rest, and long rest
 - Wounded and Dying can be tracked as numbers (they don't affect anything)
 - Power Source can be selected (it doesn't affect anything)
