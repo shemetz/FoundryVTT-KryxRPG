@@ -13,7 +13,7 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 ## Setup
 
 1. Open your foundry setup screen, go to "Game Systems" and "Install System"
-2. In the bottom, paste the [manifest URL](https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/system.json): **`https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/system.json`**
+2. In the bottom, paste the [manifest URL](https://github.com/itamarcu/FoundryVTT-KryxRPG/releases/latest/download/system.json): **`https://github.com/itamarcu/FoundryVTT-KryxRPG/releases/latest/download/system.json`**
 3. Click "Install"
 4. Wait patiently
 
