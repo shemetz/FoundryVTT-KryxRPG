@@ -1305,26 +1305,27 @@
   color: red;
 }
 /* Extras copied from the Kryx RPG website - they allow pasted htmls to look good */
-.hTRuQY,
-.dXlbah {
+/* card container */
+.MuiPaper-root {
   display: flex;
   font-size: 0.875rem;
   -webkit-box-pack: justify;
   justify-content: space-between;
 }
-.eTNkmV,
-.dOkwPD {
+/* BigCardContent inside */
+.CardContent__BigCardContent-kqtur6-0 {
   position: relative;
 }
-.eTNkmV,
-.rpxdH {
+/* title div */
+.PowerHeader__PowerHeaderWrapper-m329x1-0 {
   -webkit-box-align: center;
   align-items: center;
   display: flex;
   -webkit-box-pack: justify;
   justify-content: space-between;
 }
-.iQFEor {
+/* title h4 */
+.H4-sc-9wsv9o-0 {
   font-family: MrJeeves, "Times New Roman", Times, serif;
   font-weight: bold;
   letter-spacing: 0.025em;
@@ -1335,8 +1336,58 @@
   margin-top: 0px;
   font-variant: small-caps;
 }
-.bWWKHS,
-.gHMzex {
+/* augment / enhance */
+.H5-omhtbu-0 {
+  font-family: MrJeeves, "Times New Roman", Times, serif;
+  font-variant: small-caps;
+  font-weight: bold;
+  letter-spacing: 0.025em;
+  line-height: 1.05em;
+  margin-bottom: 0px;
+  margin-top: 0.5em;
+  font-size: 1rem;
+}
+/* div containing table (e.g. chaos bolt) */
+.PowerInner__FloatTable-sc-1job0u9-0 {
+  clear: right;
+  float: right;
+  margin-left: 0.75rem;
+  max-width: 40rem;
+  margin-bottom: 0.75rem;
+}
+/* table */
+.MuiTable-root {
+  break-inside: avoid;
+  font-size: 0.875rem;
+  margin-bottom: 0.8em;
+  max-width: 100%;
+  width: auto;
+}
+/* table cell */
+.MuiTableCell-body {
+  min-width: 2.5rem;
+  padding: 0.25em;
+}
+.MuiTableCell-alignCenter {
+  text-align: center;
+}
+.MuiTableCell-alignLeft {
+  text-align: left;
+}
+.MuiTableCell-head {
+  /*     color: rgba(0, 0, 0, 0.87); */
+  font-weight: bold;
+  line-height: 1.71428571rem;
+  /* I added this myself: */
+  padding: 0.25em 0.25em;
+}
+.MuiTableRow-root:nth-child(odd) {
+  background-color: #00000020;
+}
+/* spell cost */
+.iNpnVA,
+.gHMzex,
+.bWWKHS {
   -webkit-box-align: center;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
@@ -1352,54 +1403,10 @@
   width: 1.25rem;
   border-radius: 50%;
 }
-.eMNyC,
-.cCabuB {
-  font-family: MrJeeves, "Times New Roman", Times, serif;
-  font-variant: small-caps;
-  font-weight: bold;
-  letter-spacing: 0.025em;
-  line-height: 1.05em;
-  margin-bottom: 0px;
-  margin-top: 0.5em;
-  font-size: 1rem;
-}
-.guWBPQ,
-.cdUMsr {
-  clear: right;
-  float: right;
-  margin-left: 0.75rem;
-  max-width: 40rem;
-  margin-bottom: 0.75rem;
-}
-.eeaLdo {
-  break-inside: avoid;
-  font-size: 0.875rem;
-  margin-bottom: 0.8em;
-  max-width: 100%;
-  width: auto;
-}
-.hdSvMq,
-.kftDOx td {
-  min-width: 2.5rem;
-  padding: 0.25em;
-}
-.MuiTableCell-alignCenter {
-  text-align: center;
-}
-.MuiTableCell-alignLeft {
-  text-align: left;
-}
-.MuiTableCell-head {
-  /*     color: rgba(0, 0, 0, 0.87); */
-  font-weight: bold;
-  line-height: 1.71428571rem;
-  padding: 0.25em 0.25em;
-}
-.MuiTableRow-root:nth-child(odd) {
-  background-color: #00000020;
-}
-.fHOPmY,
-.dGTqJj {
+/* maneuver cost */
+.bQdmTa,
+.dGTqJj,
+.fHOPmY {
   -webkit-box-align: center;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
@@ -1415,8 +1422,10 @@
   color: #000000;
   width: 1.25rem;
 }
-.hFRCkA,
-.fDxHXX {
+/* concoction cost */
+.eUqCAS,
+.fDxHXX,
+.hFRCkA {
   -webkit-box-align: center;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
@@ -1432,6 +1441,7 @@
   color: #000000;
   width: 1.25rem;
 }
+/* Additional effects for superpowers */
 .additional-effect {
   border: 1px solid #999;
   border-radius: 3px;

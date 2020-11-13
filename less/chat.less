@@ -112,25 +112,21 @@
 
 /* Extras copied from the Kryx RPG website - they allow pasted htmls to look good */
 
-// burning hands (going by div order)
-// card container
-.hTRuQY,
-.dXlbah {
+/* card container */
+.MuiPaper-root {
   display: flex;
   font-size: 0.875rem;
   -webkit-box-pack: justify;
   justify-content: space-between;
 }
 
-// BigCardContent inside
-.eTNkmV,
-.dOkwPD {
+/* BigCardContent inside */
+.CardContent__BigCardContent-kqtur6-0 {
   position: relative;
 }
 
-// title div
-.eTNkmV,
-.rpxdH {
+/* title div */
+.PowerHeader__PowerHeaderWrapper-m329x1-0 {
   -webkit-box-align: center;
   align-items: center;
   display: flex;
@@ -138,8 +134,8 @@
   justify-content: space-between;
 }
 
-// title h4
-.iQFEor {
+/* title h4 */
+.H4-sc-9wsv9o-0 {
   font-family: MrJeeves, "Times New Roman", Times, serif;
   font-weight: bold;
   letter-spacing: 0.025em;
@@ -151,28 +147,8 @@
   font-variant: small-caps;
 }
 
-// cost
-.bWWKHS,
-.gHMzex {
-  -webkit-box-align: center;
-  align-items: center;
-  box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
-  display: flex;
-  font-size: 1rem;
-  height: 1.25rem;
-  -webkit-box-pack: center;
-  justify-content: center;
-  margin-left: 0.5rem;
-  text-align: center;
-  background-color: rgb(129, 212, 250);
-  color: rgb(0, 0, 0);
-  width: 1.25rem;
-  border-radius: 50%;
-}
-
-// augment / enhance
-.eMNyC,
-.cCabuB {
+/* augment / enhance */
+.H5-omhtbu-0 {
   font-family: MrJeeves, "Times New Roman", Times, serif;
   font-variant: small-caps;
   font-weight: bold;
@@ -183,10 +159,8 @@
   font-size: 1rem;
 }
 
-// from chaos bolt
-// div containing table
-.guWBPQ,
-.cdUMsr {
+/* div containing table (e.g. chaos bolt) */
+.PowerInner__FloatTable-sc-1job0u9-0 {
   clear: right;
   float: right;
   margin-left: 0.75rem;
@@ -194,8 +168,8 @@
   margin-bottom: 0.75rem;
 }
 
-// table
-.eeaLdo {
+/* table */
+.MuiTable-root {
   break-inside: avoid;
   font-size: 0.875rem;
   margin-bottom: 0.8em;
@@ -204,9 +178,8 @@
   width: auto;
 }
 
-//td
-.hdSvMq,
-.kftDOx td {
+/* table cell */
+.MuiTableCell-body {
   min-width: 2.5rem;
   padding: 0.25em;
 }
@@ -223,7 +196,7 @@
   /*     color: rgba(0, 0, 0, 0.87); */
   font-weight: bold;
   line-height: 1.7142857142857142rem;
-  // I added this myself:
+  /* I added this myself: */
   padding: 0.25em 0.25em;
 }
 
@@ -233,9 +206,30 @@
   }
 }
 
-// maneuver cost
-.fHOPmY,
-.dGTqJj {
+/* spell cost */
+.iNpnVA,
+.gHMzex,
+.bWWKHS {
+  -webkit-box-align: center;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
+  display: flex;
+  font-size: 1rem;
+  height: 1.25rem;
+  -webkit-box-pack: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  text-align: center;
+  background-color: rgb(129, 212, 250);
+  color: rgb(0, 0, 0);
+  width: 1.25rem;
+  border-radius: 50%;
+}
+
+/* maneuver cost */
+.bQdmTa,
+.dGTqJj,
+.fHOPmY {
   -webkit-box-align: center;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
@@ -252,9 +246,10 @@
   width: 1.25rem;
 }
 
-// concoction cost
-.hFRCkA,
-.fDxHXX {
+/* concoction cost */
+.eUqCAS,
+.fDxHXX,
+.hFRCkA {
   -webkit-box-align: center;
   align-items: center;
   box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 5px;
@@ -271,7 +266,7 @@
   width: 1.25rem;
 }
 
-// Additional effects for superpowers
+/* Additional effects for superpowers */
 .additional-effect {
   border: 1px solid #999;
   border-radius: 3px;
