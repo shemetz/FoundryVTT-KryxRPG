@@ -48,6 +48,8 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 
 ![sheet_front](metadata/sheet_front.png)
 
+(oops.  that Mana should be 2/2, not 4/2.  that's not a bug, that's just me misusing my module)
+
 - "Allow picking unknown themes" setting added, if you don't want to limit your choices to known themes
 - "Show damage immunity, attack bonus, etc" setting added, to show/hide a bunch of character traits that rarely matter
 - "Only count equipped item weights" added, for people who want an easy way to select which of their items are in a bag that they aren't carrying during combat
