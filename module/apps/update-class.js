@@ -123,9 +123,9 @@ function onArchetypeUpdated(archetype) {
     }
     // Special case for alchemist
     if (KRYX_RPG.systemData.archetypesThatHaveConcoctions.includes(archetype)) {
-      option.text = option.text.replace("Spells", "Concoctions")
+      option.text = option.text.replaceAll("Spells", "Concoctions")
     } else {
-      option.text = option.text.replace("Concoctions", "Spells")
+      option.text = option.text.replaceAll("Concoctions", "Spells")
     }
   })
   let selectedProgression = $(`select[name=classProgression] :selected`)[0].value

@@ -60,9 +60,9 @@ export default class SuperpowerUseDialog extends Dialog {
     let spendHowMuchText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastSpendHowMuch", resource)
     let noAvailableResourceText = SuperpowerUseDialog.replaceTerms("KRYX_RPG.SuperpowerCastNoResourcesSpell", resource)
     if (superpower.isConcoction && superpowerData.cost > 1) {
-      castConsumeText = castConsumeText.replace("catalyst", "catalysts")
-      spendHowMuchText = spendHowMuchText.replace("much catalyst", "many catalysts")
-      noAvailableResourceText = noAvailableResourceText.replace("catalyst", "catalysts")
+      castConsumeText = castConsumeText.replaceAll("catalyst", "catalysts")
+      spendHowMuchText = spendHowMuchText.replaceAll("much catalyst", "many catalysts")
+      noAvailableResourceText = noAvailableResourceText.replaceAll("catalyst", "catalysts")
     }
 
     // Render the superpower use template
@@ -103,8 +103,8 @@ export default class SuperpowerUseDialog extends Dialog {
 
   static replaceTerms(stringId, resource) {
     return game.i18n.localize(stringId)
-      .replace("MANA", resource.name)
-      .replace("CAST", resource.nameOfUse)
-      .replace("SPELL", resource.nameOfEffect)
+      .replaceAll("MANA", resource.name)
+      .replaceAll("CAST", resource.nameOfUse)
+      .replaceAll("SPELL", resource.nameOfEffect)
   }
 }
