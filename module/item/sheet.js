@@ -153,7 +153,6 @@ export default class ItemSheetKryx extends ItemSheet {
       props.push(
         item.data.cost === 0 ? "Cantrip" : null,
         item.data.themes.value.length ? item.data.themes.value.join(", ") : "No theme",
-        labels.components.length ? labels.components : null,
         item.data.components.concentration ? labels.concentration : null,
         item.data.components.ritual ? "Ritual" : null
       )
