@@ -146,6 +146,7 @@
   "KRYX_RPG.DamImm": "Damage Immunities",
   "KRYX_RPG.DamRes": "Damage Resistances",
   "KRYX_RPG.DamVuln": "Damage Vulnerabilities",
+  "KRYX_RPG.DamageRoll": "Damage Roll",
   "KRYX_RPG.Damage": "Damage",
   "KRYX_RPG.DamageAcid": "Acid",
   "KRYX_RPG.DamageBludgeoning": "Bludgeoning",

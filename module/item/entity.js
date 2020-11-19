@@ -717,50 +717,25 @@ export default class ItemKryx extends Item {
 
   /**
    * Place a damage roll using an item (weapon, feat, spell, or equipment)
-   * Rely upon the damageRoll logic for the core implementation
-   *
-   * @return {Promise<Roll>}   A Promise which resolves to the created Roll instance
+   * Rely upon the damageRoll logic for the core implementation.
+   * @param {MouseEvent} [event]    An event which triggered this roll, if any
+   * @param {number|null} [augmentedCost]   If the item is a superpower, override the base cost for damage scaling
+   * @param {object} [options]      Additional options passed to the damageRoll function
+   * @return {Promise<Roll>}        A Promise which resolves to the created Roll instance
    */
-  rollDamage({event, augmentedCost = null} = {}) {
+  rollDamage({event, augmentedCost = null, options = {}} = {}) {
+    if (!this.hasDamage) throw new Error("You may not make a Damage Roll with this Item.");
     const itemData = this.data.data;
     const actorData = this.actor.data.data;
-    if (!this.hasDamage) {
-      throw new Error("You may not make a Damage Roll with this Item.");
-    }
     const messageData = {"flags.kryx_rpg.roll": {type: "damage", itemId: this.id}};
-    const rollData = this.getRollData();
-    rollData.item.effectiveCost = augmentedCost || rollData.item.cost
-    let fastForward = false
-
-    // Define Roll parts
+    // Get roll data
     const parts = itemData.damage.parts.map(d => d[0]);
-    if (this.data.type === "superpower") {
-      if (!itemData.attack) fastForward = true
-      const scalingMode = itemData.scaling.mode
-      if (scalingMode === "none") {
-        // do nothing
-      } else if (scalingMode === "cantrip") {
-        this._scaleCantripDamage(parts, actorData.class.level, itemData.scaling.formula);
-      } else if (scalingMode === "augment" || scalingMode === "enhance") {
-        if (augmentedCost !== null && augmentedCost !== itemData.cost) {
-          this._scaleSpellDamage(parts, itemData.cost, rollData.item.effectiveCost, itemData.scaling.formula);
-        }
-      } else {
-        ui.notifications.error(`Unexpected scaling mode: ${scalingMode}`)
-      }
-    }
+    const rollData = this.getRollData();
 
-    // Define Roll Data
-    const actorBonus = actorData.bonuses[itemData.actionType] || {};
-    if (actorBonus.damage && parseInt(actorBonus.damage) !== 0) {
-      parts.push("@dmg");
-      rollData["dmg"] = actorBonus.damage;
-    }
-
-    // Call the roll helper utility
-    const title = `${this.name} - Damage Roll`;
-    const flavor = this.labels.damageTypes.length ? `${title} (${this.labels.damageTypes})` : title;
-    return damageRoll({
+    // Configure the damage roll
+    const title = `${this.name} - ${game.i18n.localize("KRYX_RPG.DamageRoll")}`;
+    const flavor = this.labels.damageTypes.length ? `${title} (${this.labels.damageTypes})` : title
+    const rollConfig = {
       event: event,
       parts: parts,
       actor: this.actor,
@@ -768,14 +743,47 @@ export default class ItemKryx extends Item {
       title: title,
       flavor: flavor,
       speaker: ChatMessage.getSpeaker({actor: this.actor}),
-      fastForward: fastForward,
       dialogOptions: {
         width: 400,
         top: event ? event.clientY - 80 : null,
         left: window.innerWidth - 710
       },
-      messageData,
-    });
+      messageData: messageData,
+    };
+
+    // Scale damage from augmented spells, enhanced maneuvers, higher level cantrips, etc
+    if (this.data.type === "superpower") {
+      rollConfig.fastForward = true
+      const scalingMode = itemData.scaling.mode
+      if (scalingMode === "none") {
+        // do nothing
+      } else if (scalingMode === "cantrip") {
+        this._scaleCantripDamage(parts, actorData.class.level, itemData.scaling.formula, rollData);
+      } else if (scalingMode === "augment" || scalingMode === "enhance") {
+        if (augmentedCost !== null && augmentedCost !== itemData.cost) {
+          this._scaleSpellDamage(parts, itemData.cost, rollData.item.effectiveCost, itemData.scaling.formula, rollData);
+        }
+      } else {
+        ui.notifications.error(`Unexpected scaling mode: ${scalingMode}`)
+      }
+    }
+
+    // Add damage bonus formula
+    const actorBonus = getProperty(actorData, `bonuses.${itemData.actionType}`) || {};
+    if (actorBonus.damage && (parseInt(actorBonus.damage) !== 0)) {
+      parts.push(actorBonus.damage);
+    }
+
+    // Add ammunition damage
+    if (this._ammo) {
+      parts.push("@ammo");
+      rollData["ammo"] = this._ammo.data.data.damage.parts.map(p => p[0]).join("+");
+      rollConfig.flavor += ` [${this._ammo.name}]`;
+      delete this._ammo;
+    }
+
+    // Call the roll helper utility
+    return damageRoll(mergeObject(rollConfig, options));
   }
 
   /* -------------------------------------------- */
@@ -784,14 +792,10 @@ export default class ItemKryx extends Item {
    * Adjust a cantrip damage formula to scale it for higher level characters and monsters
    * @private
    */
-  _scaleCantripDamage(parts, level, scale) {
+  _scaleCantripDamage(parts, level, formula, rollData) {
     const add = Math.max(0, Math.ceil(level / 4) - 1);
     if (add === 0) return;
-    if (scale && (scale !== parts[0])) {
-      parts[0] = parts[0] + " + " + scale.replace(new RegExp(Roll.diceRgx, "g"), (match, nd, d) => `${add}d${d}`);
-    } else {
-      parts[0] = parts[0].replace(new RegExp(Roll.diceRgx, "g"), (match, nd, d) => `${parseInt(nd) + add}d${d}`);
-    }
+    this._scaleDamage(parts, formula || parts.join(" + "), add, rollData);
   }
 
   /* -------------------------------------------- */
@@ -802,9 +806,10 @@ export default class ItemKryx extends Item {
    * @param {number} baseCost    The default (minimum) cost)
    * @param {number} effectiveCost   The amount of mana/stamina/psi/catalysts spent, or base cost if none were spent
    * @param {string} formula      The scaling formula
+   * @param {object} rollData     A data object that should be applied to the scaled damage roll
    * @private
    */
-  _scaleSpellDamage(parts, baseCost, effectiveCost, formula) {
+  _scaleSpellDamage(parts, baseCost, effectiveCost, formula, rollData) {
     const upcastLevels = Math.max(effectiveCost - baseCost, 0);
     if (upcastLevels === 0) return parts;
     const roll = new Roll(formula)
@@ -813,6 +818,40 @@ export default class ItemKryx extends Item {
     if (isNewerVersion(game.data.version, "0.6.9")) bonus = roll.alter(upcastLevels, 0);
     else bonus = roll.alter(0, upcastLevels);
     parts.push(bonus.formula);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Scale an array of damage parts according to a provided scaling formula and scaling multiplier
+   * @param {string[]} parts    Initial roll parts
+   * @param {string} scaling    A scaling formula
+   * @param {number} times      A number of times to apply the scaling formula
+   * @param {object} rollData   A data object that should be applied to the scaled damage roll
+   * @return {string[]}         The scaled roll parts
+   * @private
+   */
+  _scaleDamage(parts, scaling, times, rollData) {
+    if (times <= 0) return parts;
+    const p0 = new Roll(parts[0], rollData);
+    const s = new Roll(scaling, rollData).alter(times, 0);
+
+    // Attempt to simplify by combining like dice terms
+    let simplified = false;
+    if ((s.terms[0] instanceof Die) && (s.terms.length === 1)) {
+      const d0 = p0.terms[0];
+      const s0 = s.terms[0];
+      if ((d0 instanceof Die) && (d0.faces === s0.faces) && d0.modifiers.equals(s0.modifiers)) {
+        d0.number += s0.number;
+        parts[0] = p0.formula;
+        simplified = true;
+      }
+    }
+
+    // Otherwise add to the first part
+    if (!simplified) {
+      parts[0] = `${parts[0]} + ${s.formula}`;
+    }
     return parts;
   }
 
@@ -822,7 +861,7 @@ export default class ItemKryx extends Item {
    * Place an attack roll using an item (weapon, feat, superpower, or equipment)
    * Rely upon the d20Roll logic for the core implementation
    *
-   * @return {Promise.<Roll>}   A Promise which resolves to the created Roll instance
+   * @return {Promise<Roll>}   A Promise which resolves to the created Roll instance
    */
   async rollFormula() {
     if (!this.data.data.formula) {
@@ -831,7 +870,7 @@ export default class ItemKryx extends Item {
 
     // Define Roll Data
     const rollData = this.getRollData();
-    const title = `${this.name} - Other Formula`;
+    const title = `${this.name} - ${game.i18n.localize("KRYX_RPG.OtherFormula")}`;
 
     // Invoke the roll and submit it to chat
     const roll = new Roll(rollData.item.formula, rollData).roll();
