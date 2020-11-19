@@ -1,5 +1,3 @@
-import LongRestDialog from "./long-rest.js";
-
 /**
  * A helper Dialog subclass for rolling Health Dice on short rest
  * @extends {Dialog}

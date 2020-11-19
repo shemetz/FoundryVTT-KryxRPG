@@ -5,7 +5,7 @@
 import {KRYX_RPG} from '../config.js';
 
 
-const TEXT_STYLE = new PIXI.TextStyle({fontFamily : 'Signika', fontSize: 11})
+const TEXT_STYLE = new PIXI.TextStyle({fontFamily: 'Signika', fontSize: 11})
 
 export default class TraitSelector extends FormApplication {
 

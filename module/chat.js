@@ -1,5 +1,3 @@
-import ActorKryx from "./actor/entity.js";
-
 /**
  * Highlight critical success or failure on d20 rolls
  */
