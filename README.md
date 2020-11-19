@@ -123,7 +123,7 @@ Currently, there is no easy way to import monsters. That's a planned feature for
 # Plans for the future
 
 - Add all the other powers to the compendium (pending some planning and discussion)
-- Add a way to import [monsters](https://www.kryxrpg.com/monsters)) from the website (or a compendium..?). Pending planning and discussion like the above
+- Add a way to import [monsters](https://www.kryxrpg.com/monsters) from the website (or a compendium..?). Pending planning and discussion like the above
 - Find and fix all of the bugs that undoubtedly exist in the code
 - Consider some mechanism through which sheets can own powers from the compendium without creating copies that take up space and become outdated
 - Add compatibility with popular D&D 5e modules (likely through ugly hacks or forks of every module)
