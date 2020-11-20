@@ -132,7 +132,7 @@ export default class ItemKryx extends Item {
    * @type {boolean}
    */
   get hasSave() {
-    return !!(this.data.data.save);
+    return !!(this.data.data.save && this.data.data.save.type);
   }
 
   /* -------------------------------------------- */
