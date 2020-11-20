@@ -769,7 +769,7 @@ export default class ItemKryx extends Item {
         this._scaleCantripDamage(parts, actorData.class.level, itemData.scaling.formula, rollData);
       } else if (scalingMode === "augment" || scalingMode === "enhance") {
         if (augmentedCost !== null && augmentedCost !== itemData.cost) {
-          this._scaleSpellDamage(parts, itemData.cost, rollData.item.effectiveCost, itemData.scaling.formula, rollData);
+          this._scaleSuperpowerDamage(parts, itemData.cost, rollData.item.effectiveCost, itemData.scaling.formula, rollData);
         }
       } else {
         ui.notifications.error(`Unexpected scaling mode: ${scalingMode}`)
@@ -817,7 +817,7 @@ export default class ItemKryx extends Item {
    * @param {object} rollData     A data object that should be applied to the scaled damage roll
    * @private
    */
-  _scaleSpellDamage(parts, baseCost, effectiveCost, formula, rollData) {
+  _scaleSuperpowerDamage(parts, baseCost, effectiveCost, formula, rollData) {
     const upcastLevels = Math.max(effectiveCost - baseCost, 0);
     if (upcastLevels === 0) return parts;
     const roll = new Roll(formula)
