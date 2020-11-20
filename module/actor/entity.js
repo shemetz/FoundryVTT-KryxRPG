@@ -397,13 +397,13 @@ export default class ActorKryx extends Actor {
 
     // Show a dialog (for configuring measured template, augment/enhance, and how many resources to spend)
     let shouldPlaceTemplate = false;
-    let paidCost = itemData.cost
+    let spentCost = itemData.cost
     let shouldConsumeResources = true
     let canAugment = false
     let selectedTargetType = null // is used for cone/line
     const resourceName = item.isManeuver ? "stamina" : "mana"
     const resource = this.data.data.mainResources[resourceName]
-    if (paidCost > 0 && paidCost < resource.limit)
+    if (spentCost > 0 && spentCost < resource.limit)
       canAugment = true // nearly everything can be augmented/enhanced, just for extra damage/AoE/duration
     const canChooseTargetType = itemData.target.type === "coneOrLine"
     const hasReasonToConfigureDialog = item.hasPlaceableTemplate || canAugment || canChooseTargetType
@@ -413,7 +413,7 @@ export default class ActorKryx extends Actor {
         // user clicked X on the dialog, canceling the superpower usage.
         return
       }
-      paidCost = parseInt(spellFormData.get("paidCost"));
+      spentCost = parseInt(spellFormData.get("spentCost"));
       shouldConsumeResources = Boolean(spellFormData.get("shouldConsumeResources"));
       shouldPlaceTemplate = Boolean(spellFormData.get("shouldPlaceTemplate"));
       if (canChooseTargetType) {
@@ -426,9 +426,9 @@ export default class ActorKryx extends Actor {
     }
 
     // Update Actor data
-    if (shouldConsumeResources && paidCost) {
+    if (shouldConsumeResources && spentCost) {
       await this.update({
-        [`data.mainResources.${resourceName}.remaining`]: Math.max(resource.remaining - paidCost, 0)
+        [`data.mainResources.${resourceName}.remaining`]: Math.max(resource.remaining - spentCost, 0)
       });
     }
 
@@ -441,14 +441,14 @@ export default class ActorKryx extends Actor {
     const targetType = selectedTargetType || itemData.target.type
     // Initiate ability template placement workflow if selected
     if (shouldPlaceTemplate && item.hasPlaceableTemplate) {
-      const scaling = item.isAreaScaling ? paidCost : 1
+      const scaling = item.isAreaScaling ? spentCost : 1
       const template = AbilityTemplate.fromItem(item, scaling, targetType);
       if (template) template.drawPreview(event);
       if (this.sheet.rendered) this.sheet.minimize();
     }
     const itemCopy = item.constructor.createOwned(mergeObject(item.data,
       {
-        "data.spentCost": paidCost,
+        "data.spentCost": spentCost,
         "data.targetType": targetType,
       }
       , {inplace: false}), this);

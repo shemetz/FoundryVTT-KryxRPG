@@ -296,18 +296,9 @@ export default class ItemKryx extends Item {
     // Item Actions
     if (data.hasOwnProperty("actionType")) {
       // Save DC
-      let save = data.save || {};
-      if (!save.type) save.dc = null;
-      else if (this.isOwned) { // Actor owned items
-        if (save.scaling === "spell_dc") save.dc = this.actor.getSpellDC();
-        else if (save.scaling === "alchemical_dc") save.dc = this.actor.getSpellDC();
-        else if (save.scaling === "maneuver_dc") save.dc = this.actor.getManeuverDC();
-        else if (save.scaling === "flat_dc") save.dc = +save.dc
-        else save.dc = null
-      } else { // Un-owned items
-        if (save.scaling !== "flat_dc") save.dc = null;
-      }
-      labels.save = save.type ? `DC ${save.dc || ""} ${C.saves[save.type]}` : "";
+      const saveType = data.save ? data.save.type : null
+      const saveDC = this.getSaveDC()
+      labels.save = saveType ? `DC ${saveDC || ""} ${C.saves[saveType]}` : "";
 
       // Damage
       let dam = data.damage || {};
@@ -362,8 +353,9 @@ export default class ItemKryx extends Item {
     if (allowed === false) return;
 
     // Render the chat card template
-    const templateType = ["tool"].includes(this.data.type) ? this.data.type : "item";
-    const template = `systems/kryx_rpg/templates/chat/${templateType}-card.html`;
+    const template = this.data.type === 'tool'
+      ? 'systems/kryx_rpg/templates/chat/tool-card.html'
+      : 'systems/kryx_rpg/templates/chat/item-card.html'
     const html = await renderTemplate(template, templateData);
 
     // Basic chat message data
@@ -647,6 +639,22 @@ export default class ItemKryx extends Item {
       data.source || null,
       data.themes.value.join(", ") || null
     );
+  }
+
+  /* -------------------------------------------- */
+
+  getSaveDC() {
+    const save = this.data.data.save
+    if (!save.type) return null;
+    else if (this.isOwned) { // Actor owned items
+      if (save.scaling === "spell_dc") return this.actor.getSpellDC();
+      else if (save.scaling === "alchemical_dc") return this.actor.getSpellDC();
+      else if (save.scaling === "maneuver_dc") return this.actor.getManeuverDC();
+      else if (save.scaling === "flat_dc") return +save.dc
+      else throw Error(`Unexpected save scaling for ${this.name}: ${save.scaling}`)
+    } else { // Un-owned items
+      if (save.scaling !== "flat_dc") return null;
+    }
   }
 
   /* -------------------------------------------- */
