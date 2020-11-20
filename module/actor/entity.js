@@ -189,9 +189,12 @@ export default class ActorKryx extends Actor {
       manaUseName = game.i18n.localize("KRYX_RPG.MainResourceManaNamedCatalystsUse")
     }
 
+    const preexistingResources = this.data.data.mainResources
+
     data.mainResources = {
       mana: {
-        remaining: this.data.data.mainResources.mana.remaining,
+        remaining: preexistingResources.mana.remaining,
+        value: preexistingResources.mana.remaining,
         max: manaMax,
         limit: manaLimit,
         dc: this.getSpellDC(),
@@ -201,7 +204,8 @@ export default class ActorKryx extends Actor {
         nameOfUse: manaUseName,
       },
       stamina: {
-        remaining: this.data.data.mainResources.stamina.remaining,
+        remaining: preexistingResources.stamina.remaining,
+        value: preexistingResources.stamina.remaining,
         max: staminaMax,
         limit: staminaLimit,
         dc: this.getManeuverDC(),
