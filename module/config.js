@@ -561,7 +561,7 @@ KRYX_RPG.conditionTypes = {
   "confused": "KRYX_RPG.ConConfused",
   "deafened": "KRYX_RPG.ConDeafened",
   "diseased": "KRYX_RPG.ConDiseased",
-  "exhaustion": "KRYX_RPG.ConExhausted",
+  "exhausted": "KRYX_RPG.ConExhausted",
   "frightened": "KRYX_RPG.ConFrightened",
   "grappled": "KRYX_RPG.ConGrappled",
   "hasted": "KRYX_RPG.ConHasted",
