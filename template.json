@@ -217,6 +217,7 @@
         "secondWindAvailable": true
       },
       "details": {
+        "source": "",
         "background": "",
         "exp": {
           "max": 0,

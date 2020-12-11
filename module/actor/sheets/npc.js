@@ -115,8 +115,9 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     const cr = parseFloat(sheetData.data.details.cr || 0);
     const crLabels = {0: "0", 0.125: "1/8", 0.25: "1/4", 0.5: "1/2"};
     sheetData.labels["cr"] = cr >= 1 ? String(cr) : crLabels[cr] || 1;
+    const source = this.actor.data.data.details.source
     // showing link instead of URL; but disabling it if missing creature type, to allow re-editing
-    sheetData['externalUrl'] = this.actor.data.data.details.source.startsWith('http') && this.actor.data.data.details.type
+    sheetData['externalUrl'] = source && source.startsWith('http') && this.actor.data.data.details.type
 
     return sheetData;
   }
