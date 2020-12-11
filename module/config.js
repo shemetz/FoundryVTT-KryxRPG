@@ -322,8 +322,8 @@ KRYX_RPG.targetTypes = {
  */
 KRYX_RPG.areaScalingStandardSizes = {
   "cone": 15,
-  "coneOrLine": 15,  // TODO figure out how to solve this fully :/
-  "line": 20,
+  "coneOrLine": 15,
+  "line": 15,
   "sphere": 5,
   "cylinder": 5,
   "wall": 15,
