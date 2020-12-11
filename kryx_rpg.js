@@ -34,6 +34,7 @@ import * as chat from "./module/chat.js";
 import * as dice from "./module/dice.js";
 import * as macros from "./module/macros.js";
 import * as migrations from "./module/migration.js";
+import "./module/utils.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
