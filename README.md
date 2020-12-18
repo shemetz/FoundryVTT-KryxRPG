@@ -12,7 +12,7 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 
 ## Setup
 
-You can always find the system in the standard Foundry module browser,
+You can always find the system in the standard Foundry module browser, so, try that first. But if it doesn't work:
 
 1. Open your foundry setup screen, go to "Game Systems" and "Install System"
 2. In the bottom, paste the [manifest URL](https://github.com/itamarcu/FoundryVTT-KryxRPG/releases/latest/download/system.json): **`https://github.com/itamarcu/FoundryVTT-KryxRPG/releases/latest/download/system.json`**
