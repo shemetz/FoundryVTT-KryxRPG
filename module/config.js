@@ -886,7 +886,7 @@ KRYX_RPG.systemData = {
     "performance": "cha",
     "persuasion": "cha",
     "primal": "wis",
-    "psionics": "int",
+    "psionics": "wis",
     "skulduggery": "dex",
     "stealth": "dex",
     "streetwise": "cha",
