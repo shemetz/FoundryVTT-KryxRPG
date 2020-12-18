@@ -801,7 +801,9 @@ export default class ItemKryx extends Item {
    * @private
    */
   _scaleCantripDamage(parts, level, formula, rollData) {
-    const add = Math.max(0, Math.ceil(level / 4) - 1);
+    // should be 1 at the start, 2 after level 9, 3 after level 17 (potentially 4 for "level 25" monsters)
+    const scaledCantripMultiplier = Math.max(1, Math.ceil(level / 8))
+    const add = scaledCantripMultiplier - 1
     if (add === 0) return;
     this._scaleDamage(parts, formula || parts.join(" + "), add, rollData);
   }
