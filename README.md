@@ -1,4 +1,4 @@
-# Foundry VTT - Kryx RPG system
+# [Foundry VTT - Kryx RPG system](https://foundryvtt.com/packages/kryx_rpg/)
 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/itamarcu/FoundryVTT-KryxRPG?style=for-the-badge) 
 ![GitHub Releases](https://img.shields.io/github/downloads/itamarcu/FoundryVTT-KryxRPG/latest/total?style=for-the-badge) 
@@ -12,12 +12,16 @@ An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundr
 
 ## Setup
 
+You can always find the system in the standard Foundry module browser,
+
 1. Open your foundry setup screen, go to "Game Systems" and "Install System"
 2. In the bottom, paste the [manifest URL](https://github.com/itamarcu/FoundryVTT-KryxRPG/releases/latest/download/system.json): **`https://github.com/itamarcu/FoundryVTT-KryxRPG/releases/latest/download/system.json`**
 3. Click "Install"
 4. Wait patiently
 
 # Features
+
+I'll mostly list the non-obvious features of this system, and those that are added on top of the existing D&D 5e system.
 
 ### System
 
@@ -125,6 +129,7 @@ Currently, there is no easy way to import monsters. That's a planned feature for
 - Add all the other powers to the compendium (pending some planning and discussion)
 - Add a way to import [monsters](https://www.kryxrpg.com/monsters) from the website (or a compendium..?). Pending planning and discussion like the above
 - Find and fix all of the bugs that undoubtedly exist in the code
+- Everything else mentioned in the [Github Issues](https://github.com/itamarcu/FoundryVTT-KryxRPG/issues) and not mentioned here
 - Consider some mechanism through which sheets can own powers from the compendium without creating copies that take up space and become outdated
 - Add compatibility with popular D&D 5e modules (likely through ugly hacks or forks of every module)
 - Find someone to fix all of my ugly styling and make everything pretty (hopefully including the code that does the same thing)
