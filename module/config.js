@@ -835,8 +835,7 @@ KRYX_RPG.systemData = {
     "Warrior": {
       "archetypes": {
         "Battlemaster": {"healthDice": "d10", "progressionChoiceType": "martial"},
-        "Berserker": {"healthDice": "d10", "progressionChoiceType": "martial"},
-        "Dervish": {"healthDice": "d10", "progressionChoiceType": "martial"},
+        "Berserker": {"healthDice": "d10", "progressionChoiceType": "martial"}
       },
       "subclassName": "Martial Specialization",
     },
