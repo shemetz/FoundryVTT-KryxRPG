@@ -233,7 +233,8 @@ export default class ItemSheetKryx extends ItemSheet {
     html.find('.summary-themes').click(this._onOpenThemesPicker.bind(this));
 
     if (this.item.type === "superpower")
-      this.limitScalingToPossibilities(html)
+      html.find('.item-type').click(this._onClickItemType.bind(this));
+    this.limitScalingToPossibilities(html)
   }
 
   /* -------------------------------------------- */
@@ -345,5 +346,13 @@ export default class ItemSheetKryx extends ItemSheet {
       }, {}),
       allowCustom: false,
     }).render(true)
+  }
+
+  _onClickItemType(event) {
+    event.preventDefault();
+    const powerType = this.item.data.data.powerType
+    const allPowerTypes = ["spell", "maneuver", "concoction"]
+    const newPowerType = allPowerTypes[(allPowerTypes.indexOf(powerType) + 1) % 3]
+    this.item.update({"data.powerType": newPowerType})
   }
 }
