@@ -6,17 +6,17 @@
 import {KRYX_RPG} from "../config.js";
 
 export async function showUpdateClassDialog(actor) {
-  const actorClassName = actor.data.data.class.name || "Acolyte"
-  const actorArchetype = actor.data.data.class.archetype || "Paladin"
+  const actorClassName = actor.data.data.class.name || "Monster"
+  const actorArchetype = actor.data.data.class.archetype || "Monster"
   const actorProgression = actor.data.data.class.progression || "gishHalfHalf"
   const actorSubclass = actor.data.data.class.subclass || ""
 
   // Render modal dialog
-  const template = "systems/kryx_rpg/templates/apps/update-class.html";
+  const template = actor.isNPC ? "systems/kryx_rpg/templates/apps/update-class-npc.html"
+    : "systems/kryx_rpg/templates/apps/update-class-character.html"
   let dialogData = {
-    classProgressions: CONFIG.KRYX_RPG.resourceProgression,
     data: actor.data.data,
-    config: CONFIG.KRYX_RPG, // I guess this is for localization?
+    config: CONFIG.KRYX_RPG,
   };
   const html = await renderTemplate(template, dialogData);
 
@@ -47,13 +47,20 @@ export async function showUpdateClassDialog(actor) {
           callback: $html => {
             const className = $html.find("[name=className]")[0].value
             const classArchetype = $html.find("[name=classArchetype]")[0].value
+            const level = actor.isNPC ? actor.calculateNpcLevel(actor.data.data.details.cr)
+              : parseInt($html.find("[name=classLevel]")[0].value)
+            const numOfActions = actor.isNPC ? parseInt($html.find("[name=numOfActions]")[0].value)
+              : level >= 5 ? 2 : 1
+            const healthDice = actor.isNPC ? $html.find("[name=healthDice]")[0].value
+              : KRYX_RPG.systemData.classes[className].archetypes[classArchetype]["healthDice"]
             actor.update({
               "data.class.name": className,
               "data.class.archetype": classArchetype,
               "data.class.subclass": $html.find("[name=classSubclass]")[0].value,
               "data.class.progression": $html.find("[name=classProgression]")[0].value,
-              "data.class.level": parseInt($html.find("[name=classLevel]")[0].value),
-              "data.class.healthDice": KRYX_RPG.systemData.classes[className].archetypes[classArchetype]["healthDice"],
+              "data.class.level": level,
+              "data.class.healthDice": healthDice,
+              "data.class.numOfActions": numOfActions,
               "data.attributes.spellcastingAbility": $html.find("[name=spellcastingAbility]")[0].value,
               "data.attributes.maneuverAbility": $html.find("[name=maneuverAbility]")[0].value,
             })

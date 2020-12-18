@@ -10,7 +10,7 @@
             </h1>
 
             <aside class="header-exp flexcol">
-                <div class="cr">
+                <div class="cr" title="{{data.attributes.expValue}} EXP">
                     <label>{{ localize "KRYX_RPG.AbbreviationCR" }}</label>
                     <input name="data.details.cr" type="text" value="{{labels.cr}}" placeholder="1"/>
                 </div>
@@ -46,13 +46,16 @@
                                placeholder="{{ localize 'KRYX_RPG.Source' }}"/>
                     </li>
                 {{/if}}
-                <li class="experience">
-                    <span>{{data.attributes.expValue}} EXP</span>
-                </li>
                 <li class="proficiency">
                     <span>
                         {{ localize "KRYX_RPG.Proficiency" }}:
                         {{numberFormat data.attributes.prof decimals=0 sign=true}}
+                    </span>
+                </li>
+                <li class="num-of-actions">
+                    <span>
+                        {{ localize "KRYX_RPG.Actions" }}:
+                        {{numberFormat data.class.numOfActions decimals=0 sign=false}}
                     </span>
                 </li>
             </ul>

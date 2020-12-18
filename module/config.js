@@ -623,6 +623,15 @@ KRYX_RPG.resourceProgression = {
   "none": "KRYX_RPG.ResourceProgressionNone",
 };
 
+KRYX_RPG.resourceProgressionMonster = {
+  "fullCaster": "KRYX_RPG.ResourceProgressionMonsterFullCaster",
+  "gishSpells": "KRYX_RPG.ResourceProgressionMonsterGishSpells",
+  "gishHalfHalf": "KRYX_RPG.ResourceProgressionMonsterGishHalfHalf",
+  "gishManeuvers": "KRYX_RPG.ResourceProgressionMonsterGishManeuvers",
+  "fullMartial": "KRYX_RPG.ResourceProgressionMonsterFullMartial",
+  "none": "KRYX_RPG.ResourceProgressionMonsterNone",
+}
+
 /**
  * see https://docs.google.com/spreadsheets/d/1sGvcz9vbq9yk4kRBEY6ZYGWhGO6-t7CWudznQcWPk74
  */
@@ -839,12 +848,12 @@ KRYX_RPG.systemData = {
       },
       "subclassName": "Martial Specialization",
     },
-    // used for some monsters like the frog
-    "None": {
+    // used for monsters
+    "Monster": {
       "archetypes": {
-        "Nothing": {"healthDice": "d4", "progressionChoiceType": "none"},
+        "Monster": {"healthDice": "---", "progressionChoiceType": "monster"},
       },
-      "subclassName": 'Special "subclass"',
+      "subclassName": '(monster)',
     },
   },
   classProgressionChoiceTypes: {
@@ -855,8 +864,7 @@ KRYX_RPG.systemData = {
     // for these, there are several options for progression
     "gish": ["gishSpells", "gishHalfHalf", "gishManeuvers"],
     "spellgish": ["gishSpells", "gishHalfHalf"],
-    // used for some monsters like the frog
-    "none": ["none"],
+    "monster": ["none", "fullMartial", "gishManeuvers", "gishHalfHalf", "gishSpells", "fullCaster"],
   },
   archetypesThatHaveConcoctions: ["Chemist", "Mutant", "Infiltrator", "Blood Hunter"],
   spellcastingAbilities: ["int", "wis", "cha"],

@@ -261,6 +261,11 @@
       "templates": ["common"],
       "details": {
         "cr": 0
+      },
+      "class": {
+        "name": "Monster",
+        "archetype": "Monster",
+        "subclass": ""
       }
     }
   },

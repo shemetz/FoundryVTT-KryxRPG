@@ -1,0 +1,67 @@
+<form>
+    <div class="form-group">
+        <label>{{ localize "KRYX_RPG.Class" }}</label>
+        <select name="className">
+            {{#select className}}
+                {{#each config.systemData.classes as |classData className|}}
+                    <option value="{{className}}">{{className}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{{ localize "KRYX_RPG.ClassArchetype" }}</label>
+        <select name="classArchetype">
+            {{#select classArchetype}}
+                {{#each config.systemData.classes as |classData className|}}
+                    {{#each classData.archetypes as |details classArchetype|}}
+                        <option value="{{classArchetype}}">{{classArchetype}}</option>
+                    {{/each}}
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+    <div class="form-group" style="content-visibility: hidden">
+        <label class="subclassLabel">SET_THROUGH_CODE</label>
+        <input type="text" name="classSubclass" value="{{data.class.subclass}}"
+               placeholder="{{ localize 'KRYX_RPG.ClassSubclassExample' }}"/></div>
+    <div class="form-group">
+        <label>{{ localize "KRYX_RPG.ClassProgression" }}</label>
+        <select name="classProgression">
+            {{#select classProgression}}
+                {{#each config.resourceProgressionMonster as |label progression|}}
+                    <option value="{{progression}}">{{label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+    <div class="form-group spellcasting-ability">
+        <label class="spellcasting-ability-label">{{localize "KRYX_RPG.SpellcastingAbility"}}</label>
+        <label class="alchemical-ability-label">{{localize "KRYX_RPG.AlchemicalAbility"}}</label>
+        <select name="spellcastingAbility" data-type="String">
+            {{#select data.attributes.spellcastingAbility}}
+                {{#each data.abilities as |abl a|}}
+                    <option value="{{a}}">{{abl.label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+    <div class="form-group maneuver-ability">
+        <label>{{localize "KRYX_RPG.ManeuverAbility"}}</label>
+        <select name="maneuverAbility" data-type="String">
+            {{#select data.attributes.maneuverAbility}}
+                {{#each data.abilities as |abl a|}}
+                    <option value="{{a}}">{{abl.label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{{ localize "KRYX_RPG.HealthDiceSize" }}</label>
+        <input type="text" data-dtype="String" name="healthDice" value="{{data.class.healthDice}}"/>
+    </div>
+    <div class="form-group">
+        <label>{{ localize "KRYX_RPG.NumOfActions" }}</label>
+        <input type="number" data-dtype="Number" name="numOfActions" value="{{data.class.numOfActions}}"/>
+    </div>
+</form>

@@ -15,6 +15,10 @@ export default class ActorKryx extends Actor {
     return (number >= 0 ? "+" : "") + number;
   }
 
+  get isNPC() {
+    return this.data.type === "npc"
+  }
+
   /* -------------------------------------------- */
 
   /**
@@ -65,9 +69,7 @@ export default class ActorKryx extends Actor {
     init.total = init.mod + init.prof + init.bonus;
     data.attributes.init = init
 
-    if (actorData.items) {
-      this._computeResourceProgression();
-    }
+    this._computeResourceProgression();
   }
 
   /* -------------------------------------------- */
@@ -150,6 +152,9 @@ export default class ActorKryx extends Actor {
   _computeResourceProgression() {
     const data = this.data.data
     const classData = data.class
+    if (this.isNPC) {
+      data.class.level = this.calculateNpcLevel(data.details.cr)
+    }
     const level = classData.level
     const isPsionicist = classData.name === "Psionicist"
     const isAlchemist = KRYX_RPG.systemData.archetypesThatHaveConcoctions.includes(classData.archetype)
@@ -215,6 +220,15 @@ export default class ActorKryx extends Actor {
         nameOfUse: staminaUseName,
       }
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Based on KryxRPG website calculation
+   */
+  calculateNpcLevel(cr) {
+    return Math.max(1, Math.round(cr * 1.25))
   }
 
   /* -------------------------------------------- */
@@ -324,7 +338,7 @@ export default class ActorKryx extends Actor {
   async createOwnedItem(itemData, options) {
 
     // Assume NPCs are always proficient with weapons
-    if (!this.isPC) {
+    if (this.isNPC) {
       let t = itemData.type;
       let initial = {};
       if (t === "weapon") initial["data.proficient"] = true;
@@ -828,9 +842,9 @@ export default class ActorKryx extends Actor {
     // Display a Chat Message summarizing the rest effects
     let restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorAction")
 
-    // Warriors can use Second Wind as a bonus action
+    // Warriors can use Second Wind as a free action
     if (data.class.name === "Warrior" && data.class.level >= 2) {
-      restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorBonusAction")
+      restFlavor = game.i18n.localize("KRYX_RPG.SecondWindFlavorFreeAction")
     }
 
     if (!winded && deltaHealth === 0) return
