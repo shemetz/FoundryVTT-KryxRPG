@@ -135,7 +135,6 @@ Hooks.once("ready", function () {
 
   if (game.user.isGM) {
     migrations.migrateWorldIfNeeded()
-    migrations.importCompendiumsIfPossible()
   }
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to

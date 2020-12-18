@@ -1,6 +1,5 @@
-// import { setupCompendiums } from "../not_on_git/setup_compendiums.js"
-
-export const NEEDS_MIGRATION_VERSION = "25.35.0-1"; // should be increased to the latest version unless there was a very minor patch
+// this should be increased to the latest version when there's a migration change
+export const NEEDS_MIGRATION_VERSION = "27.0.0-0";
 export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
@@ -34,16 +33,6 @@ export const migrateWorldIfNeeded = async function () {
   }
 
   migrateWorld()
-}
-
-export const importCompendiumsIfPossible = async function () {
-  // WIP - I'm using this for local shenanigans
-  return true
-  console.info(`Kryx RPG | Importing data into compendiums...`)
-  ui.notifications.info("Setting up Kryx RPG compendiums...")
-  await setupCompendiums()
-  ui.notifications.info("Done setting up Kryx RPG compendiums.")
-  console.info(`Kryx RPG | Done importing data into compendiums.`)
 }
 
 /**
@@ -147,14 +136,11 @@ export const migrateCompendium = async function (pack) {
 /**
  * Migrate a single Actor entity to incorporate latest data model changes
  * Return an Object of updateData to be applied
- * @param {Actor} actor   The actor to Update
+ * @param {Object} actor   The data of the actor to Update
  * @return {Object}       The updateData to apply
  */
 export const migrateActorData = function (actor) {
   const updateData = {};
-
-  // Actor Data Updates
-  _migrateActorBonuses(actor, updateData);
 
   // Remove deprecated fields
   _migrateRemoveDeprecated(actor, updateData);
@@ -183,7 +169,7 @@ export const migrateActorData = function (actor) {
 
   _migrateThemes(actor, updateData)
   _migrateSkills(actor, updateData)
-  _migrateMiscCharacter(actor, updateData)
+  _migrateActorMisc(actor, updateData)
 
   if (hasItemUpdates) updateData.items = items;
   return updateData;
@@ -216,7 +202,7 @@ const _migrateSkills = function (actor, updateData) {
   updateData["data.skills"] = dup
 }
 
-const _migrateMiscCharacter = function (actor, updateData) {
+const _migrateActorMisc = function (actor, updateData) {
   if (typeof (actor.data.class.hitDice) !== undefined) {
     const dup = duplicate(actor.data.class)
     dup.healthDice = dup.hitDice
@@ -234,36 +220,15 @@ const _migrateMiscCharacter = function (actor, updateData) {
     delete dup.hp
     updateData["data.attributes"] = dup
   }
-}
 
-
-/* -------------------------------------------- */
-
-
-/**
- * Scrub an Actor's system data, removing all keys which are not explicitly defined in the system template
- * @param {Object} actorData    The data object for an Actor
- * @return {Object}             The scrubbed Actor data
- */
-function cleanActorData(actorData) {
-
-  // Scrub system data
-  const model = game.system.model.Actor[actorData.type];
-  actorData.data = filterObject(actorData.data, model);
-
-  // Scrub system flags
-  const allowedFlags = CONFIG.KRYX_RPG.allowedActorFlags.reduce((obj, f) => {
-    obj[f] = null;
-    return obj;
-  }, {});
-  if (actorData.flags.kryx_rpg) {
-    actorData.flags.kryx_rpg = filterObject(actorData.flags.kryx_rpg, allowedFlags);
+  if (typeof (actor.data.class.numOfActions) === undefined) {
+    actor.data.class.numOfActions = 1
+    updateData["data.class.numOfActions"] = 1
   }
-
-  // Return the scrubbed data
-  return actorData;
+  if (actor.type === "character" && actor.data.class.numOfActions === 1 && actor.data.class.level >= 5) {
+    updateData["data.class.numOfActions"] = 2
+  }
 }
-
 
 /* -------------------------------------------- */
 
@@ -322,8 +287,20 @@ export const migrateSceneData = function (scene) {
         t.actorId = null;
         t.actorData = {};
       } else if (!t.actorLink) {
-        const updateData = migrateActorData(token.data.actorData);
-        t.actorData = mergeObject(token.data.actorData, updateData);
+        // special behavior for token actors created by DragUpload.  the token's actorData is partial, but I don't
+        // want to make all of my code check if fields exist, so instead I'll try to be clever
+        const tokenActorData = token.actor.data
+        const fullData = {}
+        for (const templateName of game.system.template.Actor[tokenActorData.type].templates) {
+          mergeObject(fullData, game.system.template.Actor.templates[templateName])
+        }
+        mergeObject(fullData, game.system.template.Actor[tokenActorData.type])
+        mergeObject(fullData, token.data.actorData)
+        const original = duplicate(fullData)
+        const updateData = migrateActorData(tokenActorData)
+        mergeObject(fullData, updateData)
+        const onlyChanges = diffObject(fullData, original)
+        t.actorData = mergeObject(token.data.actorData, onlyChanges)
       }
       return t;
     })
@@ -334,25 +311,6 @@ export const migrateSceneData = function (scene) {
 
 /*  Low level migration utilities
 /* -------------------------------------------- */
-
-/**
- * Migrate the actor bonuses object
- * @private
- */
-function _migrateActorBonuses(actor, updateData) {
-  const b = game.system.model.Actor.character.bonuses;
-  const dup = duplicate(actor.data.bonuses)
-  for (let k of Object.keys(actor.data.bonuses || {})) {
-    if (!(k in b)) {
-      delete dup[k]
-    }
-  }
-  updateData["data.bonuses"] = dup
-}
-
-
-/* -------------------------------------------- */
-
 
 /**
  * A general migration to remove all fields from the data model which are flagged with a _deprecated tag
