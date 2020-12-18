@@ -223,7 +223,7 @@ export default class ActorSheetKryx extends ActorSheet {
       const data = item.data;
 
       // Action usage
-      for (let f of ["action", "attack", "bonus", "reaction"]) {
+      for (let f of ["action", "attack", "2 actions", "reaction"]) {
         if (filters.has(f)) {
           if ((data.activation && (data.activation.type !== f))) return false;
         }

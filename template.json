@@ -15,7 +15,8 @@
           "progression": "gishHalfHalf",
           "level": 1,
           "healthDice": "d6",
-          "healthDiceUsed": 0
+          "healthDiceUsed": 0,
+          "numOfActions": 1
         },
         "abilities": {
           "str": {

@@ -76,8 +76,8 @@ KRYX_RPG.timePeriods = {
 KRYX_RPG.abilityActivationTypes = {
   "none": "KRYX_RPG.None",
   "action": "KRYX_RPG.Action",
+  "2 actions": "KRYX_RPG.TwoActions",
   "attack": "KRYX_RPG.Attack",
-  "bonus": "KRYX_RPG.BonusAction",
   "reaction": "KRYX_RPG.Reaction",
   "1 minute": "1 minute",
   "10 minutes": "10 minutes",
