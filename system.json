@@ -3,7 +3,7 @@
   "title": "Kryx RPG",
   "description": "A comprehensive game system for running games of Kryx RPG in the Foundry VTT environment.",
   "version": "27.0.0-0",
-  "author": "shem",
+  "author": "shemetz",
   "scripts": [],
   "esmodules": ["kryx_rpg.js"],
   "styles": ["kryx_rpg.css"],
@@ -49,5 +49,28 @@
   "manifest": "https://github.com/itamarcu/FoundryVTT-KryxRPG/raw/master/system.json",
   "download": "https://github.com/itamarcu/FoundryVTT-KryxRPG/archive/master.zip",
   "readme": "https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/README.md",
-  "bugs": "https://github.com/itamarcu/FoundryVTT-KryxRPG/issues"
+  "bugs": "https://github.com/itamarcu/FoundryVTT-KryxRPG/issues",
+  "authors": [
+    {
+      "name": "shem",
+      "email": "itamarcu+foundry@gmail.com",
+      "discord": "shem#0226",
+      "reddit": "u/Shemetz"
+    }
+  ],
+  "manifestPlusVersion": "1.0.0",
+  "media": [
+    {
+      "type": "screenshot",
+      "url": "https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/metadata/sheet_front.png"
+    },
+    {
+      "type": "icon",
+      "url": "https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/metadata/system_icon.png"
+    },
+    {
+      "type": "cover",
+      "url": "https://raw.githubusercontent.com/itamarcu/FoundryVTT-KryxRPG/master/metadata/cover_image.png"
+    }
+  ]
 }
