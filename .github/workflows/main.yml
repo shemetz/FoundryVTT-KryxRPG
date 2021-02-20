@@ -22,7 +22,7 @@ jobs:
         download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/system.zip
 
     # Create a zip file with all files required by the module to add to the release
-    - run: zip -r ./system.zip fonts/ icons/ lang/ less/ module/ packs/ templates/ tokens/ ui/ kryx_rpg.css kryx_rpg.js LICENSE.txt OGL.txt README.md system.json template.json
+    - run: zip -r ./system.zip fonts/ icons/ lang/ less/ module/ packs/ templates/ ui/ kryx_rpg.css kryx_rpg.js LICENSE.txt OGL.txt README.md system.json template.json
 
     # Create a release for this specific version
     - name: Update Release with Files
