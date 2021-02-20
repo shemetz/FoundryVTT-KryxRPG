@@ -126,6 +126,7 @@ Currently, there is no easy way to import monsters. That's a planned feature for
 
 # Plans for the future
 
+- Fix/update all the powers in the compendium - currently they are outdated (e.g. they mention bonus actions)
 - Add all the other powers to the compendium (pending some planning and discussion)
 - Add a way to import [monsters](https://www.kryxrpg.com/monsters) from the website (or a compendium..?). Pending planning and discussion like the above
 - Find and fix all of the bugs that undoubtedly exist in the code

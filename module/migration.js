@@ -1,5 +1,5 @@
 // this should be increased to the latest version when there's a migration change
-export const NEEDS_MIGRATION_VERSION = "27.0.0.1";
+export const NEEDS_MIGRATION_VERSION = "27.20.0.0";
 export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
