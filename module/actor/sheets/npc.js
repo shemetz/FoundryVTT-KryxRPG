@@ -3,34 +3,16 @@ import ActorSheetKryx from "../sheets/base.js";
 /**
  * An Actor sheet for NPC type characters in the Kryx RPG system.
  * Extends the base ActorSheetKryx class.
- * @type {ActorSheetKryx}
+ * @extends {ActorSheetKryx}
  */
 export default class ActorSheetKryxNPC extends ActorSheetKryx {
-
-  /**
-   * Define default rendering options for the NPC sheet
-   * @return {Object}
-   */
+  /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["kryx_rpg", "sheet", "actor", "npc"],
-      width: 600,
+      width: 640,
       height: 700
     });
-  }
-
-  /* -------------------------------------------- */
-  /*  Rendering                                   */
-
-  /* -------------------------------------------- */
-
-  /**
-   * Get the correct HTML template path to use for rendering this particular sheet
-   * @type {String}
-   */
-  get template() {
-    if (!game.user.isGM && this.actor.limited) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
-    return "systems/kryx_rpg/templates/actors/npc-sheet.html";
   }
 
   /* -------------------------------------------- */
@@ -71,7 +53,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
     // Start by classifying items into groups for rendering
     let [superpowers, other] = data.items.reduce((arr, item) => {
       item.img = item.img || DEFAULT_TOKEN;
-      item.isStack = item.data.quantity ? item.data.quantity > 1 : false;
+      item.isStack = Number.isNumeric(item.data.quantity) && (item.data.quantity !== 1);
       item.hasUses = item.data.uses && (item.data.uses.max > 0);
       item.isOnCooldown = item.data.recharge && !!item.data.recharge.value && (item.data.recharge.charged === false);
       item.isDepleted = item.isOnCooldown && (item.data.uses.per && (item.data.uses.value > 0));
@@ -105,9 +87,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
   /* -------------------------------------------- */
 
-  /**
-   * Add some extra data when rendering the sheet to reduce the amount of logic required within the template.
-   */
+  /** @override */
   getData() {
     const sheetData = super.getData();
 
@@ -127,12 +107,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
   /* -------------------------------------------- */
 
-  /**
-   * This method is called upon form submission after form data is validated
-   * @param event {Event}       The initial triggering submission event
-   * @param formData {Object}   The object of validated form data with which to update the object
-   * @private
-   */
+  /** @override */
   _updateObject(event, formData) {
 
     // Format NPC Challenge Rating
@@ -151,10 +126,7 @@ export default class ActorSheetKryxNPC extends ActorSheetKryx {
 
   /* -------------------------------------------- */
 
-  /**
-   * Activate event listeners using the prepared sheet HTML
-   * @param html {HTML}   The prepared HTML object ready to be rendered into the DOM
-   */
+  /** @override */
   activateListeners(html) {
     super.activateListeners(html);
 

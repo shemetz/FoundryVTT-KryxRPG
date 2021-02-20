@@ -60,10 +60,10 @@
                     <footer class="attribute-footer">
                         <input name="data.attributes.health.temp" type="text" class="temphealth"
                                placeholder="+{{ localize 'KRYX_RPG.Temp' }}"
-                               value="{{data.attributes.health.temp}}" data-dtype="{{data.attributes.health.type}}"/>
+                               value="{{data.attributes.health.temp}}" data-dtype="Number"/>
                         <input name="data.attributes.health.tempmax" type="text" class="temphealth"
                                placeholder="+{{ localize 'KRYX_RPG.Max' }}"
-                               value="{{data.attributes.health.tempmax}}" data-dtype="{{data.attributes.health.type}}"/>
+                               value="{{data.attributes.health.tempmax}}" data-dtype="Number"/>
                     </footer>
                 </li>
 
@@ -89,9 +89,9 @@
                 <li class="attribute">
                     <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Defense" }}</h4>
                     <div class="attribute-value">
-                        <input name="data.attributes.defense.value" type="text"
+                        <input name="data.attributes.defense.value" type="number"
                                value="{{data.attributes.defense.value}}"
-                               data-dtype="Number" placeholder="10"/>
+                               placeholder="10"/>
                     </div>
                     {{#if data.attributes.defense.soak}}
                         <footer class="attribute-footer">
@@ -100,16 +100,18 @@
                     {{/if}}
                 </li>
 
-                <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Speed" }}</h4>
+                <li class="attribute movement">
+                    <h4 class="attribute-name box-title">
+                        {{ localize "KRYX_RPG.Movement" }}
+                        <a class="config-button" data-action="movement" title="{{localize 'KRYX_RPG.MovementConfig'}}">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </h4>
                     <div class="attribute-value">
-                        <input name="data.attributes.speed.value" type="text"
-                               value="{{data.attributes.speed.value}}" placeholder="0"/>
+                        <span>{{movement.primary}}</span>
                     </div>
                     <footer class="attribute-footer">
-                        <input type="text" class="speed" name="data.attributes.speed.special"
-                               value="{{data.attributes.speed.special}}"
-                               placeholder="{{ localize 'KRYX_RPG.SpeedSpecial' }}"/>
+                        <span>{{movement.special}}</span>
                     </footer>
                 </li>
             </ul>
@@ -122,6 +124,7 @@
         <a class="item" data-tab="inventory">{{ localize "KRYX_RPG.Inventory" }}</a>
         <a class="item" data-tab="features">{{ localize "KRYX_RPG.Features" }}</a>
         <a class="item" data-tab="arsenal">{{ localize "KRYX_RPG.Arsenal" }}</a>
+        <a class="item" data-tab="effects">{{ localize "KRYX_RPG.Effects" }}</a>
         <a class="item" data-tab="biography">{{ localize "KRYX_RPG.Biography" }}</a>
     </nav>
 
@@ -220,17 +223,17 @@
                     <div class="counter flexrow">
                         <div class="minor-counter-value">
                             <h4>{{ localize "KRYX_RPG.ConExhausted" }}</h4>
-                            <input type="text" name="data.attributes.exhausted" data-dtype="Number" placeholder="0"
+                            <input type="number" name="data.attributes.exhausted" placeholder="0"
                                    value="{{data.attributes.exhausted}}"/>
                         </div>
                         <div class="minor-counter-value">
                             <h4>{{ localize "KRYX_RPG.ConWounded" }}</h4>
-                            <input type="text" name="data.attributes.wounded" data-dtype="Number" placeholder="0"
+                            <input type="number" name="data.attributes.wounded" placeholder="0"
                                    value="{{data.attributes.wounded}}"/>
                         </div>
                         <div class="minor-counter-value">
-                            <h4 class="rollable death-save">{{ localize "KRYX_RPG.ConDying" }}</h4>
-                            <input type="text" name="data.attributes.dying" data-dtype="Number" placeholder="0"
+                            <h4 class="rollable" data-action="rollDeathSave">{{ localize "KRYX_RPG.ConDying" }}</h4>
+                            <input type="number" name="data.attributes.dying" placeholder="0"
                                    value="{{data.attributes.dying}}"/>
                         </div>
                         <div class="minor-counter-value">
@@ -262,12 +265,23 @@
             {{> "systems/kryx_rpg/templates/actors/parts/actor-arsenal.html"}}
         </div>
 
+        {{!-- Effects Tab --}}
+        <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+            {{> "systems/kryx_rpg/templates/actors/parts/active-effects.html"}}
+        </div>
+
         {{!-- Biography Tab --}}
-        <div class="tab biography flexcol" data-group="primary" data-tab="biography">
-            {{editor
-                    content=data.details.biography.value
-                    target="data.details.biography.value"
-                    button=true owner=owner editable=editable}}
+        <div class="tab flexrow" data-group="primary" data-tab="biography">
+            <div class="characteristics flexcol">
+                <label>{{ localize "KRYX_RPG.Appearance" }}</label>
+                <textarea name="data.details.appearance">{{data.details.appearance}}</textarea>
+                <label>{{ localize "KRYX_RPG.Personality" }}</label>
+                <textarea name="data.details.personality">{{data.details.personality}}</textarea>
+            </div>
+            <div class="biography">
+                {{editor content=data.details.biography.value target="data.details.biography.value" button=true
+                         owner=owner editable=editable}}
+            </div>
         </div>
     </section>
 </form>

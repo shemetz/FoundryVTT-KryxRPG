@@ -69,12 +69,10 @@
           line-height: 30px;
         }
       }
-    }
-  }
 
-  .attributes {
-    input.temphealth {
-      width: 48%;
+      input.temphealth {
+        width: 48%;
+      }
     }
   }
 
@@ -87,9 +85,11 @@
     height: 18px;
     line-height: 16px;
     margin: 4px 8px 2px;
+    .modesto();
     font-size: 18px;
     color: @colorOlive;
     border-bottom: 1px solid @colorFaint;
+    white-space: nowrap;
   }
 
   /* ----------------------------------------- */
@@ -111,7 +111,6 @@
       margin: 0 5px 0 0;
       border: @borderGroove;
       border-radius: 4px;
-      .nodesto();
       text-align: center;
 
       &:last-child {
@@ -123,9 +122,11 @@
         justify-content: center;
         align-items: center;
         height: 28px;
+        .modesto();
         line-height: 28px;
 
         > * {
+          font-weight: 400;
           font-size: 24px;
         }
 
@@ -138,8 +139,10 @@
         flex: 0 0 18px;
         margin-top: -1px;
         line-height: 18px;
-        font-family: "Signika", "Palatino Linotype", serif;
+        font-family: "Signika", sans-serif;
         font-size: 12px;
+        font-weight: 400;
+        white-space: nowrap
       }
     }
   }
@@ -154,7 +157,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    .nodesto();
+    .modesto();
     border: @borderGroove;
     border-radius: 3px;
 
@@ -250,6 +253,7 @@
 
       .skill-passive {
         flex: 0 0 26px;
+        text-transform: capitalize;
         text-align: right;
         color: @colorTan;
       }
@@ -294,7 +298,8 @@
         }
       }
 
-      input[type="text"] {
+      input[type="text"],
+      input[type="number"] {
         height: 20px;
         max-width: 20px;
         margin: 0;
@@ -364,7 +369,7 @@
       margin: 0 0 3px 0;
       justify-content: space-between;
     }
-    .configure-flags {
+    .config-button {
       flex: 1;
     }
 
@@ -439,48 +444,20 @@
     }
   }
 
+  // Inventory item lists
   .inventory-list {
-    list-style: none;
-    margin: 0;
     padding: 0 5px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-
-    // Inventory Item
     .item {
-      line-height: 30px;
-      padding: 0 2px; // to align with the header border
-      border-bottom: 1px solid @colorFaint;
-      &:last-child { border-bottom: none; }
-
-      // Item Header Name
       .item-name {
         cursor: pointer;
-        max-height: 30px;
-        overflow: hidden;
-
-        .item-image {
-          flex: 0 0 30px;
-          background-size: 30px;
-          margin-right: 5px;
-        }
-
-        h4 {
-          margin: 0;
-          white-space: nowrap;
-          overflow-x: hidden;
-        }
-
         &.rollable:hover .item-image {
           background-image: url("../../icons/svg/d20-grey.svg") !important;
         }
         &.rollable .item-image:hover {
           background-image: url("../../icons/svg/d20-black.svg") !important;
         }
-
-        i.attuned {
-          color: @colorTan;
-        }
+        i.attuned { color: @colorTan; }
+        i.not-attuned { color: @colorCrimson; }
       }
 
       // Item uses
@@ -496,7 +473,7 @@
 
       // Feature type
       .feature-activated {
-        flex: 0.05;
+        flex: 0.1;
         text-align: center;
       }
 
@@ -510,27 +487,12 @@
         flex: 0 0 80px;
         text-align: right;
         font-size: 11px;
-        color: @colorTan;
         white-space: nowrap;
       }
     }
 
     // Inventory Header
     .inventory-header {
-      margin: 2px 0;
-      padding: 0;
-      background: rgba(0, 0, 0, 0.05);
-      border: @borderGroove;
-      font-weight: bold;
-      line-height: 24px;
-
-      h3 {
-        margin: 0 -5px 0 0;
-        padding-left: 5px;
-        font-size: 13px;
-        font-weight: bold;
-      }
-
       .item-controls a.item-create {
         flex: 0 0 100%;
       }
@@ -540,7 +502,6 @@
     .item-detail {
       flex: 0 0 70px;
       font-size: 12px;
-      color: @colorTan;
       text-align: center;
       border-right: 1px solid @colorFaint;
       word-break: break-word;
@@ -549,6 +510,7 @@
 
       &:last-child { border-right: none; }
       &.item-action {flex: 0 0 100px}
+      &.attunement {flex: 0 0 24px}
     }
 
     .item-feature-type {
@@ -561,24 +523,9 @@
       border-right: 1px solid @colorFaint;
     }
 
-    .item-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
     // Item Control Buttons
     .item-controls {
       flex: 0 0 44px;
-      .flexrow();
-      justify-content: flex-end;
-
-      a {
-        flex: 0 0 22px;
-        font-size: 12px;
-        text-align: center;
-        color: @colorTan;
-      }
     }
 
     // Item Dropdown Summary
@@ -587,7 +534,71 @@
       font-size: 12px;
       line-height: 16px;
       padding: 0.25em 0.5em;
+      color: @colorDark;
       border-top: 1px solid @colorFaint;
+    }
+  }
+
+  /* Encumbrance Bar */
+  .encumbrance {
+    flex: 0 0 12px;
+    background: @colorTan;
+    margin: 1px 15px 0 1px;
+    border: 1px solid @colorDark;
+    border-radius: 3px;
+    position: relative;
+
+    .encumbrance-bar {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      background: #6c8aa5;
+      height: 8px;
+      border: 1px solid #cde4ff;
+      border-radius: 2px;
+    }
+
+    .encumbrance-label {
+      height: 10px;
+      padding: 0 5px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 13px;
+      line-height: 12px;
+      text-align: right;
+      color: #EEE;
+      text-shadow: 0 0 5px #000;
+    }
+
+    .encumbrance-breakpoint {
+      display: block;
+      position: absolute;
+      &.encumbrance-33 { left: 33% }
+      &.encumbrance-66 { left: 66% }
+    }
+
+    .arrow-up {
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 4px solid #666;
+    }
+
+    .arrow-down {
+      top: 0;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 4px solid #666;
+    }
+
+    &.encumbered {
+      .arrow-up { border-bottom: 4px solid #000; }
+      .arrow-down { border-top: 4px solid #000; }
     }
   }
 
@@ -599,45 +610,23 @@
     flex: 0 0 240px;
     margin: 0;
 
-    input, span {
-      flex: 0 0 32px;
+    label, span {
+      flex: none;
+    }
+    input {
+      flex: 0 0 28px;
       text-align: center;
     }
     select {
       margin: 0 5px;
-      flex: 0 0 150px;
-    }
-    h3.spell-dc {
-      flex: 1;
-      text-align: right;
+      flex: 0 0 120px;
     }
   }
 
-  .spell-slots,
-  .spell-comps {
-    flex: 0 0 72px;
-    max-width: max-content;
+  .superpower-uses {
     padding-right: 5px;
     text-align: right;
-    font-size: 12px;
     color: @colorTan;
-    border-right: 1px solid @colorFaint;
-  }
-
-  .spell-slots {
-    input {
-      display: inline;
-      max-width: 20px;
-    }
-    .sep {
-      font-size: 13px;
-      font-weight: normal;
-    }
-  }
-
-  .spell-uses {
-    padding-right: 8px;
-    text-align: right !important;
   }
 
   .superpower-cost, .superpower-theme, .superpower-action, .superpower-target {
@@ -682,5 +671,21 @@
 
   .editor {
     padding: 0 8px;
+  }
+}
+
+#actor-flags {
+  .window-content {
+    overflow-y: hidden;
+  }
+  form {
+    height: 100%;
+  }
+  .form-body {
+    height: calc(100% - 40px);
+    padding-right: 8px;
+    margin-bottom: 4px;
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 }

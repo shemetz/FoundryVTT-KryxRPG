@@ -195,7 +195,7 @@ export default class ItemKryx extends Item {
     const itemType = this.data.type;
     const data = this.data.data;
     const C = CONFIG.KRYX_RPG;
-    const labels = {};
+    const labels = this.labels = {};
 
     // Superpower - components
     const resource = this.mainResource
@@ -306,24 +306,42 @@ export default class ItemKryx extends Item {
         labels.damage = dam.parts.map(d => d[0]).join(" + ").replace(/\+ -/g, "- ");
         labels.damageTypes = dam.parts.map(d => C.damageTypes[d[1]]).join(", ");
       }
-    }
 
-    // Assign labels
-    this.labels = labels;
+      // Limited Uses
+      if (this.isOwned && !!data.uses?.max) {
+        let max = data.uses.max;
+        if (!Number.isNumeric(max)) {
+          max = Roll.replaceFormulaData(max, this.actor.getRollData());
+          if (Roll.MATH_PROXY.safeEval) max = Roll.MATH_PROXY.safeEval(max);
+        }
+        data.uses.max = Number(max);
+      }
+    }
   }
 
   /* -------------------------------------------- */
 
   /**
    * Roll the item to Chat, creating a chat card which contains follow up attack or damage roll options
-   * @return {Promise}
+   * @param {boolean} [configureDialog]     Display a configuration dialog for the item roll, if applicable?
+   * @param {string} [rollMode]             The roll display mode with which to display (or not) the card
+   * @param {boolean} [createMessage]       Whether to automatically create a chat message (if true) or simply return
+   *                                        the prepared chat message data (if false).
+   * @return {Promise<ChatMessage|object|void>}
    */
-  async roll({configureDialog = true} = {}) {
+  async roll({configureDialog = true, rollMode, createMessage = true} = {}) {
+    const actor = this.actor;
+
+    // Roll superpowers through the actor
+    if (actor && this.data.type === "superpower") {
+      const superpowerShouldHappen = await actor.useSuperpower(this, {configureDialog});
+      if (superpowerShouldHappen === false) return
+    }
 
     // Basic template rendering data
-    const token = this.actor.token;
+    const token = actor.token;
     const templateData = {
-      actor: this.actor,
+      actor: actor,
       tokenId: token ? `${token.scene._id}.${token.id}` : null,
       item: this.data,
       data: this.getChatData(),
@@ -364,20 +382,19 @@ export default class ItemKryx extends Item {
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: {
-        actor: this.actor._id,
-        token: this.actor.token,
-        alias: this.actor.name
+        actor: actor._id,
+        token: actor.token,
+        alias: actor.name
       },
       flags: {},
     };
 
     // If the consumable was destroyed in the process or if untethered roll - embed the item data in the surviving message
-    if (!this.actor.items.has(this.id)) {
+    if (!actor.items.has(this.id)) {
       chatData.flags["kryx_rpg.itemData"] = this.data;
     }
 
     // Toggle default roll mode
-    let rollMode = game.settings.get("core", "rollMode");
     if (["gmroll", "blindroll"].includes(rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM");
     if (rollMode === "blindroll") chatData["blind"] = true;
 
@@ -570,7 +587,7 @@ export default class ItemKryx extends Item {
     props.push(
       CONFIG.KRYX_RPG.equipmentTypes[data.armor.type],
       labels.armor || null,
-      data.stealth.value ? "Stealth Disadvantage" : null,
+      data.stealth.value ? game.i18n.localize("KRYX_RPG.StealthDisadvantage") : null,
     );
   }
 
@@ -595,7 +612,7 @@ export default class ItemKryx extends Item {
   _consumableChatData(data, labels, props) {
     props.push(
       CONFIG.KRYX_RPG.consumableTypes[data.consumableType],
-      data.uses.value + "/" + data.uses.max + " Charges"
+      data.uses.value + "/" + data.uses.max + " " + game.i18n.localize("KRYX_RPG.Charges")
     );
     data.hasCharges = data.uses.value >= 0;
   }
@@ -608,7 +625,7 @@ export default class ItemKryx extends Item {
    */
   _lootChatData(data, labels, props) {
     props.push(
-      "Loot",
+      game.i18n.localize("KRYX_RPG.ItemTypeLoot"),
       data.weight ? data.weight + " lbs." : null
     );
   }

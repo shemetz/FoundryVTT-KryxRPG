@@ -1,5 +1,5 @@
 // this should be increased to the latest version when there's a migration change
-export const NEEDS_MIGRATION_VERSION = "27.0.0-0";
+export const NEEDS_MIGRATION_VERSION = "27.0.0.1";
 export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
@@ -51,6 +51,7 @@ const migrateWorld = async function () {
         await a.update(updateData, {enforceTypes: false});
       }
     } catch (err) {
+      err.message = `Failed kryx_rpg system migration for Actor ${a.name}: ${err.message}`
       console.error(err);
     }
   }
@@ -64,6 +65,7 @@ const migrateWorld = async function () {
         await i.update(updateData, {enforceTypes: false});
       }
     } catch (err) {
+      err.message = `Failed kryx_rpg system migration for Item ${i.name}: ${err.message}`
       console.error(err);
     }
   }
@@ -77,15 +79,15 @@ const migrateWorld = async function () {
         await s.update(updateData, {enforceTypes: false});
       }
     } catch (err) {
+      err.message = `Failed kryx_rpg system migration for Scene ${s.name}: ${err.message}`
       console.error(err);
     }
   }
 
   // Migrate World Compendium Packs
-  const packs = game.packs.filter(p => {
-    return (p.metadata.package === "world") && ["Actor", "Item", "Scene"].includes(p.metadata.entity)
-  });
-  for (let p of packs) {
+  for (let p of game.packs) {
+    if (p.metadata.package !== "world") continue;
+    if (!["Actor", "Item", "Scene"].includes(p.metadata.entity)) continue;
     await migrateCompendium(p);
   }
 
@@ -105,27 +107,45 @@ export const migrateCompendium = async function (pack) {
   const entity = pack.metadata.entity;
   if (!["Actor", "Item", "Scene"].includes(entity)) return;
 
+  // Unlock the pack for editing
+  const wasLocked = pack.locked;
+  await pack.configure({locked: false});
+
   // Begin by requesting server-side data model migration and get the migrated content
   await pack.migrate();
   const content = await pack.getContent();
 
   // Iterate over compendium entries - applying fine-tuned migration functions
   for (let ent of content) {
+    let updateData = {};
     try {
-      let updateData = null;
-      if (entity === "Item") updateData = migrateItemData(ent.data);
-      else if (entity === "Actor") updateData = migrateActorData(ent.data);
-      else if (entity === "Scene") updateData = migrateSceneData(ent.data);
-      if (!isObjectEmpty(updateData)) {
-        expandObject(updateData);
-        updateData["_id"] = ent._id;
-        await pack.updateEntity(updateData);
-        console.log(`Migrated ${entity} entity ${ent.name} in Compendium ${pack.collection}`);
+      switch (entity) {
+        case "Actor":
+          updateData = migrateActorData(ent.data);
+          break;
+        case "Item":
+          updateData = migrateItemData(ent.data);
+          break;
+        case "Scene":
+          updateData = migrateSceneData(ent.data);
+          break;
       }
-    } catch (err) {
+      if (isObjectEmpty(updateData)) continue;
+
+      // Save the entry, if data was changed
+      updateData["_id"] = ent._id;
+      await pack.updateEntity(updateData);
+      console.log(`Migrated ${entity} entity ${ent.name} in Compendium ${pack.collection}`);
+    }
+      // Handle migration failures
+    catch (err) {
+      err.message = `Failed kryx_rpg system migration for entity ${ent.name} in pack ${pack.collection}: ${err.message}`
       console.error(err);
     }
   }
+  // Apply the original locked status for the pack
+  pack.configure({locked: wasLocked});
+
   console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
 };
 
@@ -136,14 +156,21 @@ export const migrateCompendium = async function (pack) {
 /**
  * Migrate a single Actor entity to incorporate latest data model changes
  * Return an Object of updateData to be applied
- * @param {Object} actor   The data of the actor to Update
- * @return {Object}       The updateData to apply
+ * @param {object} actor    The actor data object to update
+ * @return {Object}         The updateData to apply
  */
 export const migrateActorData = function (actor) {
   const updateData = {};
 
-  // Remove deprecated fields
-  _migrateRemoveDeprecated(actor, updateData);
+  // Actor Data Updates
+  _migrateActorMovement(actor, updateData);
+  _migrateActorSenses(actor, updateData);
+
+  // several new actor things were added around 0.7.x:
+  if (!actor.data.attributes.senses) {
+    updateData["data.attributes.senses"] = duplicate(game.system.template.Actor.templates.common.attributes.senses)
+    updateData["data.attributes.movement"] = duplicate(game.system.template.Actor.templates.common.attributes.movement)
+  }
 
   // Migrate Owned Items
   if (!actor.items) return updateData;
@@ -203,7 +230,7 @@ const _migrateSkills = function (actor, updateData) {
 }
 
 const _migrateActorMisc = function (actor, updateData) {
-  if (typeof (actor.data.class.hitDice) !== undefined) {
+  if (typeof (actor.data.class.hitDice) !== 'undefined') {
     const dup = duplicate(actor.data.class)
     dup.healthDice = dup.hitDice
     dup.healthDiceUsed = dup.hitDiceUsed
@@ -212,7 +239,7 @@ const _migrateActorMisc = function (actor, updateData) {
     updateData["data.class"] = dup
   }
 
-  if (typeof (actor.data.attributes.ac) !== undefined) {
+  if (typeof (actor.data.attributes.ac) !== 'undefined') {
     const dup = duplicate(actor.data.attributes)
     dup.defense = dup.ac
     dup.health = dup.hp
@@ -221,7 +248,7 @@ const _migrateActorMisc = function (actor, updateData) {
     updateData["data.attributes"] = dup
   }
 
-  if (typeof (actor.data.class.numOfActions) === undefined) {
+  if (typeof (actor.data.class.numOfActions) === 'undefined') {
     actor.data.class.numOfActions = 1
     updateData["data.class.numOfActions"] = 1
   }
@@ -238,9 +265,7 @@ const _migrateActorMisc = function (actor, updateData) {
  */
 export const migrateItemData = function (item) {
   const updateData = {};
-
-  // Remove deprecated fields
-  _migrateRemoveDeprecated(item, updateData);
+  _migrateItemAttunement(item, updateData);
 
   if (item.data.themes) {
     const itemThemes = item.data.themes.value
@@ -255,7 +280,7 @@ export const migrateItemData = function (item) {
     updateData["data.themes.value"] = itemThemes
   }
 
-  if (item.data.armor && typeof (item.data.armor.dr) !== undefined) {
+  if (item.data.armor && typeof (item.data.armor.dr) !== 'undefined') {
     const dup = duplicate(item.data.armor)
     dup.soak = dup.dr
     delete dup.dr
@@ -267,6 +292,129 @@ export const migrateItemData = function (item) {
 };
 
 /* -------------------------------------------- */
+
+/**
+ * Migrate the actor speed string to movement object
+ * @private
+ */
+function _migrateActorMovement(actorData, updateData) {
+  const ad = actorData.data;
+
+  // Work is needed if old data is present
+  const old = ad?.attributes?.speed?.value;
+  const hasOld = old !== undefined;
+  if (hasOld) {
+    // If new data is not present, migrate the old data
+    const hasNew = ad?.attributes?.movement?.walk !== 'undefined';
+    if (!hasNew && (typeof old === "string")) {
+      const s = (old || "").split(" ");
+      if (s.length > 0) updateData["data.attributes.movement.walk"] = Number.isNumeric(s[0]) ? parseInt(s[0]) : null;
+    }
+
+    // Remove the old attribute
+    updateData["data.attributes.-=speed"] = null;
+  }
+  return updateData
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Migrate the actor traits.senses string to attributes.senses object
+ * @private
+ */
+function _migrateActorSenses(actor, updateData) {
+  const ad = actor.data;
+  if (ad?.traits?.senses === undefined) return;
+  const original = ad.traits.senses || "";
+
+  // Try to match old senses with the format like "Darkvision 60 ft, Blindsight 30 ft"
+  const pattern = /([A-z]+)\s?([0-9]+)\s?([A-z]+)?/;
+  let wasMatched = false;
+
+  // Match each comma-separated term
+  for (let s of original.split(",")) {
+    s = s.trim();
+    const match = s.match(pattern);
+    if (!match) continue;
+    const type = match[1].toLowerCase();
+    if (type in CONFIG.KRYX_RPG.senses) {
+      updateData[`data.attributes.senses.${type}`] = Number(match[2]).toNearest(0.5);
+      wasMatched = true;
+    }
+  }
+
+  // If nothing was matched, but there was an old string - put the whole thing in "special"
+  if (!wasMatched && !!original) {
+    updateData["data.attributes.senses.special"] = original;
+  }
+
+  // Remove the old traits.senses string once the migration is complete
+  updateData["data.traits.-=senses"] = null;
+  return updateData;
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Delete the old data.attuned boolean
+ * @private
+ */
+function _migrateItemAttunement(item, updateData) {
+  if (item.data.attuned === undefined) return;
+  updateData["data.attunement"] = CONFIG.KRYX_RPG.attunementTypes.NONE;
+  updateData["data.-=attuned"] = null;
+  return updateData;
+}
+
+
+/* -------------------------------------------- */
+
+/**
+ * A general tool to purge flags from all entities in a Compendium pack.
+ * @param {Compendium} pack   The compendium pack to clean
+ * @private
+ */
+export async function purgeFlags(pack) {
+  const cleanFlags = (flags) => {
+    const flagsKryxRPG = flags.kryx_rpg || null;
+    return flagsKryxRPG ? {kryx_rpg: flagsKryxRPG} : {};
+  };
+  await pack.configure({locked: false});
+  const content = await pack.getContent();
+  for (let entity of content) {
+    const update = {_id: entity.id, flags: cleanFlags(entity.data.flags)};
+    if (pack.entity === "Actor") {
+      update.items = entity.data.items.map(i => {
+        i.flags = cleanFlags(i.flags);
+        return i;
+      })
+    }
+    await pack.updateEntity(update, {recursive: false});
+    console.log(`Purged flags from ${entity.name}`);
+  }
+  await pack.configure({locked: true});
+}
+
+/* -------------------------------------------- */
+
+
+/**
+ * Purge the data model of any inner objects which have been flagged as _deprecated.
+ * @param {object} data   The data to clean
+ * @private
+ */
+export function removeDeprecatedObjects(data) {
+  for (let [k, v] of Object.entries(data)) {
+    if (getType(v) === "Object") {
+      if (v._deprecated === true) {
+        console.log(`Deleting deprecated object key ${k}`);
+        delete data[k];
+      } else removeDeprecatedObjects(v);
+    }
+  }
+  return data;
+}
 
 /**
  * Migrate a single Scene entity to incorporate changes to the data model of it's actor data overrides

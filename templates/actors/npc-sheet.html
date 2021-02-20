@@ -77,7 +77,7 @@
                                value="{{data.attributes.health.formula}}"/>
                         <input name="data.attributes.health.temp" type="text" class="temphealth"
                                placeholder="+{{ localize 'KRYX_RPG.Temp' }}" style="flex: 3"
-                               value="{{data.attributes.health.temp}}" data-dtype="{{data.attributes.health.type}}"/>
+                               value="{{data.attributes.health.temp}}" data-dtype="Number"/>
                     </footer>
                 </li>
 
@@ -103,29 +103,31 @@
                 <li class="attribute">
                     <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Defense" }}</h4>
                     <div class="attribute-value">
-                        <input name="data.attributes.defense.value" type="text"
+                        <input name="data.attributes.defense.value" type="number"
                                value="{{data.attributes.defense.value}}"
-                               data-dtype="Number" placeholder="10"/>
+                               placeholder="10"/>
                     </div>
                     <footer class="attribute-footer" style="display: flex">
                         <!-- I did some ugly css patching here to make this look okayish. sorry. -->
                         <label style="font-weight: bold; text-align: right; flex:2">Soak:</label>
                         <input name="data.attributes.defense.soak" style="text-align:left; flex:1; margin:inherit"
-                               type="text" value="{{data.attributes.defense.soak}}" data-dtype="Number"
+                               type="number" value="{{data.attributes.defense.soak}}"
                                placeholder="0"/>
                     </footer>
                 </li>
 
-                <li class="attribute">
-                    <h4 class="attribute-name box-title">{{ localize "KRYX_RPG.Speed" }}</h4>
+                <li class="attribute movement">
+                    <h4 class="attribute-name box-title">
+                        {{ localize "KRYX_RPG.Movement" }}
+                        <a class="config-button" data-action="movement" title="{{localize 'KRYX_RPG.MovementConfig'}}">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </h4>
                     <div class="attribute-value">
-                        <input name="data.attributes.speed.value" type="text"
-                               value="{{data.attributes.speed.value}}" placeholder="0"/>
+                        <span>{{movement.primary}}</span>
                     </div>
                     <footer class="attribute-footer">
-                        <input type="text" class="speed" name="data.attributes.speed.special"
-                               value="{{data.attributes.speed.special}}"
-                               placeholder="{{ localize 'KRYX_RPG.SpeedSpecial' }}"/>
+                        <span>{{movement.special}}</span>
                     </footer>
                 </li>
             </ul>
@@ -137,6 +139,7 @@
         <a class="item active" data-tab="attributes">{{ localize "KRYX_RPG.Attributes" }}</a>
         <a class="item" data-tab="features">{{ localize "KRYX_RPG.Features" }}</a>
         <a class="item" data-tab="arsenal">{{ localize "KRYX_RPG.Arsenal" }}</a>
+        <a class="item" data-tab="effects">{{ localize "KRYX_RPG.Effects" }}</a>
         <a class="item" data-tab="biography">{{ localize "KRYX_RPG.Biography" }}</a>
     </nav>
 
@@ -233,6 +236,11 @@
         {{!-- Arsenal Tab --}}
         <div class="tab arsenal flexcol" data-group="primary" data-tab="arsenal">
             {{> "systems/kryx_rpg/templates/actors/parts/actor-arsenal.html"}}
+        </div>
+
+        {{!-- Effects Tab --}}
+        <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+            {{> "systems/kryx_rpg/templates/actors/parts/active-effects.html"}}
         </div>
 
         {{!-- Biography Tab --}}

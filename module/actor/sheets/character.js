@@ -21,20 +21,6 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
   }
 
   /* -------------------------------------------- */
-  /*  Rendering                                   */
-
-  /* -------------------------------------------- */
-
-  /**
-   * Get the correct HTML template path to use for rendering this particular sheet
-   * @type {String}
-   */
-  get template() {
-    if (!game.user.isGM && this.actor.limited) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
-    return "systems/kryx_rpg/templates/actors/character-sheet.html";
-  }
-
-  /* -------------------------------------------- */
 
   /**
    * Add some extra data when rendering the sheet to reduce the amount of logic required within the template.
@@ -85,7 +71,19 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
 
       // Item details
       item.img = item.img || DEFAULT_TOKEN;
-      item.isStack = item.data.quantity ? item.data.quantity > 1 : false;
+      item.isStack = Number.isNumeric(item.data.quantity) && (item.data.quantity !== 1);
+      item.attunement = {
+        [CONFIG.KRYX_RPG.attunementTypes.REQUIRED]: {
+          icon: "fa-sun",
+          cls: "not-attuned",
+          title: "KRYX_RPG.AttunementRequired"
+        },
+        [CONFIG.KRYX_RPG.attunementTypes.ATTUNED]: {
+          icon: "fa-sun",
+          cls: "attuned",
+          title: "KRYX_RPG.AttunementAttuned"
+        }
+      }[item.data.attunement];
 
       // Item usage
       item.hasUses = item.data.uses && (item.data.uses.max > 0);
@@ -113,19 +111,14 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     const arsenal = this._prepareArsenalTab(data, superpowers);
 
     // Organize Inventory
-    let totalWeight = 0;
     for (let i of inventoryItems) {
       i.data.quantity = i.data.quantity || 0;
       i.data.weight = i.data.weight || 0;
-      i.totalWeight = Math.round(i.data.quantity * i.data.weight * 10) / 10;
+      i.totalWeight = (i.data.quantity * i.data.weight).toNearest(0.1);
       inventory[i.type].items.push(i);
       const ignoreItemWeight = !!this.actor.getFlag("kryx_rpg", "onlyCountEquippedItemWeight")
         && !i.data.equipped
-      if (!ignoreItemWeight) {
-        totalWeight += i.totalWeight;
-      }
     }
-    data.data.attributes.encumbrance = this._computeEncumbrance(totalWeight, data);
 
     // Organize Features
     const features_tab = {
@@ -175,55 +168,6 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     }
   }
 
-  /* -------------------------------------------- */
-
-  /**
-   * Compute the level and percentage of encumbrance for an Actor.
-   *
-   * Optionally include the weight of carried currency across all denominations by applying the standard rule
-   * from the PHB pg. 143
-   *
-   * @param {Number} totalWeight    The cumulative item weight from inventory items
-   * @param {Object} actorData      The data object for the Actor being rendered
-   * @return {Object}               An object describing the character's encumbrance level
-   * @private
-   */
-  _computeEncumbrance(totalWeight, actorData) {
-
-    // Encumbrance classes
-    let mod = {
-      tiny: 0.5,
-      sm: 1,
-      med: 1,
-      lg: 2,
-      huge: 4,
-      grg: 8
-    }[actorData.data.traits.size] || 1;
-
-    const carryingCapacityMultiplier = this.actor.getFlag("kryx_rpg", "carryingCapacityMultiplier")
-    if (carryingCapacityMultiplier) mod *= carryingCapacityMultiplier
-
-    // Add Currency Weight
-    if (game.settings.get("kryx_rpg", "currencyWeight")) {
-      const currency = actorData.data.currency;
-      const numCoins = Object.values(currency).reduce((val, denom) => val += Math.max(denom, 0), 0);
-      totalWeight += numCoins / KRYX_RPG.encumbrance.currencyPerWeight;
-    }
-
-    // Compute Encumbrance percentage
-    let maximumEncumbrance = KRYX_RPG.encumbrance.base + actorData.data.abilities.str.value * KRYX_RPG.encumbrance.strMultiplier
-    maximumEncumbrance *= mod
-    const enc = {
-      max: maximumEncumbrance,
-      value: Math.round(totalWeight * 10) / 10,
-    };
-    enc.pct = Math.min(enc.value * 100 / enc.max, 99);
-    enc.encumbered = enc.pct > (2 / 3);
-    return enc;
-  }
-
-  /* -------------------------------------------- */
-
   /*  Event Listeners and Handlers
   /* -------------------------------------------- */
 
@@ -238,9 +182,6 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     // Class and level
     html.find(".charlevel").click(this._onUpdateClass.bind(this));
 
-    // Inventory Functions
-    html.find(".currency-convert").click(this._onConvertCurrency.bind(this));
-
     // Item State Toggling
     html.find('.item-toggle').click(this._onToggleItem.bind(this));
 
@@ -249,24 +190,29 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     html.find('.short-rest').click(this._onShortRest.bind(this));
     html.find('.long-rest').click(this._onLongRest.bind(this));
 
-    // Death saving throws
-    html.find('.death-save').click(this._onDeathSave.bind(this));
+    // Rollable sheet actions
+    html.find(".rollable[data-action]").click(this._onSheetAction.bind(this));
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Handle rolling a death saving throw for the Character
+   * Handle mouse click events for character sheet actions
    * @param {MouseEvent} event    The originating click event
    * @private
    */
-  _onDeathSave(event) {
+  _onSheetAction(event) {
     event.preventDefault();
-    return this.actor.rollDeathSave({event: event});
+    const button = event.currentTarget;
+    switch (button.dataset.action) {
+      case "rollDeathSave":
+        return this.actor.rollDeathSave({event: event});
+      case "rollInitiative":
+        return this.actor.rollInitiative({createCombatants: true});
+    }
   }
 
   /* -------------------------------------------- */
-
 
   /**
    * Handle toggling the state of an Owned Item within the Actor
@@ -323,21 +269,5 @@ export default class ActorSheetKryxCharacter extends ActorSheetKryx {
     event.preventDefault();
     await this._onSubmit(event);
     return this.actor.longRest();
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Handle mouse click events to convert currency to the highest possible denomination
-   * @param {MouseEvent} event    The originating click event
-   * @private
-   */
-  async _onConvertCurrency(event) {
-    event.preventDefault();
-    return Dialog.confirm({
-      title: `${game.i18n.localize("KRYX_RPG.CurrencyConvert")}`,
-      content: `<p>${game.i18n.localize("KRYX_RPG.CurrencyConvertHint")}</p>`,
-      yes: () => this.actor.convertCurrency()
-    });
   }
 }

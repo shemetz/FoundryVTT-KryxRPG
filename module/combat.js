@@ -9,8 +9,19 @@ export const _getInitiativeFormula = function (combatant) {
   if (!actor) return "1d20";
   const init = actor.data.data.attributes.init;
   const initBonus = actor.data.data.bonuses.initiative || null
-  const parts = ["1d20", init.mod, (init.prof !== 0) ? init.prof : null, initBonus];
-  if (actor.getFlag("kryx_rpg", "initiativeAdv")) parts[0] = "2d20kh";
-  if (CONFIG.Combat.initiative.tiebreaker) parts.push(actor.data.data.abilities.dex.value / 100);
+  let nd = 1;
+  let mods = "";
+
+  if (actor.getFlag("kryx_rpg", "halflingLucky")) mods += "r1=1";
+  if (actor.getFlag("kryx_rpg", "initiativeAdv")) {
+    nd = 2;
+    mods += "kh";
+  }
+
+  const parts = [`${nd}d20${mods}`, init.mod, (init.prof !== 0) ? init.prof : null, (init.bonus !== 0) ? init.bonus : null, initBonus];
+
+  // Optionally apply Dexterity tiebreaker
+  const tiebreaker = game.settings.get("kryx_rpg", "initiativeDexTiebreaker");
+  if (tiebreaker) parts.push(actor.data.data.abilities.dex.value / 100);
   return parts.filter(p => p !== null).join(" + ");
 };

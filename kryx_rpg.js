@@ -13,7 +13,7 @@ import {KRYX_RPG} from "./module/config.js";
 import {registerSystemSettings} from "./module/settings.js";
 import {preloadHandlebarsTemplates} from "./module/templates.js";
 import {_getInitiativeFormula} from "./module/combat.js";
-import {measureDistances, getBarAttribute} from "./module/canvas.js";
+import {getBarAttribute, measureDistances} from "./module/canvas.js";
 
 // Import Entities
 import ActorKryx from "./module/actor/entity.js";
@@ -28,6 +28,7 @@ import ItemSheetKryx from "./module/item/sheet.js";
 import ShortRestDialog from "./module/apps/short-rest.js";
 import SuperpowerUseDialog from "./module/apps/superpower-use-dialog.js";
 import TraitSelector from "./module/apps/trait-selector.js";
+import ActorMovementConfig from "./module/apps/movement-config.js";
 
 // Import Helpers
 import * as chat from "./module/chat.js";
@@ -43,7 +44,7 @@ import "./module/utils.js";
 Hooks.once("init", function () {
   console.log(`Kryx RPG | Initializing Kryx RPG System\n${KRYX_RPG.ASCII}`);
 
-  // Create a Kryx RPG namespace within the game global
+  // Create a namespace within the game global
   game.kryx_rpg = {
     applications: {
       ActorSheetFlags,
@@ -52,7 +53,8 @@ Hooks.once("init", function () {
       ItemSheetKryx,
       ShortRestDialog,
       SuperpowerUseDialog,
-      TraitSelector
+      TraitSelector,
+      ActorMovementConfig,
     },
     canvas: {
       AbilityTemplate
@@ -72,6 +74,10 @@ Hooks.once("init", function () {
   CONFIG.KRYX_RPG = KRYX_RPG;
   CONFIG.Actor.entityClass = ActorKryx;
   CONFIG.Item.entityClass = ItemKryx;
+  CONFIG.time.roundTime = 6;
+
+  // cone RAW should be 53.13 degrees
+  CONFIG.MeasuredTemplate.defaults.angle = 53.13;
 
   // Register System Settings
   registerSystemSettings();
@@ -81,10 +87,21 @@ Hooks.once("init", function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("kryx_rpg", ActorSheetKryxCharacter, {types: ["character"], makeDefault: true});
-  Actors.registerSheet("kryx_rpg", ActorSheetKryxNPC, {types: ["npc"], makeDefault: true});
+  Actors.registerSheet("kryx_rpg", ActorSheetKryxCharacter, {
+    types: ["character"],
+    makeDefault: true,
+    label: "KRYX_RPG.SheetClassCharacter"
+  });
+  Actors.registerSheet("kryx_rpg", ActorSheetKryxNPC, {
+    types: ["npc"],
+    makeDefault: true,
+    label: "KRYX_RPG.SheetClassNPC"
+  });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("kryx_rpg", ItemSheetKryx, {makeDefault: true});
+  Items.registerSheet("kryx_rpg", ItemSheetKryx, {
+    makeDefault: true,
+    label: "KRYX_RPG.SheetClassItem"
+  });
 
   // Preload Handlebars Templates
   preloadHandlebarsTemplates();
@@ -132,13 +149,12 @@ Hooks.once("setup", function () {
  * Once the entire VTT framework is initialized, check to see if we should perform a data migration
  */
 Hooks.once("ready", function () {
-
-  if (game.user.isGM) {
-    migrations.migrateWorldIfNeeded()
-  }
-
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => macros.createKryxMacro(data, slot));
+
+  if (!game.user.isGM) return;
+  migrations.migrateWorldIfNeeded()
+
 });
 
 /* -------------------------------------------- */
@@ -173,6 +189,12 @@ Hooks.on("renderChatMessage", (app, html, data) => {
 });
 Hooks.on("getChatLogEntryContext", chat.addChatMessageContextOptions);
 Hooks.on("renderChatLog", (app, html, data) => ItemKryx.chatListeners(html));
+Hooks.on("renderChatPopout", (app, html, data) => ItemKryx.chatListeners(html));
+
+// Atropos: TODO I should remove this
+Handlebars.registerHelper('getProperty', function (data, property) {
+  return getProperty(data, property);
+});
 
 
 for (const [id, skl] of Object.entries(KRYX_RPG.skills)) {

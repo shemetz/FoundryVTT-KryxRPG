@@ -25,15 +25,23 @@
         </div>
     {{/if}}
 
-    <div class="form-group {{#unless data.traits.senses}}inactive{{/unless}}">
+    <div class="form-group">
         <label>{{localize "KRYX_RPG.Senses"}}</label>
-        <input type="text" name="data.traits.senses" value="{{data.traits.senses}}"
-               placeholder="{{ localize 'KRYX_RPG.None' }}"/>
+        <a class="config-button" data-action="senses" title="{{localize 'KRYX_RPG.SensesConfig'}}">
+            <i class="fas fa-cog"></i>
+        </a>
+        <ul class="traits-list">
+            {{#each senses as |v k|}}
+                <li class="tag {{k}}">{{v}}</li>
+            {{/each}}
+        </ul>
     </div>
 
     <div class="form-group ">
         <label>{{localize "KRYX_RPG.SpecialTraits"}}</label>
-        <a class="configure-flags"><i class="fas fa-cog"></i></a>
+        <a class="config-button" data-action="flags" title="{{localize 'KRYX_RPG.SpecialTraits'}}">
+            <i class="fas fa-cog"></i>
+        </a>
     </div>
 
     {{#if isCharacter}}
@@ -65,7 +73,7 @@
     {{#if showDamageImmunityAndSuch}}
         <div class="form-group {{data.traits.di.cssClass}}">
             <label>{{localize "KRYX_RPG.DamImm"}}</label>
-            <a class="trait-selector" data-options="damageTypes" data-target="data.traits.di">
+            <a class="trait-selector" data-options="damageResistanceTypes" data-target="data.traits.di">
                 <i class="fas fa-edit"></i>
             </a>
             <ul class="traits-list">
@@ -78,7 +86,7 @@
 
     <div class="form-group {{data.traits.dr.cssClass}}">
         <label>{{localize "KRYX_RPG.DamRes"}}</label>
-        <a class="trait-selector" data-options="damageTypes" data-target="data.traits.dr">
+        <a class="trait-selector" data-options="damageResistanceTypes" data-target="data.traits.dr">
             <i class="fas fa-edit"></i>
         </a>
         <ul class="traits-list">
@@ -91,7 +99,7 @@
     {{#if showDamageImmunityAndSuch}}
         <div class="form-group {{data.traits.dv.cssClass}}">
             <label>{{localize "KRYX_RPG.DamVuln"}}</label>
-            <a class="trait-selector" data-options="damageTypes" data-target="data.traits.dv">
+            <a class="trait-selector" data-options="damageResistanceTypes" data-target="data.traits.dv">
                 <i class="fas fa-edit"></i>
             </a>
             <ul class="traits-list">

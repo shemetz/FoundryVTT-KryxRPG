@@ -39,6 +39,7 @@
     <nav class="sheet-navigation tabs" data-group="primary">
         <a class="item active" data-tab="description">{{ localize "KRYX_RPG.Description" }}</a>
         <a class="item" data-tab="details">{{ localize "KRYX_RPG.Details" }}</a>
+        <a class="item" data-tab="effects">{{ localize "KRYX_RPG.Effects" }}</a>
     </nav>
 
     {{!-- Item Sheet Body --}}
@@ -75,6 +76,10 @@
 
             {{!-- Item Action Template --}}
             {{> "systems/kryx_rpg/templates/items/parts/item-action.html"}}
+        </div>
+        {{!-- Effects Tab --}}
+        <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+            {{> "systems/kryx_rpg/templates/actors/parts/active-effects.html"}}
         </div>
     </section>
 </form>

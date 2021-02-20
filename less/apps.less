@@ -20,7 +20,9 @@
   /* ----------------------------------------- */
 
   // Item Sheet form fields
-  input[type="text"], select {
+  input[type="text"],
+  input[type="number"],
+  select {
     height: calc(100% - 2px);
     border: 1px solid @colorTan;
     background: rgba(0, 0, 0, 0.05);
@@ -28,7 +30,8 @@
   }
 
   // Hovered Fields
-  input[type="text"] {
+  input[type="text"],
+  input[type="number"] {
     &:hover,
     &:focus {
       border: 1px solid #111;
@@ -87,17 +90,23 @@
   }
 
   // Checkbox Labels
+  // Atropos: TODO: THIS CAN BE MOSTLY REMOVED NOW THAT IT IS IN CORE, see core forms.less
   label.checkbox {
     flex: auto;
+    padding: 0;
     margin: 0;
     height: 22px;
     line-height: 22px;
     font-size: 11px;
-    text-align: right;
-    input[type="checkbox"] {
-      margin: 0 5px 0;
+    > input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin: 0 2px 0 0;
       position: relative;
-      top: 5px;
+      top: 4px;
+    }
+    &.right > input[type="checkbox"] {
+      margin: 0 0 0 2px;
     }
   }
 
@@ -139,11 +148,10 @@
   // Form Headers
   .form-header {
     margin: 0 0 0.25em 0;
-    padding: 0 2px;
-    .nodesto();
-    font-size: 24px;
+    padding: 2px 0;
     border-top: @borderGroove;
     border-bottom: @borderGroove;
+    .modesto();
   }
 
   /* Tags */
@@ -189,7 +197,8 @@
   /* ----------------------------------------- */
 
   // Input Fields
-  input[type="text"] {
+  input[type="text"],
+  input[type="number"] {
     background: none;
     border: 1px solid transparent;
     &:hover,
@@ -206,11 +215,14 @@
     background: transparent;
   }
 
-  // Rollable Links
+  // Rollable Titles
   .editable .rollable:hover {
+    cursor: pointer;
+  }
+  .editable h4.rollable:hover,
+  .editable .rollable:hover > h4 {
     color: #000;
     text-shadow: 0 0 10px red;
-    cursor: pointer;
   }
 
   // Separators
@@ -242,7 +254,10 @@
   .sheet-header {
     flex: 0 0 @headerHeight;
     border-bottom: @borderGroove;
-    .nodesto();
+
+    .header-details {
+      .modesto();
+    }
 
     /* Character Name */
     h1 {
@@ -265,7 +280,7 @@
       flex: 0 0 @headerHeight;
       max-width: @headerHeight;
       height: @headerHeight;
-      object-fit: cover;
+      object-fit: contain;
       border: none;
       border-right: @borderGroove;
     }
@@ -303,7 +318,7 @@
   .sheet-navigation {
     flex: 0 0 @navHeight;
     margin-bottom: 5px;
-    .nodesto();
+    .modesto();
 
     .item {
       height: 30px;
@@ -331,6 +346,7 @@
   /* ----------------------------------------- */
 
   .filter-list {
+    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -387,6 +403,108 @@
       padding: 0;
     }
   }
+
+  /* ----------------------------------------- */
+  /*  Items Lists                              */
+  /* ----------------------------------------- */
+
+  .items-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    color: @colorTan;
+
+    // Child lists
+    .item-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    // Item Name
+    .item-name {
+      flex: 2;
+      margin: 0;
+      overflow: hidden;
+      font-size: 13px;
+      text-align: left;
+      align-items: center;
+      h3, h4 {
+        margin: 0;
+        white-space: nowrap;
+        overflow-x: hidden;
+      }
+    }
+
+    // Control Buttons
+    .item-controls {
+      flex: 0 0 60px;
+      justify-content: space-between;
+      a {
+        font-size: 12px;
+        text-align: center;
+      }
+    }
+
+    // Individual Item
+    .item {
+      align-items: center;
+      padding: 0 2px; // to align with the header border
+      border-bottom: 1px solid @colorFaint;
+      &:last-child { border-bottom: none; }
+      .item-name {
+        color: @colorDark;
+        .item-image {
+          flex: 0 0 30px;
+          height: 30px;
+          background-size: 30px;
+          border: none;
+          margin-right: 5px;
+        }
+      }
+    }
+
+    // Section Header
+    .items-header {
+      height: 28px;
+      margin: 2px 0;
+      padding: 0;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.05);
+      border: @borderGroove;
+      font-weight: bold;
+      > * {
+        font-size: 12px;
+        text-align: center;
+      }
+      h3 {
+        padding-left: 5px;
+        .modesto();
+        text-align: left;
+        font-size: 16px;
+      }
+    }
+  }
+
+  /* ----------------------------------------- */
+  /*  Active Effects                           */
+  /* ----------------------------------------- */
+
+  .effects .item {
+    .effect-source,
+    .effect-duration,
+    .effect-controls {
+      text-align: center;
+      border-left: 1px solid @colorFaint;
+      border-right: 1px solid @colorFaint;
+      font-size: 12px;
+    }
+    .effect-controls {
+      border: none;
+    }
+  }
 }
 
 
@@ -412,8 +530,8 @@
 
 .tooltip {
   position: absolute;
-  left: 46px;
-  margin-top: 34px;
+  left: 36px;
+  margin-top: 54px;
   width: 600px;
   visibility: hidden;
   opacity: 0;

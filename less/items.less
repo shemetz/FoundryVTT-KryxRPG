@@ -1,6 +1,8 @@
 @import "./variables.less";
 .kryx_rpg.sheet.item {
-  min-height: 420px;
+  min-height: 400px;
+  max-height: 95%;
+  min-width: 480px;
 
   /* ----------------------------------------- */
   /*  Sheet Header                             */
@@ -12,7 +14,7 @@
     }
 
     .item-subtitle {
-      flex: 0 0 80px;
+      flex: 0 0 100px;
       height: 60px;
       margin: 0;
       padding: 5px;
@@ -88,7 +90,9 @@
   .details {
 
     // Item Sheet form fields
-    input[type="text"], select {
+    input[type="text"],
+    input[type="number"],
+    select {
       height: 24px;
       border: 1px solid @colorTan;
       background: rgba(0, 0, 0, 0.05);
@@ -117,14 +121,15 @@
     }
 
     .form-group.uses-per {
+      .form-fields {
+        flex-wrap: nowrap;
+      }
       input {
-        flex: 1;
+        flex: 0 0 32px;
       }
       span {
         flex: 0 0 16px;
-      }
-      select {
-        flex: 3;
+        margin: 0 4px 0 0;
       }
     }
 

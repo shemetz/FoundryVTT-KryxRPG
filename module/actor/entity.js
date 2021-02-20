@@ -1,9 +1,8 @@
+import {KRYX_RPG} from '../config.js';
 import {d20Roll, damageRoll} from "../dice.js";
 import ShortRestDialog from "../apps/short-rest.js";
 import LongRestDialog from "../apps/long-rest.js";
 import SuperpowerUseDialog from "../apps/superpower-use-dialog.js";
-import AbilityTemplate from "../pixi/ability-template.js";
-import {KRYX_RPG} from '../config.js';
 import SecondWindDialog from '../apps/second-wind.js';
 
 /**
@@ -21,19 +20,22 @@ export default class ActorKryx extends Actor {
 
   /* -------------------------------------------- */
 
-  /**
-   * Augment the basic actor data with additional dynamic data.
-   */
-  prepareData() {
-    super.prepareData();
+  /** @override */
+  prepareBaseData() {
+    switch (this.data.type) {
+      case "character":
+        return this._prepareCharacterData(this.data);
+      case "npc":
+        return this._prepareNPCData(this.data);
+    }
+  }
 
-    // Get the Actor's data object
+  /* -------------------------------------------- */
+
+  /** @override */
+  prepareDerivedData() {
     const actorData = this.data;
     const data = actorData.data;
-
-    // Prepare Character data
-    if (actorData.type === "character") this._prepareCharacterData(actorData);
-    else if (actorData.type === "npc") this._prepareNPCData(actorData);
 
     // Prepare saves
     this._prepareSaves(actorData)
@@ -47,6 +49,9 @@ export default class ActorKryx extends Actor {
       sav.signedValue = ActorKryx.signedValue(sav.value)
       sav.label = KRYX_RPG.saves[id]
     }
+
+    // Inventory encumbrance
+    data.attributes.encumbrance = this._computeEncumbrance(actorData);
 
     // Skill modifiers
     for (const [id, skl] of Object.entries(data.skills)) {
@@ -255,6 +260,44 @@ export default class ActorKryx extends Actor {
     return CONFIG.KRYX_RPG.CR_EXP_LEVELS[cr];
   }
 
+  /**
+   * Compute the level and percentage of encumbrance for an Actor.
+   *
+   * @param {Object} actorData      The data object for the Actor being rendered
+   * @returns {{max: number, value: number, pct: number}}  An object describing the character's encumbrance level
+   * @private
+   */
+  _computeEncumbrance(actorData) {
+    // Get the total weight from items
+    const physicalItems = ["weapon", "equipment", "consumable", "tool", "loot", "backpack"];
+    let totalWeight = 0;
+    for (const i of actorData.items) {
+      if (!physicalItems.includes(i.type)) continue;
+      i.data.quantity = i.data.quantity || 0;
+      i.data.weight = i.data.weight || 0;
+      i.totalWeight = Math.round(i.data.quantity * i.data.weight * 10) / 10;
+      const ignoreItemWeight = !!this.getFlag("kryx_rpg", "onlyCountEquippedItemWeight") && !i.data.equipped
+      if (!ignoreItemWeight) {
+        totalWeight += i.totalWeight;
+      }
+    }
+    // Determine the encumbrance size class
+    let mod = {
+      tiny: 0.5,
+      small: 1,
+      medium: 1,
+      large: 2,
+      huge: 4,
+      gargantuan: 8
+    }[actorData.data.traits.size] || 1;
+
+    // Compute Encumbrance percentage
+    totalWeight = totalWeight.toNearest(0.1);
+    const max = (KRYX_RPG.encumbrance.base + actorData.data.abilities.str.value * KRYX_RPG.encumbrance.strMultiplier) * mod
+    const pct = Math.clamped((totalWeight * 100) / max, 0, 100);
+    return {value: totalWeight.toNearest(0.1), max, pct, encumbered: pct > (2 / 3)}
+  }
+
   /* -------------------------------------------- */
 
   /**
@@ -299,75 +342,59 @@ export default class ActorKryx extends Actor {
   /*  Socket Listeners and Handlers
   /* -------------------------------------------- */
 
-  /** @override */
-  static async create(data, options = {}) {
-    data.token = data.token || {};
-    if (data.type === "character") {
-      mergeObject(data.token, {
-        vision: true,
-        dimSight: 2,
-        brightSight: 0,
-        actorLink: true,
-        disposition: 1
-      }, {overwrite: false});
+  /** @inheritDoc */
+  async _preCreate(data, options, user) {
+    await super._preCreate(data, options, user)
+
+    // Token size category
+    const size = this.data.data.traits.size || "medium";
+    data.token.width = data.token.height = CONFIG.KRYX_RPG.tokenSizes[size];
+
+    data.token.vision = true;
+    data.token.dimSight = 2;
+    data.token.brightSight = 0;
+    // Player character prototype token
+    if (this.type === "character") {
+      data.token.actorLink = true;
+      data.token.disposition = 1; // friendly
     }
-    return super.create(data, options);
   }
 
   /* -------------------------------------------- */
 
-  /** @override */
-  async update(data, options = {}) {
+  /** @inheritdoc */
+  async _preUpdate(changed, options, user) {
+    await super._preUpdate(changed, options, user);
 
     // Apply changes in Actor size to Token width/height
-    const newSize = data["data.traits.size"];
-    if (newSize && (newSize !== getProperty(this.data, "data.traits.size"))) {
+    const newSize = foundry.utils.getProperty(changed, "data.traits.size");
+    if (newSize && (newSize !== foundry.utils.getProperty(this.data, "data.traits.size"))) {
       let size = CONFIG.KRYX_RPG.tokenSizes[newSize];
-      if (this.isToken) this.token.update({height: size, width: size});
-      else if (!data["token.width"] && !hasProperty(data, "token.width")) {
-        data["token.height"] = size;
-        data["token.width"] = size;
+      if (!foundry.utils.hasProperty(changed, "token.width")) {
+        changed.token = changed.token || {};
+        changed.token.height = size;
+        changed.token.width = size;
       }
     }
-    return super.update(data, options);
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  async createOwnedItem(itemData, options) {
-
-    // Assume NPCs are always proficient with weapons
-    if (this.isNPC) {
-      let t = itemData.type;
-      let initial = {};
-      if (t === "weapon") initial["data.proficient"] = true;
-      if (["weapon", "equipment"].includes(t)) initial["data.equipped"] = true;
-      mergeObject(itemData, initial);
+    // Reset death save counters
+    const isDead = this.data.data.attributes.hp.value <= 0;
+    if (isDead && (foundry.utils.getProperty(changed, "data.attributes.health.value") > 0)) {
+      foundry.utils.setProperty(changed, "data.attributes.dying", 0);
     }
-    return super.createOwnedItem(itemData, options);
   }
 
   /* -------------------------------------------- */
 
   /** @override */
   async modifyTokenAttribute(attribute, value, isDelta, isBar) {
-    if (attribute !== "attributes.health") return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
-
-    // Get current and delta Health
-    const health = getProperty(this.data.data, attribute);
-    const tmp = parseInt(health.temp) || 0;
-    const current = health.value + tmp;
-    const max = health.max + (parseInt(health.tempmax) || 0);
-    const delta = isDelta ? value : value - current;
-
-    // For negative changes, deduct from temp health
-    let dtmp = delta < 0 ? Math.max(-1 * tmp, delta) : 0;
-    let deltaHealth = delta - dtmp;
-    return this.update({
-      "data.attributes.health.temp": tmp + dtmp,
-      "data.attributes.health.value": Math.clamped(health.value + deltaHealth, 0, max)
-    });
+    if (attribute === "attributes.health") {
+      const health = getProperty(this.data.data, attribute);
+      const tmp = parseInt(health.temp);
+      const current = health.value + tmp;
+      const delta = isDelta ? value : value - current;
+      return this.applyDamage(delta);
+    }
+    return super.modifyTokenAttribute(attribute, value, isDelta, isBar);
   }
 
   /* -------------------------------------------- */
@@ -394,10 +421,19 @@ export default class ActorKryx extends Actor {
     const dh = Math.clamped(health.value - (amount - dt), 0, health.max + tmpMax);
 
     // Update the Actor
-    return this.update({
+    const updates = {
       "data.attributes.health.temp": tmp - dt,
       "data.attributes.health.value": dh
-    });
+    };
+    // Delegate damage application to a hook
+    // Atropos - TODO replace this in the future with a better modifyTokenAttribute function in the core
+    const allowed = Hooks.call("modifyTokenAttribute", {
+      attribute: "attributes.health",
+      value: amount,
+      isDelta: false,
+      isBar: true
+    }, updates);
+    return allowed !== false ? this.update(updates) : this;
   }
 
   /* -------------------------------------------- */
@@ -429,7 +465,7 @@ export default class ActorKryx extends Actor {
       const spellFormData = await SuperpowerUseDialog.create(this, item);
       if (spellFormData === null) {
         // user clicked X on the dialog, canceling the superpower usage.
-        return
+        return false
       }
       spentCost = parseInt(spellFormData.get("spentCost"));
       shouldConsumeResources = Boolean(spellFormData.get("shouldConsumeResources"));
@@ -464,14 +500,14 @@ export default class ActorKryx extends Actor {
       if (template) template.drawPreview(event);
       if (this.sheet.rendered) this.sheet.minimize();
     }
-    const itemCopy = item.constructor.createOwned(mergeObject(item.data,
+    await item.update(
       {
         "data.spentCost": spentCost,
         "data.targetType": targetType,
-      }
-      , {inplace: false}), this);
-    // Invoke the Item roll
-    return itemCopy.roll();
+      });
+
+    // Yes, roll the item
+    return true
   }
 
   /* -------------------------------------------- */
@@ -503,11 +539,16 @@ export default class ActorKryx extends Actor {
       parts.push("@skillBonus");
     }
 
+    // Add provided extra roll parts now because they will get clobbered by mergeObject below
+    if (options.parts?.length > 0) {
+      parts.push(...options.parts)
+    }
+
     // Reliable Talent applies to any skill check we have full or better proficiency in
     const reliableTalent = (skl.proficiency >= 1 && this.getFlag("kryx_rpg", "reliableTalent"));
 
     // Roll and return
-    return d20Roll(mergeObject(options, {
+    const rollData = mergeObject(options, {
       parts: parts,
       data: data,
       title: game.i18n.format("KRYX_RPG.PromptSkillTitle", {skill: CONFIG.KRYX_RPG.skills[skillId]}),
@@ -515,7 +556,9 @@ export default class ActorKryx extends Actor {
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       reliableTalent: reliableTalent,
       messageData: {"flags.kryx_rpg.roll": {type: "skill", skillId}}
-    }));
+    });
+    rollData.speaker = options.speaker || ChatMessage.getSpeaker({actor: this});
+    return d20Roll(rollData);
   }
 
   /* -------------------------------------------- */
@@ -542,15 +585,22 @@ export default class ActorKryx extends Actor {
       data.checkBonus = bonuses.check;
     }
 
+    // Add provided extra roll parts now because they will get clobbered by mergeObject below
+    if (options.parts?.length > 0) {
+      parts.push(...options.parts);
+    }
+
     // Roll and return
-    return d20Roll(mergeObject(options, {
+    const rollData = mergeObject(options, {
       parts: parts,
       data: data,
       title: game.i18n.format("KRYX_RPG.AbilityPromptTitle", {ability: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       messageData: {"flags.kryx_rpg.roll": {type: "ability", abilityId}},
-    }));
+    });
+    rollData.speaker = options.speaker || ChatMessage.getSpeaker({actor: this});
+    return d20Roll(rollData);
   }
 
   /* -------------------------------------------- */
@@ -583,15 +633,22 @@ export default class ActorKryx extends Actor {
       data.saveBonus = bonuses.save;
     }
 
+    // Add provided extra roll parts now because they will get clobbered by mergeObject below
+    if (options.parts?.length > 0) {
+      parts.push(...options.parts);
+    }
+
     // Roll and return
-    return d20Roll(mergeObject(options, {
+    const rollData = mergeObject(options, {
       parts: parts,
       data: data,
       title: game.i18n.format("KRYX_RPG.SavePromptTitle", {save: label}),
       speaker: ChatMessage.getSpeaker({actor: this}),
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       messageData: {"flags.kryx_rpg.roll": {type: "save", saveId}}
-    }));
+    });
+    rollData.speaker = options.speaker || ChatMessage.getSpeaker({actor: this});
+    return d20Roll(rollData);
   }
 
   /* -------------------------------------------- */
@@ -602,11 +659,18 @@ export default class ActorKryx extends Actor {
    * @return {Promise<Roll|null>}   A Promise which resolves to the Roll instance
    */
   async rollDeathSave(options = {}) {
-    // TODO updated to new Dying system (e.g. crits don't put you back at 1)
+    // Display a warning if we are not at zero health
+    if (this.data.data.attributes.hp.value > 0) {
+      ui.notifications.warn(game.i18n.localize("KRYX_RPG.DeathSaveUnnecessary"));
+      return null;
+    }
+
+    // TODO updated to new Dying system (+-1, +-2, depending on roll result.  also Wounded?
+    let dying = this.data.data.attributes.dying
     // Evaluate a global saving throw bonus
-    const speaker = ChatMessage.getSpeaker({actor: this});
     const parts = [];
     const data = {};
+    const speaker = options.speaker || ChatMessage.getSpeaker({actor: this});
 
     // Include a global actor ability save bonus
     const bonuses = getProperty(this.data.data, "bonuses.abilities") || {};
@@ -616,7 +680,7 @@ export default class ActorKryx extends Actor {
     }
 
     // Evaluate the roll
-    const roll = await d20Roll(mergeObject(options, {
+    const rollData = mergeObject(options, {
       parts: parts,
       data: data,
       title: game.i18n.localize("KRYX_RPG.DeathSavingThrow"),
@@ -624,22 +688,22 @@ export default class ActorKryx extends Actor {
       halflingLucky: this.getFlag("kryx_rpg", "halflingLucky"),
       targetValue: 10,
       messageData: {"flags.kryx_rpg.roll": {type: "death"}},
-    }));
+    });
+    rollData.speaker = speaker;
+    const roll = await d20Roll(rollData);
     if (!roll) return null;
 
     // Take action depending on the result
     const success = roll.total >= 10;
-    const death = this.data.data.attributes.death;
+    const d20 = roll.dice[0].total;
 
     // Save success
     if (success) {
-      let successes = (death.success || 0) + 1;
-
+      dying -= 1
       // Critical Success = revive with 1 health
-      if (roll.total === 20) {
+      if (d20 === 20) {
         await this.update({
-          "data.attributes.death.success": 0,
-          "data.attributes.death.failure": 0,
+          "data.attributes.dying": 0,
           "data.attributes.health.value": 1
         });
         await ChatMessage.create({
@@ -649,33 +713,26 @@ export default class ActorKryx extends Actor {
       }
 
       // 3 Successes = survive and reset checks
-      else if (successes === 3) {
+      else if (dying === 0) {
         await this.update({
-          "data.attributes.death.success": 0,
-          "data.attributes.death.failure": 0
+          "data.attributes.dying": 0,
         });
         await ChatMessage.create({content: game.i18n.format("KRYX_RPG.DeathSaveSuccess", {name: this.name}), speaker});
       }
 
       // Increment successes
-      else await this.update({"data.attributes.death.success": Math.clamped(successes, 0, 3)});
+      else await this.update({"data.attributes.dying": Math.clamped(dying, 0, 3)});
     }
 
     // Save failure
     else {
-      let failures = (death.failure || 0) + (roll.total === 1 ? 2 : 1);
+      dying += (d20 === 1 ? 2 : 1);
+      await this.update({"data.attributes.dying": Math.clamped(dying, 0, 4)});
 
-      // 3 Failures = death
-      if (failures >= 3) {
-        await this.update({
-          "data.attributes.death.success": 0,
-          "data.attributes.death.failure": 0
-        });
+      // Dying 4 = death
+      if (dying >= 4) {
         await ChatMessage.create({content: game.i18n.format("KRYX_RPG.DeathSaveFailure", {name: this.name}), speaker});
       }
-
-      // Increment failures
-      else await this.update({"data.attributes.death.failure": Math.clamped(failures, 0, 3)});
     }
 
     // Return the rolled result
@@ -688,7 +745,8 @@ export default class ActorKryx extends Actor {
    * Roll a health die of the appropriate type, gaining health equal to the die roll plus your CON modifier
    * @param {string} denomination    The denomination of health die to roll. Example "d8"
    */
-  async rollHealthDie(denomination) {
+  async rollHealthDie() {
+    const denomination = this.data.data.class.healthDice
     // Prepare roll data
     const parts = [`1${denomination}`, "@abilities.con.value"];
     const title = game.i18n.localize("KRYX_RPG.HealthDiceRoll");
@@ -822,7 +880,7 @@ export default class ActorKryx extends Actor {
    * @return {Promise}        A Promise which resolves once the short rest workflow has completed
    */
   async secondWind({chat = true} = {}) {
-    const data = this.data.data;
+    let data = this.data.data;
     if (!data.attributes.secondWindAvailable) {
       ui.notifications.warn(`${this.data.name} already used a Second Wind! It will be regained when ${this.data.name} gets a long rest.`)
       return
@@ -834,6 +892,9 @@ export default class ActorKryx extends Actor {
 
     // Display a Dialog for using a second wind
     const winded = await SecondWindDialog.secondWindDialog({actor: this});
+
+    // updating data object because the values have changed
+    data = this.data.data;
 
     // Note the change in Health and HD which occurred
     const dhd = data.class.level - data.class.healthDiceUsed - hd0;
@@ -967,27 +1028,5 @@ export default class ActorKryx extends Actor {
       updateItems: updateItems,
       newDay: newDay
     }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Convert all carried currency to the highest possible denomination to reduce the number of raw coins being
-   * carried by an Actor.
-   * @return {Promise<ActorKryx>}
-   */
-  convertCurrency() {
-    const curr = duplicate(this.data.data.currency);
-    const convert = {
-      cp: {into: "sp", each: 10},
-      sp: {into: "gp", each: 10},
-      gp: {into: "pp", each: 10}
-    };
-    for (let [c, t] of Object.entries(convert)) {
-      let change = Math.floor(curr[c] / t.each);
-      curr[c] -= (change * t.each);
-      curr[t.into] += change;
-    }
-    return this.update({"data.currency": curr});
   }
 }

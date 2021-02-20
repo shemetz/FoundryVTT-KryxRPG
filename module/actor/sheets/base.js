@@ -1,8 +1,11 @@
 import ItemKryx from "../../item/entity.js";
 import TraitSelector from "../../apps/trait-selector.js";
+import ActorMovementConfig from "../../apps/movement-config.js";
+import ActorSensesConfig from "../../apps/senses-config.js";
 import ActorSheetFlags from "../../apps/actor-flags.js";
 import {KRYX_RPG} from '../../config.js';
 import {showUpdateClassDialog} from "../../apps/update-class.js";
+import {onManageActiveEffect, prepareActiveEffectCategories} from "../../effects.js";
 
 /**
  * Extend the basic ActorSheet class to do all the Kryx RPG things!
@@ -20,7 +23,8 @@ export default class ActorSheetKryx extends ActorSheet {
     this._filters = {
       inventory: new Set(),
       arsenal: new Set(),
-      features: new Set()
+      features: new Set(),
+      effects: new Set(),
     };
   }
 
@@ -32,17 +36,25 @@ export default class ActorSheetKryx extends ActorSheet {
       scrollY: [
         ".inventory .inventory-list",
         ".features .inventory-list",
-        ".arsenal .inventory-list"
+        ".arsenal .inventory-list",
+        ".effects .inventory-list",
       ],
       tabs: [{navSelector: ".tabs", contentSelector: ".sheet-body", initial: "description"}]
     });
   }
 
+  /* -------------------------------------------- */
+
+  /** @override */
+  get template() {
+    if (!game.user.isGM && this.actor.limited) return "systems/kryx_rpg/templates/actors/limited-sheet.html";
+    return `systems/kryx_rpg/templates/actors/${this.actor.data.type}-sheet.html`;
+  }
 
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
+  getData(options) {
 
     // Basic data
     let isOwner = this.entity.owner;
@@ -56,6 +68,7 @@ export default class ActorSheetKryx extends ActorSheet {
       isNPC: this.entity.data.type === "npc",
       showDamageImmunityAndSuch: this.entity.getFlag("kryx_rpg", "kryx_rpg.showDamageImmunityAndSuch"),
       config: CONFIG.KRYX_RPG,
+      rollData: this.entity.getRollData.bind(this.actor),
     };
 
     // Temporary Health
@@ -101,11 +114,20 @@ export default class ActorSheetKryx extends ActorSheet {
       skl.label = CONFIG.KRYX_RPG.skills[s];
     }
 
+    // Movement speeds
+    data.movement = this._getMovementSpeed(data.actor);
+
+    // Senses
+    data.senses = this._getSenses(data.actor);
+
     // Update traits
     this._prepareTraits(data.data.traits);
 
     // Prepare owned items
     this._prepareItems(data);
+
+    // Prepare active effects
+    data.effects = prepareActiveEffectCategories(this.actor.effects);
 
     // Return data to the sheet
     return data
@@ -113,12 +135,70 @@ export default class ActorSheetKryx extends ActorSheet {
 
   /* -------------------------------------------- */
 
+  /**
+   * Prepare the display of movement speed data for the Actor*
+   * @param {object} actorData                The Actor data being prepared.
+   * @param {boolean} [largestPrimary=false]  Show the largest movement speed as "primary", otherwise show "walk"
+   * @returns {{primary: string, special: string}}
+   * @private
+   */
+  _getMovementSpeed(actorData, largestPrimary = false) {
+    const movement = actorData.data.attributes.movement || {};
+
+    // Prepare an array of available movement speeds
+    let speeds = [
+      [movement.burrow, `${game.i18n.localize("KRYX_RPG.MovementBurrow")} ${movement.burrow}`],
+      [movement.climb, `${game.i18n.localize("KRYX_RPG.MovementClimb")} ${movement.climb}`],
+      [movement.fly, `${game.i18n.localize("KRYX_RPG.MovementFly")} ${movement.fly}` + (movement.hover ? ` (${game.i18n.localize("KRYX_RPG.MovementHover")})` : "")],
+      [movement.swim, `${game.i18n.localize("KRYX_RPG.MovementSwim")} ${movement.swim}`]
+    ]
+    if (largestPrimary) {
+      speeds.push([movement.walk, `${game.i18n.localize("KRYX_RPG.MovementWalk")} ${movement.walk}`]);
+    }
+
+    // Filter and sort speeds on their values
+    speeds = speeds.filter(s => !!s[0]).sort((a, b) => b[0] - a[0]);
+
+    // Case 1: Largest as primary
+    if (largestPrimary) {
+      let primary = speeds.shift();
+      return {
+        primary: `${primary ? primary[1] : "0"} ${movement.units}`,
+        special: speeds.map(s => s[1]).join(", ")
+      }
+    }
+
+    // Case 2: Walk as primary
+    else {
+      return {
+        primary: `${movement.walk || 0} ${movement.units}`,
+        special: speeds.length ? speeds.map(s => s[1]).join(", ") : ""
+      }
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  _getSenses(actorData) {
+    const senses = actorData.data.attributes.senses || {};
+    const tags = {};
+    for (let [k, label] of Object.entries(CONFIG.KRYX_RPG.senses)) {
+      const v = senses[k] ?? 0
+      if (v === 0) continue;
+      tags[k] = `${game.i18n.localize(label)} ${v} ${senses.units}`;
+    }
+    if (!!senses.special) tags["special"] = senses.special;
+    return tags;
+  }
+
+  /* -------------------------------------------- */
+
   _prepareTraits(traits) {
     const map = {
       "themes": CONFIG.KRYX_RPG.themes,
-      "dr": CONFIG.KRYX_RPG.damageTypes,
-      "di": CONFIG.KRYX_RPG.damageTypes,
-      "dv": CONFIG.KRYX_RPG.damageTypes,
+      "dr": CONFIG.KRYX_RPG.damageResistanceTypes,
+      "di": CONFIG.KRYX_RPG.damageResistanceTypes,
+      "dv": CONFIG.KRYX_RPG.damageResistanceTypes,
       "ci": CONFIG.KRYX_RPG.conditionTypes,
       "languages": CONFIG.KRYX_RPG.languages,
       "armorProf": CONFIG.KRYX_RPG.armorProficiencies,
@@ -283,7 +363,7 @@ export default class ActorSheetKryx extends ActorSheet {
     filterLists.on("click", ".filter-item", this._onToggleFilter.bind(this));
 
     // Item summaries
-    html.find('.item .item-name h4').click(event => this._onItemSummary(event));
+    html.find('.item .item-name.rollable h4').click(event => this._onItemSummary(event));
 
     // Editable Only Listeners
     if (this.isEditable) {
@@ -291,6 +371,7 @@ export default class ActorSheetKryx extends ActorSheet {
       // Select data on click
       const inputs = html.find("input");
       inputs.focus(ev => ev.currentTarget.select());
+      inputs.addBack().find('[data-dtype="Number"]').change(this._onChangeInputDelta.bind(this));
 
       // Relative updates for numeric fields
       inputs.find('input[data-dtype="Number"]').change(this._onChangeInputDelta.bind(this));
@@ -305,13 +386,16 @@ export default class ActorSheetKryx extends ActorSheet {
       html.find('.trait-selector').click(this._onTraitSelector.bind(this));
 
       // Configure Special Flags
-      html.find('.configure-flags').click(this._onConfigureFlags.bind(this));
+      html.find('.config-button').click(this._onConfigMenu.bind(this));
 
       // Owned Item management
       html.find('.item-create').click(this._onItemCreate.bind(this));
       html.find('.item-edit').click(this._onItemEdit.bind(this));
       html.find('.item-delete').click(this._onItemDelete.bind(this));
       html.find('.item-uses input').click(ev => ev.target.select()).change(this._onUsesChange.bind(this));
+
+      // Active Effect management
+      html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.entity));
     }
 
     // Owner Only Listeners
@@ -343,7 +427,7 @@ export default class ActorSheetKryx extends ActorSheet {
   /* -------------------------------------------- */
 
   /**
-   * Iinitialize Item list filters by activating the set of filters which are currently applied
+   * Initialize Item list filters by activating the set of filters which are currently applied
    * @private
    */
   _initializeFilterItemList(i, ul) {
@@ -378,11 +462,24 @@ export default class ActorSheetKryx extends ActorSheet {
   /* -------------------------------------------- */
 
   /**
-   * Handle click events for the Traits tab button to configure special Character Flags
+   * Handle spawning the TraitSelector application which allows a checkbox of multiple trait options
+   * @param {Event} event   The click event which originated the selection
+   * @private
    */
-  _onConfigureFlags(event) {
+  _onConfigMenu(event) {
     event.preventDefault();
-    new ActorSheetFlags(this.actor).render(true);
+    const button = event.currentTarget;
+    switch (button.dataset.action) {
+      case "movement":
+        new ActorMovementConfig(this.object).render(true);
+        break;
+      case "flags":
+        new ActorSheetFlags(this.object).render(true);
+        break;
+      case "senses":
+        new ActorSensesConfig(this.object).render(true);
+        break;
+    }
   }
 
   /* -------------------------------------------- */
@@ -417,50 +514,19 @@ export default class ActorSheetKryx extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  async _onDrop(event) {
-    event.preventDefault();
-
-    // Get dropped data
-    let data;
-    try {
-      data = JSON.parse(event.dataTransfer.getData('text/plain'));
-    } catch (err) {
-      return false;
-    }
-    if (!data) return false;
-
-    // Case 1 - Dropped Item
-    if (data.type === "Item") {
-      return this._onDropItem(event, data);
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Handle dropping of an item reference or item data onto an Actor Sheet
-   * @param {DragEvent} event     The concluding DragEvent which contains drop data
-   * @param {Object} data         The data transfer extracted from the event
-   * @return {Object}             OwnedItem data to create
-   * @private
-   */
-  async _onDropItem(event, data) {
-    if (!this.actor.owner) return false;
-    let itemData = await this._getItemDropData(event, data);
-
-    // Handle item sorting within the same Actor
-    const actor = this.actor;
-    let sameActor = (data.actorId === actor._id) || (actor.isToken && (data.tokenId === actor.token.id));
-    if (sameActor) return this._onSortItem(event, itemData);
-
-    // Create a spell scroll from a spell item
+  async _onDropItemCreate(itemData) {
+    // Create a Consumable spell scroll on the Inventory tab
     if ((itemData.type === "superpower" && itemData.data.powerType === "spell") && (this._tabs[0].active === "inventory")) {
       const scroll = await ItemKryx.createScrollFromSpell(itemData);
       itemData = scroll.data;
     }
+    // Ignore certain statuses
+    if (itemData.data) {
+      ["attunement", "equipped", "proficient", "prepared"].forEach(k => delete itemData.data[k]);
+    }
 
-    // Create the owned item
-    return this.actor.createEmbeddedEntity("OwnedItem", itemData);
+    // Create the owned item as normal
+    return super._onDropItemCreate(itemData);
   }
 
   /* -------------------------------------------- */
@@ -523,13 +589,8 @@ export default class ActorSheetKryx extends ActorSheet {
     const itemId = event.currentTarget.closest(".item").dataset.itemId;
     const item = this.actor.getOwnedItem(itemId);
 
-    // Roll superpowers through the actor
-    if (item.data.type === "superpower") {
-      return this.actor.useSuperpower(item, {configureDialog: !event.shiftKey});
-    }
-
-    // Otherwise roll the Item directly
-    else return item.roll();
+    // (will call this actor's useSuperpower if it's a spell, maneuver, etc)
+    return item.roll({configureDialog: !event.shiftKey});
   }
 
   /* -------------------------------------------- */
@@ -591,7 +652,7 @@ export default class ActorSheetKryx extends ActorSheet {
       data: duplicate(header.dataset)
     };
     delete itemData.data["type"];
-    return this.actor.createOwnedItem(itemData);
+    return this.actor.createEmbeddedEntity("OwnedItem", itemData);
   }
 
   /* -------------------------------------------- */

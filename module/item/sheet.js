@@ -1,5 +1,6 @@
 import TraitSelector from "../apps/trait-selector.js";
 import {KRYX_RPG} from "../config.js";
+import {onManageActiveEffect, prepareActiveEffectCategories} from "../effects.js";
 
 /**
  * Override and extend the core ItemSheet implementation to handle Kryx RPG specific item types
@@ -11,7 +12,7 @@ export default class ItemSheetKryx extends ItemSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       width: 560,
-      height: 420,
+      height: 400,
       classes: ["kryx_rpg", "sheet", "item"],
       resizable: false,
       scrollY: [".tab.details"],
@@ -30,8 +31,8 @@ export default class ItemSheetKryx extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
-    const data = super.getData();
+  async getData(options) {
+    const data = super.getData(options);
     const item = this.item
     data.labels = item.labels;
 
@@ -58,6 +59,9 @@ export default class ItemSheetKryx extends ItemSheet {
     data.hasAttackRoll = item.hasAttack;
     data.isHealing = item.data.data.actionType === "heal";
     data.isFlatDC = item.data.data.save && item.data.data.save.scaling === "flat_dc";
+
+    // Prepare Active Effects
+    data.effects = prepareActiveEffectCategories(this.entity.effects);
     return data;
   }
 
@@ -82,7 +86,7 @@ export default class ItemSheetKryx extends ItemSheet {
           ammo[i.id] = `${i.name} (${i.data.data.quantity})`;
         }
         return ammo;
-      }, {});
+      }, {[item._id]: `${item.name} (${item.data.quantity})`});
     }
 
     // Attributes
@@ -107,6 +111,7 @@ export default class ItemSheetKryx extends ItemSheet {
     // Charges
     else if (consume.type === "charges") {
       return actor.items.reduce((obj, i) => {
+        // Limited-use items
         const uses = i.data.data.uses || {};
         if (uses.per && uses.max) {
           const label = uses.per === "charges" ? ` (${uses.value} Charges)` : ` (${uses.max} per ${uses.per})`;
@@ -128,9 +133,9 @@ export default class ItemSheetKryx extends ItemSheet {
     if (item.type === "superpower") {
       return CONFIG.KRYX_RPG.superpowerAvailability[item.data.availability];
     } else if (["weapon", "equipment"].includes(item.type)) {
-      return item.data.equipped ? "Equipped" : "Unequipped";
+      return game.i18n.localize(item.data.equipped ? "KRYX_RPG.Equipped" : "KRYX_RPG.Unequipped");
     } else if (item.type === "tool") {
-      return item.data.proficient ? "Proficient" : "Not Proficient";
+      return game.i18n.localize(item.data.proficient ? "KRYX_RPG.Proficient" : "KRYX_RPG.NotProficient");
     } else return null
   }
 
@@ -151,6 +156,7 @@ export default class ItemSheetKryx extends ItemSheet {
         .map(e => CONFIG.KRYX_RPG.weaponProperties[e[0]]));
     } else if (item.type === "superpower") {
       props.push(
+        // TODO - convert to en.json stuff when I'm less lazy
         item.data.cost === 0 ? "Cantrip" : null,
         item.data.themes.value.length ? item.data.themes.value.join(", ") : "No theme",
         item.data.components.concentration ? labels.concentration : null,
@@ -195,30 +201,23 @@ export default class ItemSheetKryx extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  _updateObject(event, formData) {
+  _getSubmitData(updateData = {}) {
+    // Create the expanded update data object
+    const fd = new FormDataExtended(this.form, {editors: this.editors});
+    let data = fd.toObject();
+    if (updateData) data = mergeObject(data, updateData);
+    else data = expandObject(data);
 
-    // Handle Damage Array
-    let damage = Object.entries(formData).filter(e => e[0].startsWith("data.damage.parts"));
-    formData["data.damage.parts"] = damage.reduce((arr, entry) => {
-      if (!entry[1]) return arr // prevents empty damage field from being saved and leading to a bug
-      let [i, j] = entry[0].split(".").slice(3);
-      if (!arr[i]) arr[i] = [];
-      arr[i][j] = entry[1];
-      return arr;
-    }, []);
+    // Handle Damage array
+    const damage = data.data?.damage;
+    if (damage) damage.parts = Object.values(damage?.parts || {}).map(d => [d[0] || "", d[1] || ""]);
 
     // Handle Effects Array
-    let effects = Object.entries(formData).filter(e => e[0].startsWith("data.effects.parts"));
-    formData["data.effects.parts"] = effects.reduce((arr, entry) => {
-      if (!entry[1]) return arr // prevents empty effects field from being saved and leading to a bug
-      let [i, j] = entry[0].split(".").slice(3);
-      if (!arr[i]) arr[i] = [];
-      arr[i][j] = entry[1];
-      return arr;
-    }, []);
+    const effects = data.data?.effects;
+    if (effects) effects.parts = Object.values(effects?.parts || {}).map(d => [d[0] || "", d[1] || ""]);
 
-    // Update the Item
-    super._updateObject(event, formData);
+    // Return the flattened submission data
+    return flattenObject(data);
   }
 
   /* -------------------------------------------- */
@@ -226,15 +225,20 @@ export default class ItemSheetKryx extends ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
-    html.find(".damage-control").click(this._onDamageControl.bind(this));
-    html.find(".additional-effect-control").click(this._onEffectControl.bind(this));
+    if (this.isEditable) {
+      html.find(".damage-control").click(this._onDamageControl.bind(this));
+      html.find(".additional-effect-control").click(this._onAdditionalEffectControl.bind(this));
+      html.find(".effect-control").click(ev => {
+        if (this.item.isOwned) return ui.notifications.warn("Managing Active Effects within an Owned Item is not currently supported and will be added in a subsequent update.")
+        onManageActiveEffect(ev, this.item)
+      });
+      html.find('.summary-themes').click(this._onOpenThemesPicker.bind(this));
 
-    // Activate any Trait Selectors
-    html.find('.summary-themes').click(this._onOpenThemesPicker.bind(this));
-
-    if (this.item.type === "superpower")
-      html.find('.item-type').click(this._onClickItemType.bind(this));
-    this.limitScalingToPossibilities(html)
+      if (this.item.type === "superpower") {
+        html.find('.item-type').click(this._onClickItemType.bind(this));
+        this.limitScalingToPossibilities(html)
+      }
+    }
   }
 
   /* -------------------------------------------- */
@@ -299,7 +303,7 @@ export default class ItemSheetKryx extends ItemSheet {
    * @return {Promise}
    * @private
    */
-  async _onEffectControl(event) {
+  async _onAdditionalEffectControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
 
@@ -354,5 +358,13 @@ export default class ItemSheetKryx extends ItemSheet {
     const allPowerTypes = ["spell", "maneuver", "concoction"]
     const newPowerType = allPowerTypes[(allPowerTypes.indexOf(powerType) + 1) % 3]
     this.item.update({"data.powerType": newPowerType})
+  }
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  async _onSubmit(...args) {
+    if (this._tabs[0].active === "details") this.position.height = "auto";
+    await super._onSubmit(...args);
   }
 }

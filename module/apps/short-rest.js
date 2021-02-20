@@ -49,7 +49,6 @@ export default class ShortRestDialog extends Dialog {
     super.activateListeners(html);
     let btn = html.find("#roll-hd");
     btn.click(this._onRollHealthDie.bind(this));
-    super.activateListeners(html);
   }
 
   /* -------------------------------------------- */
@@ -61,7 +60,7 @@ export default class ShortRestDialog extends Dialog {
    */
   async _onRollHealthDie(event) {
     event.preventDefault();
-    await this.actor.rollHealthDie(this.actor.data.data.class.healthDice);
+    await this.actor.rollHealthDie();
     this.render();
   }
 

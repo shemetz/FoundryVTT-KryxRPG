@@ -107,4 +107,8 @@ export default class SuperpowerUseDialog extends Dialog {
       .replaceAll("CAST", resource.nameOfUse)
       .replaceAll("SPELL", resource.nameOfEffect)
   }
+
+  /* -------------------------------------------- */
+
+  static _handleSubmit(formData, item) {}
 }

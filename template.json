@@ -1,6 +1,9 @@
 {
   "Actor": {
-    "types": ["character", "npc"],
+    "types": [
+      "character",
+      "npc"
+    ],
     "templates": {
       "common": {
         "class": {
@@ -60,8 +63,21 @@
             "temp": 0,
             "tempmax": 0
           },
-          "speed": {
-            "value": "30 ft",
+          "movement": {
+            "burrow": 0,
+            "climb": 0,
+            "fly": 0,
+            "swim": 0,
+            "walk": 30,
+            "units": "ft",
+            "hover": false
+          },
+          "senses": {
+            "darkvision": 0,
+            "blindsight": 0,
+            "tremorsense": 0,
+            "truesight": 0,
+            "units": "ft",
             "special": ""
           },
           "spellcastingAbility": "int",
@@ -145,7 +161,6 @@
         "traits": {
           "size": "medium",
           "powerSource": "",
-          "senses": "",
           "languages": {
             "value": [],
             "custom": ""
@@ -211,15 +226,27 @@
         }
       }
     },
+    "htmlFields": [
+      "details.biography.value",
+      "details.biography.public"
+    ],
     "character": {
-      "templates": ["common"],
+      "templates": [
+        "common"
+      ],
       "attributes": {
         "inspiration": false,
-        "secondWindAvailable": true
+        "secondWindAvailable": true,
+        "encumbrance": {
+          "value": null,
+          "max": null
+        }
       },
       "details": {
         "source": "",
         "background": "",
+        "appearance": "",
+        "personality": "",
         "exp": {
           "max": 0,
           "value": 0,
@@ -258,7 +285,9 @@
       }
     },
     "npc": {
-      "templates": ["common"],
+      "templates": [
+        "common"
+      ],
       "details": {
         "cr": 0
       },
@@ -270,7 +299,16 @@
     }
   },
   "Item": {
-    "types": ["superpower", "feature", "weapon", "equipment", "consumable", "tool", "loot", "backpack"],
+    "types": [
+      "superpower",
+      "feature",
+      "weapon",
+      "equipment",
+      "consumable",
+      "tool",
+      "loot",
+      "backpack"
+    ],
     "templates": {
       "itemDescription": {
         "description": {
@@ -286,6 +324,7 @@
         "weight": 0,
         "price": 0,
         "attuned": false,
+        "attunement": 0,
         "equipped": false,
         "rarity": "",
         "identified": true
@@ -350,7 +389,12 @@
     },
     "superpower": {
       "_comment": "superpower = spell, maneuver, or concoction. determined by `powerType` attribute.",
-      "templates": ["itemDescription", "activatedEffect", "action", "themed"],
+      "templates": [
+        "itemDescription",
+        "activatedEffect",
+        "action",
+        "themed"
+      ],
       "cost": 1,
       "powerType": "spell",
       "availability": "known",
@@ -360,12 +404,20 @@
         "materials": ""
       },
       "scaling": {
-        "mode": null,
+        "mode": "none",
         "formula": null
       }
     },
+    "htmlFields": [
+      "description.value",
+      "description.chat",
+      "description.unidentified"
+    ],
     "backpack": {
-      "templates": ["itemDescription", "physicalItem"],
+      "templates": [
+        "itemDescription",
+        "physicalItem"
+      ],
       "capacity": {
         "type": "weight",
         "value": 0,
@@ -379,14 +431,24 @@
       }
     },
     "consumable": {
-      "templates": ["itemDescription", "physicalItem", "activatedEffect", "action"],
+      "templates": [
+        "itemDescription",
+        "physicalItem",
+        "activatedEffect",
+        "action"
+      ],
       "consumableType": "potion",
       "uses": {
         "autoDestroy": false
       }
     },
     "equipment": {
-      "templates": ["itemDescription", "physicalItem", "activatedEffect", "action"],
+      "templates": [
+        "itemDescription",
+        "physicalItem",
+        "activatedEffect",
+        "action"
+      ],
       "armor": {
         "type": "light",
         "value": 10,
@@ -399,7 +461,12 @@
     },
     "feature": {
       "_comment": "featureType can be 'feature', 'feat', 'trait', 'fighting style'",
-      "templates": ["itemDescription", "activatedEffect", "action", "themed"],
+      "templates": [
+        "itemDescription",
+        "activatedEffect",
+        "action",
+        "themed"
+      ],
       "featureType": "classFeature",
       "recharge": {
         "value": null,
@@ -407,15 +474,26 @@
       }
     },
     "loot": {
-      "templates": ["itemDescription", "physicalItem"]
+      "templates": [
+        "itemDescription",
+        "physicalItem"
+      ]
     },
     "tool": {
-      "templates": ["itemDescription", "physicalItem"],
+      "templates": [
+        "itemDescription",
+        "physicalItem"
+      ],
       "ability": "int",
       "chatFlavor": ""
     },
     "weapon": {
-      "templates": ["itemDescription", "physicalItem", "activatedEffect", "action"],
+      "templates": [
+        "itemDescription",
+        "physicalItem",
+        "activatedEffect",
+        "action"
+      ],
       "weaponType": "simpleM",
       "properties": {},
       "proficient": true

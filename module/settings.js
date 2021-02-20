@@ -8,7 +8,7 @@ export const registerSystemSettings = function () {
     scope: "world",
     config: false,
     type: String,
-    default: 0
+    default: ""
   });
 
   /**
@@ -46,15 +46,6 @@ export const registerSystemSettings = function () {
     onChange: rule => canvas.grid.diagonalRule = rule
   });
 
-  /**
-   * Register Initiative formula setting
-   */
-  function _setKryxInitiative(tiebreaker) {
-    CONFIG.Combat.initiative.tiebreaker = tiebreaker;
-    CONFIG.Combat.initiative.decimals = tiebreaker ? 2 : 0;
-    if (ui.combat && ui.combat._rendered) ui.combat.render();
-  }
-
   game.settings.register("kryx_rpg", "initiativeDexTiebreaker", {
     name: "SETTINGS.KryxRpgInitTBN",
     hint: "SETTINGS.KryxRpgInitTBL",
@@ -62,9 +53,7 @@ export const registerSystemSettings = function () {
     config: true,
     default: false,
     type: Boolean,
-    onChange: enable => _setKryxInitiative(enable)
   });
-  _setKryxInitiative(game.settings.get("kryx_rpg", "initiativeDexTiebreaker"));
 
   /**
    * Require Currency Carrying Weight

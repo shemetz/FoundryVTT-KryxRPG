@@ -1,6 +1,6 @@
 /**
  * An application class which provides advanced configuration for special character flags which modify an Actor
- * @extends {BaseEntitySheet}
+ * @implements {BaseEntitySheet}
  */
 export default class ActorSheetFlags extends BaseEntitySheet {
   static get defaultOptions() {
@@ -16,22 +16,16 @@ export default class ActorSheetFlags extends BaseEntitySheet {
 
   /* -------------------------------------------- */
 
-  /**
-   * Configure the title of the special traits selection window to include the Actor name
-   * @type {String}
-   */
+  /** @override */
   get title() {
     return `${game.i18n.localize('KRYX_RPG.FlagsTitle')}: ${this.object.name}`;
   }
 
   /* -------------------------------------------- */
 
-  /**
-   * Prepare data used to render the special Actor traits selection UI
-   * @return {Object}
-   */
+  /** @override */
   getData() {
-    const data = super.getData();
+    const data = {};
     data.actor = this.object;
     data.flags = this._getFlags();
     data.bonuses = this._getBonuses();
@@ -43,17 +37,18 @@ export default class ActorSheetFlags extends BaseEntitySheet {
   /**
    * Prepare an object of flags data which groups flags by section
    * Add some additional data for rendering
-   * @return {Object}
+   * @return {object}
    */
   _getFlags() {
     const flags = {};
+    const baseData = this.entity._data;
     for (let [k, v] of Object.entries(CONFIG.KRYX_RPG.characterFlags)) {
       if (!flags.hasOwnProperty(v.section)) flags[v.section] = {};
       let flag = duplicate(v);
       flag.type = v.type.name;
       flag.isCheckbox = v.type === Boolean;
       flag.isSelect = v.hasOwnProperty('choices');
-      flag.value = this.entity.getFlag("kryx_rpg", k);
+      flag.value = getProperty(baseData.flags, `kryx_rpg.${k}`);
       flags[v.section][`flags.kryx_rpg.${k}`] = flag;
     }
     return flags;
@@ -63,7 +58,7 @@ export default class ActorSheetFlags extends BaseEntitySheet {
 
   /**
    * Get the bonuses fields and their localization strings
-   * @return {Array}
+   * @return {Array<object>}
    * @private
    */
   _getBonuses() {
@@ -89,7 +84,7 @@ export default class ActorSheetFlags extends BaseEntitySheet {
     let bonuses = showBonuses1 ? bonuses1 : []
     bonuses = bonuses.concat(bonuses2)
     for (let b of bonuses) {
-      b.value = getProperty(this.object.data, b.name);
+      b.value = getProperty(this.object._data, b.name) || "";
     }
     return bonuses;
   }
@@ -110,14 +105,21 @@ export default class ActorSheetFlags extends BaseEntitySheet {
     for (let [k, v] of Object.entries(flags)) {
       if ([undefined, null, "", false, 0].includes(v)) {
         delete flags[k];
-        if (hasProperty(actor.data.flags, `kryx_rpg.${k}`)) {
+        if (hasProperty(actor._data.flags, `kryx_rpg.${k}`)) {
           unset = true;
           flags[`-=${k}`] = null;
         }
       }
     }
 
-    // Apply the changes
+    // Clear any bonuses which are whitespace only
+    for ( let b of Object.values(updateData.data.bonuses ) ) {
+      for ( let [k, v] of Object.entries(b) ) {
+        b[k] = v.trim();
+      }
+    }
+
+    // Diff the data against any applied overrides and apply
     await actor.update(updateData, {diff: false});
   }
 }

@@ -34,6 +34,7 @@
     <nav class="sheet-navigation tabs" data-group="primary">
         <a class="item active" data-tab="description">{{ localize "KRYX_RPG.Description" }}</a>
         <a class="item" data-tab="details">{{ localize "KRYX_RPG.Details" }}</a>
+        <a class="item" data-tab="effects">{{ localize "KRYX_RPG.Effects" }}</a>
     </nav>
 
     {{!-- Item Sheet Body --}}
@@ -59,6 +60,13 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label>{{localize "KRYX_RPG.Attunement"}}</label>
+                <select name="data.attunement" data-dtype="Number">
+                    {{selectOptions config.attunements selected=data.attunement localize=true}}
+                </select>
+            </div>
+
             {{!-- Equipment Status --}}
             <div class="form-group stacked">
                 <label>{{ localize "KRYX_RPG.ItemEquipmentStatus" }}</label>
@@ -73,10 +81,6 @@
                 <label class="checkbox">
                     <input type="checkbox" name="data.identified" {{checked data.identified}}/>
                     {{ localize "KRYX_RPG.Identified" }}
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" name="data.attuned" {{checked data.attuned}}/>
-                    {{ localize "KRYX_RPG.Attuned" }}
                 </label>
             </div>
 
@@ -129,6 +133,10 @@
 
             {{!-- Item Action Template --}}
             {{> "systems/kryx_rpg/templates/items/parts/item-action.html"}}
+        </div>
+        {{!-- Effects Tab --}}
+        <div class="tab effects flexcol" data-group="primary" data-tab="effects">
+            {{> "systems/kryx_rpg/templates/actors/parts/active-effects.html"}}
         </div>
     </section>
 </form>

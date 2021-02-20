@@ -27,22 +27,45 @@ KRYX_RPG.abilities = {
   "cha": "KRYX_RPG.AbilityCha"
 };
 
+KRYX_RPG.abilityAbbreviations = {
+  "str": "KRYX_RPG.AbilityStrAbbr",
+  "dex": "KRYX_RPG.AbilityDexAbbr",
+  "con": "KRYX_RPG.AbilityConAbbr",
+  "int": "KRYX_RPG.AbilityIntAbbr",
+  "wis": "KRYX_RPG.AbilityWisAbbr",
+  "cha": "KRYX_RPG.AbilityChaAbbr"
+};
+
 KRYX_RPG.saves = {
   "fortitude": "KRYX_RPG.SaveFortitude",
   "reflex": "KRYX_RPG.SaveReflex",
   "will": "KRYX_RPG.SaveWill",
 };
 
-KRYX_RPG.shortenedAbility = {
-  "Strength": "KRYX_RPG.AbilityStrShort",
-  "Dexterity": "KRYX_RPG.AbilityDexShort",
-  "Constitution": "KRYX_RPG.AbilityConShort",
-  "Intelligence": "KRYX_RPG.AbilityIntShort",
-  "Wisdom": "KRYX_RPG.AbilityWisShort",
-  "Charisma": "KRYX_RPG.AbilityChaShort",
+/* -------------------------------------------- */
+
+/**
+ * An enumeration of item attunement types
+ * @enum {number}
+ */
+KRYX_RPG.attunementTypes = {
+  NONE: 0,
+  REQUIRED: 1,
+  ATTUNED: 2,
+}
+
+/**
+ * An enumeration of item attunement states
+ * @type {{"0": string, "1": string, "2": string}}
+ */
+KRYX_RPG.attunements = {
+  0: "KRYX_RPG.AttunementNone",
+  1: "KRYX_RPG.AttunementRequired",
+  2: "KRYX_RPG.AttunementAttuned"
 };
 
 /* -------------------------------------------- */
+
 
 KRYX_RPG.weaponProficiencies = {
   "sim": "KRYX_RPG.WeaponSimpleProficiency",
@@ -258,18 +281,65 @@ KRYX_RPG.damageTypes = {
   "chaos": "KRYX_RPG.DamageChaos",
 };
 
+// Damage Resistance Types
+KRYX_RPG.damageResistanceTypes = {
+  "acid": "KRYX_RPG.DamageAcid",
+  "bludgeoning": "KRYX_RPG.DamageBludgeoning",
+  "cold": "KRYX_RPG.DamageCold",
+  "fire": "KRYX_RPG.DamageFire",
+  "force": "KRYX_RPG.DamageForce",
+  "lightning": "KRYX_RPG.DamageLightning",
+  "necrotic": "KRYX_RPG.DamageNecrotic",
+  "piercing": "KRYX_RPG.DamagePiercing",
+  "poison": "KRYX_RPG.DamagePoison",
+  "psychic": "KRYX_RPG.DamagePsychic",
+  "radiant": "KRYX_RPG.DamageRadiant",
+  "slashing": "KRYX_RPG.DamageSlashing",
+  "concussion": "KRYX_RPG.DamageConcussion",
+}
+
 /* -------------------------------------------- */
+
+/**
+ * The valid units of measure for movement distances in the game system.
+ * By default this uses the imperial units of feet and miles.
+ * @type {Object<string,string>}
+ */
+KRYX_RPG.movementTypes = {
+  "burrow": "KRYX_RPG.MovementBurrow",
+  "climb": "KRYX_RPG.MovementClimb",
+  "fly": "KRYX_RPG.MovementFly",
+  "swim": "KRYX_RPG.MovementSwim",
+  "walk": "KRYX_RPG.MovementWalk",
+}
+
+/**
+ * The valid units of measure for movement distances in the game system.
+ * By default this uses the imperial units of feet and miles.
+ * @type {Object<string,string>}
+ */
+KRYX_RPG.movementUnits = {
+  "ft": "KRYX_RPG.DistFt",
+  "mi": "KRYX_RPG.DistMi"
+}
+
+/**
+ * The valid units of measure for the range of an action or effect.
+ * This object automatically includes the movement units from KRYX_RPG.movementUnits
+ * @type {Object<string,string>}
+ */
 
 KRYX_RPG.distanceUnits = {
   "none": "KRYX_RPG.None",
   "self": "KRYX_RPG.DistSelf",
   "touch": "KRYX_RPG.DistTouch",
-  "ft": "KRYX_RPG.DistFt",
-  "mi": "KRYX_RPG.DistMi",
   "spec": "KRYX_RPG.Special",
   "sight": "KRYX_RPG.DistSight",
   "any": "KRYX_RPG.DistAny"
 };
+for ( let [k, v] of Object.entries(KRYX_RPG.movementUnits) ) {
+  KRYX_RPG.distanceUnits[k] = v;
+}
 
 /* -------------------------------------------- */
 
@@ -460,13 +530,27 @@ KRYX_RPG.weaponProperties = {
   "fin": "KRYX_RPG.WeaponPropertiesFin",
   "lgt": "KRYX_RPG.WeaponPropertiesLgt",
   "lod": "KRYX_RPG.WeaponPropertiesLod",
+  "mgc": "KRYX_RPG.WeaponPropertiesMgc",
   "rch": "KRYX_RPG.WeaponPropertiesRch",
   "spc": "KRYX_RPG.WeaponPropertiesSpc",
   "thr": "KRYX_RPG.WeaponPropertiesThr",
   "two": "KRYX_RPG.WeaponPropertiesTwo",
   "ver": "KRYX_RPG.WeaponPropertiesVer",
-  "sil": "KRYX_RPG.WeaponPropertiesSil",
 };
+
+/**
+ * The amount of cover provided by an object.
+ * In cases where multiple pieces of cover are
+ * in play, we take the highest value.
+ */
+KRYX_RPG.cover = {
+  0: 'KRYX_RPG.None',
+  .5: 'KRYX_RPG.CoverHalf',
+  .75: 'KRYX_RPG.CoverThreeQuarters',
+  1: 'KRYX_RPG.CoverTotal'
+};
+
+/* -------------------------------------------- */
 
 // Themes
 KRYX_RPG.themes = {

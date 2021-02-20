@@ -4,9 +4,9 @@
  * @return {Promise}
  */
 export const preloadHandlebarsTemplates = async function () {
-
-  // Define template paths to load
-  const templatePaths = [
+  return loadTemplates([
+    // Shared Partials
+    "systems/kryx_rpg/templates/actors/parts/active-effects.html",
 
     // Actor Sheet Partials
     "systems/kryx_rpg/templates/actors/parts/actor-traits.html",
@@ -18,8 +18,5 @@ export const preloadHandlebarsTemplates = async function () {
     "systems/kryx_rpg/templates/items/parts/item-action.html",
     "systems/kryx_rpg/templates/items/parts/item-activation.html",
     "systems/kryx_rpg/templates/items/parts/item-description.html"
-  ];
-
-  // Load the template parts
-  return loadTemplates(templatePaths);
+  ]);
 };

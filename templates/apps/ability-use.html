@@ -1,6 +1,9 @@
 <form id="ability-use-form">
     <p>{{ title }}</p>
     <p class="notes">{{note}}</p>
+    {{#each errors}}
+        <p class="notification error">{{this}}</p>
+    {{/each}}
     <div class="form-group">
         <label class="checkbox">{{ localize "KRYX_RPG.AbilityUseConsume" }} <input type="checkbox" name="consume"
                                                                                    checked/></label>

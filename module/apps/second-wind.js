@@ -56,7 +56,7 @@ export default class SecondWindDialog extends Dialog {
    */
   async _onRollHealthDie(event) {
     event.preventDefault();
-    await this.actor.rollHealthDie(this.actor.data.data.class.healthDice);
+    await this.actor.rollHealthDie();
     this.render();
   }
 

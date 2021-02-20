@@ -16,11 +16,10 @@ export default class AbilityUseDialog extends Dialog {
 
   /* -------------------------------------------- */
   /*  Rendering                                   */
-
   /* -------------------------------------------- */
 
   /**
-   * A constructor function which displays the Spell Cast Dialog app for a given Actor and Item.
+   * A constructor function which displays the Ability Use Dialog app for a given Actor and Item.
    * Returns a Promise which resolves to the dialog FormData once the workflow has been completed.
    * @param {ItemKryx} item
    * @return {Promise}
