@@ -4,6 +4,7 @@ import ShortRestDialog from "../apps/short-rest.js";
 import LongRestDialog from "../apps/long-rest.js";
 import SuperpowerUseDialog from "../apps/superpower-use-dialog.js";
 import SecondWindDialog from '../apps/second-wind.js';
+import AbilityTemplate from '../pixi/ability-template.js';
 
 /**
  * Extend the base Actor class to implement additional logic specialized for Kryx RPG.
@@ -743,7 +744,6 @@ export default class ActorKryx extends Actor {
 
   /**
    * Roll a health die of the appropriate type, gaining health equal to the die roll plus your CON modifier
-   * @param {string} denomination    The denomination of health die to roll. Example "d8"
    */
   async rollHealthDie() {
     const denomination = this.data.data.class.healthDice
@@ -793,7 +793,7 @@ export default class ActorKryx extends Actor {
     let newDay = false;
     if (dialog) {
       try {
-        newDay = await ShortRestDialog.shortRestDialog({actor: this, canRoll: hd0 > 0});
+        newDay = await ShortRestDialog.shortRestDialog({actor: this});
       } catch (err) {
         return;
       }
