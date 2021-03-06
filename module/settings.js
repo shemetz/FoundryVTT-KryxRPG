@@ -14,6 +14,22 @@ export const registerSystemSettings = function () {
   /**
    * Register resting variants
    */
+  game.settings.register("kryx_rpg", "basicDiceRoll", {
+    name: "SETTINGS.KryxRpgBasicDiceRollN",
+    hint: "SETTINGS.KryxRpgBasicDiceRollL",
+    scope: "world",
+    config: true,
+    default: "1d20",
+    type: String,
+    choices: {
+      "1d20": "1d20",
+      "2d10": "2d10",
+    }
+  });
+
+  /**
+   * Register resting variants
+   */
   game.settings.register("kryx_rpg", "restVariant", {
     name: "SETTINGS.KryxRpgRestN",
     hint: "SETTINGS.KryxRpgRestL",

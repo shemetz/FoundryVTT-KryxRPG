@@ -65,7 +65,7 @@ function _isUnsupportedTerm(term) {
 /* -------------------------------------------- */
 
 /**
- * A standardized helper function for managing core Kryx RPG "d20 rolls"
+ * A standardized helper function for managing core Kryx RPG "d20 rolls" or "2d10 rolls"
  *
  * Holding SHIFT, ALT, or CTRL when the attack is rolled will "fast-forward".
  * This chooses the default options of a normal attack with no bonus, Advantage, or Disadvantage respectively
@@ -115,32 +115,40 @@ export async function d20Roll(
     else if (disadvantage ?? (event.ctrlKey || event.metaKey)) adv = -1;
   }
 
+  const basicDiceRoll = game.settings.get('kryx_rpg', 'basicDiceRoll')
+  let formula = basicDiceRoll
+
   // Define the inner roll function
   const _roll = (parts, adv, form) => {
 
-    // Determine the d20 roll and modifiers
-    let nd = 1;
-    let mods = halflingLucky ? "r1=1" : "";
-
     // Handle advantage
     if (adv === 1) {
-      nd = 2;
       messageData.flavor += ` (${game.i18n.localize("KRYX_RPG.Advantage")})`;
       if ("flags.kryx_rpg.roll" in messageData) messageData["flags.kryx_rpg.roll"].advantage = true;
-      mods += "kh";
+      // 2d10
+      if (basicDiceRoll === '2d10') formula = '3d10kh2'
+      // 1d20
+      else formula = '2d20kh1'
     }
 
     // Handle disadvantage
     else if (adv === -1) {
-      nd = 2;
       messageData.flavor += ` (${game.i18n.localize("KRYX_RPG.Disadvantage")})`;
       if ("flags.kryx_rpg.roll" in messageData) messageData["flags.kryx_rpg.roll"].disadvantage = true;
-      mods += "kl";
+      // 2d10
+      if (basicDiceRoll === '2d10') formula = '3d10kl2'
+      // 1d20
+      else formula = '2d20kl1'
     }
 
-    // Prepend the d20 roll
-    let formula = `${nd}d20${mods}`;
-    if (reliableTalent) formula = `{${nd}d20${mods},10}kh`;
+    if (halflingLucky) {
+      if (basicDiceRoll === '2d10') formula += '[Halfling_Lucky_not_supported_for_2d10]'
+      else formula += 'r1'
+    }
+
+    // Prepend the roll
+    if (reliableTalent) formula = `{${formula},8}kh`;
+
     parts.unshift(formula);
 
     // Optionally include a situational bonus
@@ -173,7 +181,7 @@ export async function d20Roll(
 
     // Flag d20 options for any 20-sided dice in the roll
     for (let d of roll.dice) {
-      if (d.faces === 20) {
+      if ((basicDiceRoll === '1d20' && d.faces === 20) || (basicDiceRoll === '2d10' && d.faces === 10)) {
         d.options.critical = critical;
         d.options.fumble = fumble;
         if (adv === 1) d.options.advantage = true;
@@ -183,7 +191,7 @@ export async function d20Roll(
     }
 
     // If reliable talent was applied, add it to the flavor text
-    if (reliableTalent && roll.dice[0].total < 10) {
+    if (reliableTalent && roll.dice[0].total < 8) {
       messageData.flavor += ` (${game.i18n.localize("KRYX_RPG.FlagsReliableTalent")})`;
     }
 
@@ -298,6 +306,8 @@ export async function damageRoll(
 
     // Modify the damage formula for critical hits
     if (crit === true) {
+      const criticalMultiplier = 2
+      const criticalBonusDice = 0
       roll.alter(criticalMultiplier, 0);      // Multiply all dice
       if (roll.terms[0] instanceof Die) {   // Add bonus dice for only the main dice term
         roll.terms[0].alter(1, criticalBonusDice);

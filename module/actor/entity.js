@@ -696,13 +696,14 @@ export default class ActorKryx extends Actor {
 
     // Take action depending on the result
     const success = roll.total >= 10;
-    const d20 = roll.dice[0].total;
+    const result = roll.dice[0].total;
+    const basicDiceRoll = game.settings.get('kryx_rpg', 'basicDiceRoll')
 
     // Save success
     if (success) {
       dying -= 1
       // Critical Success = revive with 1 health
-      if (d20 === 20) {
+      if ((basicDiceRoll === '1d20' && result === 20) || (basicDiceRoll === '2d10' && result >= 18)) {
         await this.update({
           "data.attributes.dying": 0,
           "data.attributes.health.value": 1
@@ -727,7 +728,8 @@ export default class ActorKryx extends Actor {
 
     // Save failure
     else {
-      dying += (d20 === 1 ? 2 : 1);
+      const fumble = (basicDiceRoll === '1d20' && result === 1) || (basicDiceRoll === '2d10' && result <= 4)
+      dying += fumble ? 2 : 1
       await this.update({"data.attributes.dying": Math.clamped(dying, 0, 4)});
 
       // Dying 4 = death

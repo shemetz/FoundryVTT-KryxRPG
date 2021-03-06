@@ -6,19 +6,24 @@
  */
 export const _getInitiativeFormula = function (combatant) {
   const actor = combatant.actor;
-  if (!actor) return "1d20";
+  const basicDiceRoll = game.settings.get('kryx_rpg', 'basicDiceRoll')
+  if (!actor) return basicDiceRoll;
   const init = actor.data.data.attributes.init;
   const initBonus = actor.data.data.bonuses.initiative || null
-  let nd = 1;
-  let mods = "";
+  let formula = basicDiceRoll
 
-  if (actor.getFlag("kryx_rpg", "halflingLucky")) mods += "r1=1";
   if (actor.getFlag("kryx_rpg", "initiativeAdv")) {
-    nd = 2;
-    mods += "kh";
+    // 2d10
+    if (basicDiceRoll === '2d10') formula = '3d10kh2'
+    // 1d20
+    else formula = '2d20kh1'
+  }
+  if (actor.getFlag("kryx_rpg", "halflingLucky")) {
+    if (basicDiceRoll === '2d10') formula += "[Halfling_Lucky_not_supported_for_2d10]";
+    else formula += "r1=1";
   }
 
-  const parts = [`${nd}d20${mods}`, init.mod, (init.prof !== 0) ? init.prof : null, (init.bonus !== 0) ? init.bonus : null, initBonus];
+  const parts = [formula, init.mod, (init.prof !== 0) ? init.prof : null, (init.bonus !== 0) ? init.bonus : null, initBonus];
 
   // Optionally apply Dexterity tiebreaker
   const tiebreaker = game.settings.get("kryx_rpg", "initiativeDexTiebreaker");
