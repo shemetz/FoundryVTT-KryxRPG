@@ -28,6 +28,7 @@ I'll mostly list the non-obvious features of this system, and those that are add
 - Open-source and based on the very nice codebase of the 5e system, created by Atropos (main Foundry dev)
 - Version number (mentioned above) is the latest relevant [Kryx RPG version](https://www.kryxrpg.com/changelog/2020), followed by a dash and then a simple incrementing version number. This system's version includes the Kryx RPG version because some system changes (such as renamed skills) require this repository to change too.
 - Uses the imperial system and not the metric system (sorry folks, but I'm lazy; and you can change the units you see in the foundry settings anyways)
+- Has an option for using 2d10 instead of 1d20
 
 ### Basic character setup
 - Class, Archetype, Subclass
