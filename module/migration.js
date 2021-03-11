@@ -1,5 +1,5 @@
 // this should be increased to the latest version when there's a migration change
-export const NEEDS_MIGRATION_VERSION = "27.20.0.0";
+export const NEEDS_MIGRATION_VERSION = "27.34.0.0";
 export const COMPATIBLE_MIGRATION_VERSION = "24.4.0-0";
 
 const renamedThemes = [
@@ -15,6 +15,8 @@ const renamedSkills = [
   ["society", "streetwise"],
   ["coordination", "acrobatics"],
 ]
+
+const removedSkills = ["performance"]
 
 export const migrateWorldIfNeeded = async function () {
   // Determine whether a system migration is required and feasible
@@ -219,13 +221,19 @@ const _migrateThemes = function (actor, updateData) {
 
 const _migrateSkills = function (actor, updateData) {
   const dup = actor.data.skills
-  const renameSkill = function (oldSkill, newSkill) {
+  for (const [oldSkill, newSkill] of renamedSkills) {
     if (dup[oldSkill]) {
       dup[newSkill] = dup[oldSkill]
       delete dup[oldSkill]
+      dup[`-=${oldSkill}`] = null;
     }
   }
-  for (const [oldSkill, newSkill] of renamedSkills) renameSkill(oldSkill, newSkill)
+  for (const oldSkill of removedSkills) {
+    if (dup[oldSkill]) {
+      delete dup[oldSkill]
+      dup[`-=${oldSkill}`] = null;
+    }
+  }
   updateData["data.skills"] = dup
 }
 

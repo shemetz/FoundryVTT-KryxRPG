@@ -94,13 +94,13 @@
           }
         },
         "skills": {
+          "acrobatics": {
+            "proficiency": 0
+          },
           "alchemy": {
             "proficiency": 0
           },
           "arcana": {
-            "proficiency": 0
-          },
-          "acrobatics": {
             "proficiency": 0
           },
           "athletics": {
@@ -124,6 +124,9 @@
           "insight": {
             "proficiency": 0
           },
+          "lore": {
+            "proficiency": 0
+          },
           "medicine": {
             "proficiency": 0
           },
@@ -134,9 +137,6 @@
             "proficiency": 0
           },
           "performance": {
-            "proficiency": 0
-          },
-          "persuasion": {
             "proficiency": 0
           },
           "primal": {
