@@ -21,7 +21,7 @@ const removedSkills = ["performance"]
 export const migrateWorldIfNeeded = async function () {
   // Determine whether a system migration is required and feasible
   const currentVersion = game.settings.get("kryx_rpg", "systemMigrationVersion")
-  if (currentVersion === null || currentVersion === "0") {
+  if (currentVersion === '' || currentVersion === null || currentVersion === "0") {
     game.settings.set("kryx_rpg", "systemMigrationVersion", game.system.data.version);
     return
   }
