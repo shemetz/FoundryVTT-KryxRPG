@@ -311,7 +311,7 @@ export default class ItemKryx extends Item {
       if (this.isOwned && !!data.uses?.max) {
         let max = data.uses.max;
         if (!Number.isNumeric(max)) {
-          max = Roll.replaceFormulaData(max, this.actor.getRollData());
+          max = Roll.replaceFormulaData(max, this.actor.getRollData(), {missing: '0', warn: true})
           if (Roll.MATH_PROXY.safeEval) max = Roll.MATH_PROXY.safeEval(max);
         }
         data.uses.max = Number(max);
