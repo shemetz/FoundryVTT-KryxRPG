@@ -1085,6 +1085,7 @@ export default class ItemKryx extends Item {
     const abl = this.abilityMod;
     if (abl) {
       const ability = rollData.abilities[abl];
+      rollData["value"] = ability.value || 0;
       rollData["mod"] = ability.value || 0;
     }
 

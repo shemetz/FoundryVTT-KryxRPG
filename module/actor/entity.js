@@ -61,6 +61,7 @@ export default class ActorKryx extends Actor {
         continue
       }
       skl.mod = data.abilities[KRYX_RPG.systemData.skillAbilities[id]].value;
+      skl.value = data.abilities[KRYX_RPG.systemData.skillAbilities[id]].value;
       skl.prof = Math.floor(skl.proficiency * data.attributes.prof);
       skl.total = skl.mod + skl.prof;
       skl.signedValue = ActorKryx.signedValue(skl.total);
@@ -70,6 +71,7 @@ export default class ActorKryx extends Actor {
     // Determine Initiative Modifier
     const init = {};
     init.mod = data.abilities.dex.value;
+    init.value = data.abilities.dex.value;
     init.prof = 0;
     init.bonus = new Roll(data.bonuses.initiative.value || "0", this.getRollData()).roll().total;
     init.total = init.mod + init.prof + init.bonus;

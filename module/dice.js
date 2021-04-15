@@ -165,6 +165,7 @@ export async function d20Roll(
       const abl = data.abilities[data.ability];
       if (abl) {
         data.mod = abl.value;
+        data.value = abl.value;
         messageData.flavor += ` (${CONFIG.KRYX_RPG.abilities[data.ability]})`;
       }
     }
