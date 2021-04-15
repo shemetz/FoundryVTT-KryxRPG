@@ -389,6 +389,8 @@ KRYX_RPG.targetTypes = {
 /**
  * Many AoEs have size that depends on amount of mana (or other resource) used, a.k.a "augment sizes".
  * Usually effects will either say "a sphere" or "a sphere twice as big as normal", for example.
+ *
+ * TODO - change to metric by default?  much easier after KryxRPG 27.60.0
  */
 KRYX_RPG.areaScalingStandardSizes = {
   "cone": 15,
