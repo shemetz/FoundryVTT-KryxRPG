@@ -1,8 +1,9 @@
-# [Foundry VTT - Kryx RPG system](https://foundryvtt.com/packages/kryx_rpg/)
+# [Foundry VTT - Kryx RPG system](https://foundryvtt.com/packages/kryx_rpg/) **(semi-abandoned)**
 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/itamarcu/FoundryVTT-KryxRPG?style=for-the-badge) 
 ![GitHub Releases](https://img.shields.io/github/downloads/itamarcu/FoundryVTT-KryxRPG/latest/total?style=for-the-badge) 
 ![GitHub All Releases](https://img.shields.io/github/downloads/itamarcu/FoundryVTT-KryxRPG/total?style=for-the-badge&label=Downloads+total)  
+![Latest Supported Foundry Version](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/itamarcu/FoundryVTT-KryxRPG/raw/master/system.json)
 
 An implementation of the [Kryx RPG](https://www.kryxrpg.com/) system for [Foundry Virtual Tabletop](http://foundryvtt.com).
 
